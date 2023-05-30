@@ -1,10 +1,8 @@
-
+import java.io.*; 
 public class Main {
 
-	public static void main(String[] args) {
-		System.out.println("hi");
-		System.out.println("bye");
-		System.out.println("peepeepoopoo");
+	public static void main(String[] args) throws IOException{
+		System.out.println(Type.getTypeEffectiveness(0, 0));
 	}
 
 }
