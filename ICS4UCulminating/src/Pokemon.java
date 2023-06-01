@@ -2,12 +2,13 @@
 // All Pokemon will inherit this class
 public class Pokemon {
 	private int hp;
-	private int def;
 	private int attack;
-	private int special;
+	private int def;
 	private int spAtk;
 	private int spDef;
 	private int speed;
-	
+	private int special;
+	private Type type1;
+	private Type type2;
 	
 }

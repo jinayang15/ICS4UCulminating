@@ -3,9 +3,12 @@ import java.util.*;
 
 // The Type class
 // This class is used to import the type effectiveness chart, which determines how much damage each 
-// attack will due to a Pokemon based on the type. 
-
+// attack will due to a Pokemon based on the type. This chart can be found in the typeChart.jpg file. 
 // For example, water against fire will do 2.0 times the damage, while fire against water will do  
+// For Pokemon with dual types, the effectiveness number will be multiplied together. For example, 
+// if a Pokemon with a Fire-Electric type (hypothetical) gets hit with a Ground move, which is super effective (2.0x)
+// on BOTH types, the move will do 2x2 or 4 times the damage. Similarily, if a Pokemon with a Flying-Poison type
+// gets hit with a Grass attack, which both Flying and Poison resists (0.5), the damage done will be 0.5x0.5 or 0.25.  
 
 // The index of each type (same for attacker and defender) 
 // Fire = 0
