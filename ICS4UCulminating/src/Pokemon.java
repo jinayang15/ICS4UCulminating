@@ -18,9 +18,11 @@ public class Pokemon {
 	// Paralyzed - 3
 	// Sleep - 4
 	
-	// Constructor, which initializes the base stats and adds the moves to an array of moves. 
-	public Pokemon (String name, int hp, int attack, int def, int spAtk, int spDef, int speed, Move m1, Move m2, Move m3, Move m4) {
+	// Overloaded constructosr, which initializes the base stats and adds the moves to an array of moves. 
+	
+	public Pokemon (String name, PokeType type1, int hp, int attack, int def, int spAtk, int spDef, int speed, Move m1, Move m2, Move m3, Move m4) {
 		this.name = name; 
+		this.type1 = type1;
 		this.hp = hp;
 		this.attack = attack; 
 		this.def = def; 
@@ -31,5 +33,51 @@ public class Pokemon {
 		moveList[1] = m2;
 		moveList[2] = m3;
 		moveList[3] = m4;  
+	}
+	
+	
+	public Pokemon (String name, PokeType type1, PokeType type2, int hp, int attack, int def, int spAtk, int spDef, int speed, Move m1, Move m2, Move m3, Move m4) {
+		this.name = name; 
+		this.type1 = type1;
+		this.type2 = type2;
+		this.hp = hp;
+		this.attack = attack; 
+		this.def = def; 
+		this.spAtk = spAtk;
+		this.spDef = spDef; 
+		this.speed = speed; 
+		moveList[0] = m1; 
+		moveList[1] = m2;
+		moveList[2] = m3;
+		moveList[3] = m4;  
+	}
+	
+	// Temporary (?) ------------------
+	public Pokemon (String name, PokeType type1, int hp, int attack, int def, int spAtk, int spDef, int speed) {
+		this.name = name; 
+		this.type1 = type1;
+		this.hp = hp;
+		this.attack = attack; 
+		this.def = def; 
+		this.spAtk = spAtk;
+		this.spDef = spDef; 
+		this.speed = speed; 
+	}
+	
+	public Pokemon (String name, PokeType type1, PokeType type2, int hp, int attack, int def, int spAtk, int spDef, int speed) {
+		this.name = name; 
+		this.type1 = type1;
+		this.type2 = type2; 
+		this.hp = hp;
+		this.attack = attack; 
+		this.def = def; 
+		this.spAtk = spAtk;
+		this.spDef = spDef; 
+		this.speed = speed; 
+	}
+	// ---------------------------------
+	
+	public String toString() {
+		return this.name;
 	}
 }
