@@ -34,7 +34,7 @@ public class Pokemon {
 		this.spDef = spDef; 
 		this.speed = speed; 
 		this.moveSet = moveSet;
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < Math.min(moveSet.size(), 4); i++) {
 			moveList[i] = moveSet.get(i);
 		}
 	}
@@ -51,7 +51,7 @@ public class Pokemon {
 		this.spDef = spDef; 
 		this.speed = speed; 
 		this.moveSet = moveSet;
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < Math.min(moveSet.size(), 4); i++) {
 			moveList[i] = moveSet.get(i);
 		}
 	}

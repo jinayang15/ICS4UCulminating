@@ -63,8 +63,7 @@ public class GameFunctions {
 	// The importMoves method is used to import all the moves from the allMoves text file
 	public static void importMoves() throws IOException {
 		BufferedReader in = new BufferedReader(new FileReader("allMoves.txt"));
-		Move tempMove = new Move ("peepee", new PokeType ("fire"), "special", 1, 1, 1, "physical");
-		Move.allMoves.add(tempMove);
+		Move.allMoves.add(null);
 		String line = "";
 		while ((line = in.readLine()) != null) {
 			StringTokenizer st = new StringTokenizer(line, "^");

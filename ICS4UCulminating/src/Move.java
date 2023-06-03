@@ -47,22 +47,7 @@ public class Move {
 		this.accuracy = accuracy;
 	}
 	
-	public static void importMoves() throws IOException {
-		BufferedReader in = new BufferedReader(new FileReader("allMoves.txt"));
-		allMoves.add(null);
-		String line = "";
-		while ((line = in.readLine()) != null) {
-			StringTokenizer st = new StringTokenizer(line, "^");
-			st.nextToken();
-			String name = st.nextToken();
-			PokeType type = new PokeType(st.nextToken());
-			String category = st.nextToken();
-			int pp = Integer.parseInt(st.nextToken());
-			int atkPower = Integer.parseInt(st.nextToken());
-			double accuracy = Double.parseDouble(st.nextToken());
-			String effect = st.nextToken();
-			Move m = new Move(name, type, category, pp, atkPower, accuracy, effect);
-			allMoves.add(m);
-		}
+	public String toString() {
+		return name + "-" + effect;
 	}
 }
