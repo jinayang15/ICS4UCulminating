@@ -10,10 +10,10 @@ public class Pokemon {
 	private int special;
 	private PokeType type1;
 	private PokeType type2;
+	private int status;
 	// Poison - 1
 	// Burn - 2
 	// Paralyzed - 3
 	// Sleep - 4
-	private int status;
 	
 }
