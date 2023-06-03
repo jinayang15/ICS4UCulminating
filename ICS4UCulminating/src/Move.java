@@ -52,7 +52,7 @@ public class Move {
 		allMoves.add(null);
 		String line = "";
 		while ((line = in.readLine()) != null) {
-			StringTokenizer st = new StringTokenizer(line, "-");
+			StringTokenizer st = new StringTokenizer(line, "^");
 			st.nextToken();
 			String name = st.nextToken();
 			PokeType type = new PokeType(st.nextToken());
