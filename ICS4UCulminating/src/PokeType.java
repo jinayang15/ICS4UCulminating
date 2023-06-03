@@ -58,4 +58,8 @@ public class PokeType {
 		}
 		return typeChart[attackMoveType][defendPokemonType];
 	}
+	
+	public String toString() {
+		return type;
+	}
 }
