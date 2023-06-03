@@ -20,10 +20,23 @@ import java.util.*;
 // Flying = 6 
 // Poison = 7
 
-public class Type {
+public class PokeType {
+	private String type;
+	private int typeNum;
 	private static double[][] typeChart = new double[8][8]; 
 	private static boolean valid = false; // a checker to see if the chart as already been made
 	
+	public PokeType(String type) {
+		this.type = type;
+		if (type.toLowerCase().equals("fire")) typeNum = 0;
+		else if (type.toLowerCase().equals("water")) typeNum = 1;
+		else if (type.toLowerCase().equals("grass")) typeNum = 2;
+		else if (type.toLowerCase().equals("electric")) typeNum = 3;
+		else if (type.toLowerCase().equals("ground")) typeNum = 4;
+		else if (type.toLowerCase().equals("normal")) typeNum = 5;
+		else if (type.toLowerCase().equals("flying")) typeNum = 6;
+		else if (type.toLowerCase().equals("poison")) typeNum = 7;
+	}
 	// Importing to the 2D array from the typeChartFile text file
 	public static void addToChart() throws IOException {
 		BufferedReader br = new BufferedReader (new FileReader ("typeChartFile.txt"));

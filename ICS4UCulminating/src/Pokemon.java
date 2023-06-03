@@ -8,9 +8,15 @@ public class Pokemon {
 	private int spAtk;
 	private int spDef;
 	private int speed;
-	private Type type1;
-	private Type type2;
 	private Move[] moveList = new Move[4];
+	private int special;
+	private PokeType type1;
+	private PokeType type2;
+	private int status;
+	// Poison - 1
+	// Burn - 2
+	// Paralyzed - 3
+	// Sleep - 4
 	
 	// Constructor, which initializes the base stats and adds the moves to an array of moves. 
 	public Pokemon (String name, int hp, int attack, int def, int spAtk, int spDef, int speed, Move m1, Move m2, Move m3, Move m4) {

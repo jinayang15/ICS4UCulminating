@@ -1,0 +1,91 @@
+1-Pound-Normal-Physical-35-40-1.00-A physical attack delivered with a long tail or a foreleg, etc
+2-Double Slap-Normal-Physical-10-15-0.85-The foe is slapped repeatedly, back and forth, two to five times.
+3-Mega Punch-Normal-Physical-20-80-0.85-The foe is slugged by a punch thrown with muscle-packed power.
+4-Fire Punch-Fire-Physical-15-75-1.00-The foe is punched with a fiery fist. It may leave the foe with a burn.
+5-Thunder Punch-Electric-Physical-15-75-1.00-The foe is punched with an electrified fist. It may leave the foe paralyzed.
+6-Scratch-Normal-Physical-35-40-1.00-Hard, pointed, and sharp claws rake the foe.
+7-Swords Dance-Normal-Status-20-0-0.00-A frenetic dance of fighting. It sharply raises the Attack stat.
+8-Cut-Normal-Physical-30-50-0.95-A basic attack. It can be used to cut down thin trees and grass.
+9-Gust-Flying-Special-35-40-1.00-Strikes the foe with a gust of wind whipped up by wings.
+10-Wing Attack-Flying-Physical-35-60-1.00-The foe is struck with large, imposing wings spread wide.
+11-Fly-Flying-Physical-15-90-0.95-A 2-turn move that hits on the 2nd turn. Use it to fly to any known town.
+12-Slam-Normal-Physical-20-80-0.75-The foe is struck with a long tail, vines, etc.
+13-Vine Whip-Grass-Physical-25-45-1.00-The foe is struck with slender, whiplike vines.
+14-Sand Attack-Ground-Status-15-0-1.00-A lot of sand is hurled in the foe's face, reducing its accuracy.
+15-Headbutt-Normal-Physical-15-70-1.00-The user sticks its head out and rams. It may make the foe flinch.
+16-Tackle-Normal-Physical-35-40-1.00-A physical attack in which the user charges, full body, into the foe.
+17-Body Slam-Normal-Physical-15-85-1.00-The user drops its full body on the foe. It may leave the foe paralyzed.
+18-Take Down-Normal-Physical-20-90-0.85-A reckless, full-body charge attack that also hurts the user a little.
+19-Double-Edge-Normal-Physical-15-120-1.00-A reckless, life-risking tackle that also hurts the user a little.
+20-Tail Whip-Normal-Status-30-0-1.00-The user wags its tail cutely, making the foe lower its Defense stat.
+21-Poison Sting-Poison-Physical-35-15-1.00-The foe is stabbed with a toxic barb, etc. It may poison the foe.
+22-Leer-Normal-Status-30-0-1.00-The foe is given an intimidating look that lowers its Defense stat.
+23-Growl-Normal-Status-40-0-1.00-The user growls in a cute way, making the foe lower its Attack. stat.
+24-Sonic Boom-Normal-Special-20-0-0.90-The foe is hit with a shock wave that always inflicts 20-HP damage.
+25-Acid-Poison-Special-30-40-1.00-The foe is sprayed with a harsh, hide-melting acid that may lower Defense.
+26-Ember-Fire-Special-25-40-1.00-The foe is attacked with small flames. The foe may suffer a burn.
+27-Flamethrower-Fire-Special-15-90-1.00-The foe is scorched with intense flames. The foe may suffer a burn.
+28-Water Gun-Water-Special-25-40-1.00-The foe is struck with a lot of water expelled forcibly from the mouth.
+29-Hydro Pump-Water-Special-5-110-0.80-A high volume of water is blasted at the foe under great pressure.
+30-Surf-Water-Special-15-90-1.00-A big wave crashes down on the foe. Can also be used for crossing water.
+31-Bubble Beam-Water-Special-20-65-1.00-A spray of bubbles strikes the foe. It may lower the foe's Speed stat.
+32-Hyper Beam-Normal-Special-5-150-0.90-A severely damaging attack that makes the user rest on the next turn.
+33-Peck-Flying-Physical-35-35-1.00-The foe is jabbed with a sharply pointed beak or horn.
+34-Drill Peck-Flying-Physical-20-80-1.00-A corkscrewing attack with the sharp beak acting as a drill.
+35-Strength-Normal-Physical-15-80-1.00-The foe is slugged at maximum power. Can also be used to move boulders.
+36-Absorb-Grass-Special-25-20-1.00-An attack that absorbs half the damage it inflicted to restore HP.
+37-Mega Drain-Grass-Special-15-40-1.00-An attack that absorbs half the damage it inflicted to restore HP.
+38-Growth-Normal-Status-20-0-0.00-The user's body is forced to grow, raising the Sp. Atk stat.
+39-Razor Leaf-Grass-Physical-25-55-0.95-The foe is hit with a cutting leaf. It has a high critical-hit ratio.
+40-Poison Powder-Poison-Status-35-0-0.75-A cloud of toxic dust is scattered. It may poison the foe.
+41-Stun Spore-Grass-Status-30-0-0.75-Paralyzing dust is scattered wildly. It may paralyze the foe.
+42-Sleep Powder-Grass-Status-15-0-0.75-A sleep-inducing dust is scattered in high volume around a foe.
+43-Thunder Shock-Electric-Special-30-40-1.00-An electric shock attack that may also leave the foe paralyzed.
+44-Thunderbolt-Electric-Special-15-90-1.00-A strong electrical attack that may also leave the foe paralyzed.
+45-Thunder Wave-Electric-Status-20-0-0.90-A weak electric shock that is sure to cause paralysis if it hits.
+46-Thunder-Electric-Special-10-110-0.70-A brutal lightning attack that may also leave the foe paralyzed.
+47-Earthquake-Ground-Physical-10-100-1.00-An earthquake that strikes all Pokémon in battle excluding the user.
+48-Dig-Ground-Physical-10-80-1.00-An attack that hits on the 2nd turn. Can also be used to exit dungeons.
+49-Toxic-Poison-Status-10-0-0.90-A move that badly poisons the foe. Its poison damage worsens every turn.
+50-Quick Attack-Normal-Physical-30-40-1.00-An almost invisibly fast attack that is certain to strike first.
+51-Withdraw-Water-Status-40-0-0.00-The user withdraws its body in its hard shell, raising its Defense stat.
+52-Defense Curl-Normal-Status-40-0-0.00-The user curls up to conceal weak spots and raise its Defense stat.
+53-Self-Destruct-Normal-Physical-5-200-1.00-The user blows up to inflict severe damage, even making itself faint.
+54-Sludge-Poison-Special-20-65-1.00-Toxic sludge is hurled at the foe. It may poison the target.
+55-Bone Club-Ground-Physical-20-65-0.85-The foe is clubbed with a bone held in hand. It may make the foe flinch.
+56-Fire Blast-Fire-Special-5-110-0.85-The foe is hit with an intense flame. It may leave the target with a burn.
+57-Waterfall-Water-Physical-15-80-1.00-A powerful charge attack. It can also be used to climb a waterfall.
+58-Swift-Normal-Special-20-60-0.00-Star-shaped rays that never miss are fired at all foes in battle.
+59-Skull Bash-Normal-Physical-10-130-1.00-The user raises its Defense in the 1st turn, then attacks in the 2nd turn.
+60-Poison Gas-Poison-Status-40-0-0.90-The foe is sprayed with a cloud of toxic gas that may poison the foe.
+61-Bubble-Water-Special-30-40-1.00-A spray of bubbles hits the foe. It may lower the foe's Speed stat.
+62-Splash-Normal-Status-40-0-0.00-The user just flops and splashes around without having any effect.
+63-Explosion-Normal-Physical-5-250-1.00-The user explodes to inflict terrible damage even while fainting itself.
+64-Bonemerang-Ground-Physical-10-50-0.90-The user throws a bone that hits the foe once, then once again on return.
+65-Hyper Fang-Normal-Physical-15-80-0.90-The foe is attacked with sharp fangs. It may make the foe flinch.
+66-Super Fang-Normal-Physical-10-0-0.90-The user attacks with sharp fangs and halves the foe's HP.
+67-Slash-Normal-Physical-20-70-1.00-The foe is slashed with claws, etc. It has a high critical-hit ratio.
+68-Flame Wheel-Fire-Physical-25-60-1.00-The user makes a fiery charge at the foe. It may cause a burn.
+69-Flail-Normal-Physical-15-0-1.00-A desperate attack that becomes more powerful the less HP the user has.
+70-Protect-Normal-Status-10-0-0.00-Enables the user to evade all attacks. It may fail if used in succession.
+71-Sludge Bomb-Poison-Special-10-90-1.00-Filthy sludge is hurled at the foe. It may poison the target.
+72-Mud-Slap-Ground-Special-10-20-1.00-Mud is hurled in the foe's face to inflict damage and lower its accuracy.
+73-Bone Rush-Ground-Physical-10-25-0.90-The user strikes the foe with a bone in hand two to five times.
+74-Giga Drain-Grass-Special-10-75-1.00-A harsh attack that absorbs half the damage it inflicted to restore HP.
+75-Spark-Electric-Physical-20-65-1.00-An electrically charged tackle that may also paralyze the foe.
+76-Magnitude-Ground-Physical-30-0-1.00-A ground-shaking attack against all standing Pokémon. Its power varies.
+77-Rapid Spin-Normal-Physical-40-50-1.00-An attack that frees the user from Bind, Wrap, Leech Seed, and Spikes.
+78-Synthesis-Grass-Status-5-0-0.00-Restores the user's HP. The amount of HP regained varies with the weather.
+79-Extreme Speed-Normal-Physical-5-80-1.00-Restores the user's HP. The amount of HP regained varies with the weather.
+80-Heat Wave-Fire-Special-10-95-0.90-The user exhales a heated breath to attack. It may also inflict a burn.
+81-Will-O-Wisp-Fire-Status-15-0-0.85-A sinister, bluish white flame is shot at the foe to inflict a burn.
+82-Facade-Normal-Physical-20-70-1.00-An attack that is boosted if user is burned, poisoned, or paralyzed.
+83-Poison Fang-Poison-Physical-15-50-1.00-The foe is bitten with toxic fangs. It may also badly poison the foe.
+84-Air Cutter-Flying-Special-25-60-0.95-The foe is hit with razor-like wind. It has a high critical-hit ratio.
+85-Overheat-Fire-Special-5-130-0.90-An intense attack that also sharply reduces the user's Sp. Atk stat.
+86-Aerial Ace-Flying-Physical-20-60-0.00-An extremely fast attack against one target. It can't be evaded.
+87-Mud Shot-Ground-Special-15-55-0.95-The user attacks by hurling mud. It also reduces the foe's Speed.
+88-Leaf Blade-Grass-Physical-15-90-1.00-The foe is slashed with a sharp leaf. It has a high critical-hit ratio.
+89-Shock Wave-Electric-Special-20-60-0.00-A rapid jolt of electricity strikes the foe. It can't be evaded.
+90-Water Pulse-Water-Special-20-60-1.00-An attack with a pulsing blast of water. It may also confuse the foe.
+
