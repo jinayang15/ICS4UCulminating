@@ -8,7 +8,12 @@ public class Pokemon {
 	private int spDef;
 	private int speed;
 	private int special;
-	private Type type1;
-	private Type type2;
+	private PokeType type1;
+	private PokeType type2;
+	// Poison - 1
+	// Burn - 2
+	// Paralyzed - 3
+	// Sleep - 4
+	private int status;
 	
 }
