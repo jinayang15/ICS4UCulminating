@@ -9,6 +9,8 @@ public class GameFunctions {
 	// ArrayList of Pokemon (could be temporary) 
 	public static ArrayList<Pokemon> pokeList = new ArrayList<>();
 	
+	
+	
 	public GameFunctions () {
 
 	}
@@ -59,7 +61,25 @@ public class GameFunctions {
 	}
 	
 	// The importMoves method is used to import all the moves from the allMoves text file
-	public static void importMoves() {
-		
+	public static void importMoves() throws IOException {
+		BufferedReader in = new BufferedReader(new FileReader("allMoves.txt"));
+		Move tempMove = new Move ("peepee", new PokeType ("fire"), "special", 1, 1, 1, "physical");
+		Move.allMoves.add(tempMove);
+		String line = "";
+		while ((line = in.readLine()) != null) {
+			StringTokenizer st = new StringTokenizer(line, "^");
+			System.out.println(st.countTokens());
+			st.nextToken();
+			String name = st.nextToken();
+			PokeType type = new PokeType(st.nextToken());
+			String category = st.nextToken();
+			int pp = Integer.parseInt(st.nextToken());
+			int atkPower = Integer.parseInt(st.nextToken());
+			double accuracy = Double.parseDouble(st.nextToken());
+			String effect = st.nextToken();
+			Move m = new Move(name, type, category, pp, atkPower, accuracy, effect);
+			Move.allMoves.add(m);
+		}
 	}
+	
 }

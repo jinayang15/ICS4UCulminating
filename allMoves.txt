@@ -88,4 +88,3 @@
 88^Leaf Blade^Grass^Physical^15^90^1.00^The foe is slashed with a sharp leaf. It has a high critical-hit ratio.
 89^Shock Wave^Electric^Special^20^60^0.00^A rapid jolt of electricity strikes the foe. It can't be evaded.
 90^Water Pulse^Water^Special^20^60^1.00^An attack with a pulsing blast of water. It may also confuse the foe.
-
