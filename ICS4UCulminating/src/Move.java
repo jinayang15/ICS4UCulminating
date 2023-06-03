@@ -48,6 +48,6 @@ public class Move {
 	}
 	
 	public String toString() {
-		return name + "-" + effect;
+		return name + "-" + type + "-" + category +  "-" + pp + "-" + atkPower + "-" + accuracy + "-" + effect;
 	}
 }
