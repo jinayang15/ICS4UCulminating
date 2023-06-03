@@ -53,7 +53,6 @@ public class GameFunctions {
 					System.out.println(pokeList.get(pokeList.size()-1));
 				}
 			}
-			System.out.println(pokeList.size());
 		}
 		catch (IOException e) {
 			System.out.println("BAD");
@@ -67,7 +66,6 @@ public class GameFunctions {
 		String line = "";
 		while ((line = in.readLine()) != null) {
 			StringTokenizer st = new StringTokenizer(line, "^");
-			System.out.println(st.countTokens());
 			st.nextToken();
 			String name = st.nextToken();
 			PokeType type = new PokeType(st.nextToken());

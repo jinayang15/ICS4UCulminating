@@ -24,7 +24,6 @@ public class PokeType {
 	private String type;
 	private int typeNum;
 	private static double[][] typeChart = new double[8][8]; 
-	private static boolean valid = false; // a checker to see if the chart as already been made
 	
 	public PokeType(String type) {
 		this.type = type;
@@ -48,14 +47,10 @@ public class PokeType {
 				typeChart[i][j] = Double.parseDouble(st.nextToken());
 			}
 		}
-		valid = true; 
 	}
 	
 	// Getter that will return the value of the effectiveness (will be multiplied to the attack damage)
 	public static double getTypeEffectiveness(int attackMoveType, int defendPokemonType) throws IOException {
-		if (!valid) {
-			addToChart();
-		}
 		return typeChart[attackMoveType][defendPokemonType];
 	}
 }
