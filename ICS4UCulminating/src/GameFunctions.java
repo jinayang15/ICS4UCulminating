@@ -13,8 +13,8 @@ public class GameFunctions {
 
 	}
 	
+	// The importPokemon method is used to import the Pokemon from the textfile 
 	public static void importPokemon() {
-		
 		// Order of text file:
 		// name, type1, type2 (if there), hp, attack, def, spAtk, spDef, speed
 		try {
@@ -56,5 +56,10 @@ public class GameFunctions {
 		catch (IOException e) {
 			System.out.println("BAD");
 		}
+	}
+	
+	// The importMoves method is used to import all the moves from the allMoves text file
+	public static void importMoves() {
+		
 	}
 }
