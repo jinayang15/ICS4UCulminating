@@ -1,4 +1,4 @@
-1^Pound^Normal^ Physical^35^40^1.00^A physical attack delivered with a long tail or a foreleg, etc
+1^Pound^Normal^Physical^35^40^1.00^A physical attack delivered with a long tail or a foreleg, etc
 2^Double Slap^Normal^Physical^10^15^0.85^The foe is slapped repeatedly, back and forth, two to five times.
 3^Mega Punch^Normal^Physical^20^80^0.85^The foe is slugged by a punch thrown with muscle-packed power.
 4^Fire Punch^Fire^Physical^15^75^1.00^The foe is punched with a fiery fist. It may leave the foe with a burn.
@@ -20,7 +20,7 @@
 20^Tail Whip^Normal^Status^30^0^1.00^The user wags its tail cutely, making the foe lower its Defense stat.
 21^Poison Sting^Poison^Physical^35^15^1.00^The foe is stabbed with a toxic barb, etc. It may poison the foe.
 22^Leer^Normal^Status^30^0^1.00^The foe is given an intimidating look that lowers its Defense stat.
-23^Growl^Normal^Status^40^0^1.00^The user growls in a cute way, making the foe lower its Attack. stat.
+23^23^Normal^Status^40^0^1.00^The user growls in a cute way, making the foe lower its Attack. stat.
 24^Sonic Boom^Normal^Special^20^0^0.90^The foe is hit with a shock wave that always inflicts 20-HP damage.
 25^Acid^Poison^Special^30^40^1.00^The foe is sprayed with a harsh, hide-melting acid that may lower Defense.
 26^Ember^Fire^Special^25^40^1.00^The foe is attacked with small flames. The foe may suffer a burn.
@@ -67,24 +67,22 @@
 67^Slash^Normal^Physical^20^70^1.00^The foe is slashed with claws, etc. It has a high critical-hit ratio.
 68^Flame Wheel^Fire^Physical^25^60^1.00^The user makes a fiery charge at the foe. It may cause a burn.
 69^Flail^Normal^Physical^15^0^1.00^A desperate attack that becomes more powerful the less HP the user has.
-70^Protect^Normal^Status^10^0^0.00^Enables the user to evade all attacks. It may fail if used in succession.
-71^Sludge Bomb^Poison^Special^10^90^1.00^Filthy sludge is hurled at the foe. It may poison the target.
-72^Mud-Slap^Ground^Special^10^20^1.00^Mud is hurled in the foe's face to inflict damage and lower its accuracy.
-73^Bone Rush^Ground^Physical^10^25^0.90^The user strikes the foe with a bone in hand two to five times.
-74^Giga Drain^Grass^Special^10^75^1.00^A harsh attack that absorbs half the damage it inflicted to restore HP.
-75^Spark^Electric^Physical^20^65^1.00^An electrically charged tackle that may also paralyze the foe.
-76^Magnitude^Ground^Physical^30^0^1.00^A ground-shaking attack against all standing Pokémon. Its power varies.
-77^Rapid Spin^Normal^Physical^40^50^1.00^An attack that frees the user from Bind, Wrap, Leech Seed, and Spikes.
-78^Synthesis^Grass^Status^5^0^0.00^Restores the user's HP. The amount of HP regained varies with the weather.
-79^Extreme Speed^Normal^Physical^5^80^1.00^Restores the user's HP. The amount of HP regained varies with the weather.
-80^Heat Wave^Fire^Special^10^95^0.90^The user exhales a heated breath to attack. It may also inflict a burn.
-81^Will-O-Wisp^Fire^Status^15^0^0.85^A sinister, bluish white flame is shot at the foe to inflict a burn.
-82^Facade^Normal^Physical^20^70^1.00^An attack that is boosted if user is burned, poisoned, or paralyzed.
-83^Poison Fang^Poison^Physical^15^50^1.00^The foe is bitten with toxic fangs. It may also badly poison the foe.
-84^Air Cutter^Flying^Special^25^60^0.95^The foe is hit with razor-like wind. It has a high critical-hit ratio.
-85^Overheat^Fire^Special^5^130^0.90^An intense attack that also sharply reduces the user's Sp. Atk stat.
-86^Aerial Ace^Flying^Physical^20^60^0.00^An extremely fast attack against one target. It can't be evaded.
-87^Mud Shot^Ground^Special^15^55^0.95^The user attacks by hurling mud. It also reduces the foe's Speed.
-88^Leaf Blade^Grass^Physical^15^90^1.00^The foe is slashed with a sharp leaf. It has a high critical-hit ratio.
-89^Shock Wave^Electric^Special^20^60^0.00^A rapid jolt of electricity strikes the foe. It can't be evaded.
-90^Water Pulse^Water^Special^20^60^1.00^An attack with a pulsing blast of water. It may also confuse the foe.
+70^Sludge Bomb^Poison^Special^10^90^1.00^Filthy sludge is hurled at the foe. It may poison the target.
+71^Mud-Slap^Ground^Special^10^20^1.00^Mud is hurled in the foe's face to inflict damage and lower its accuracy.
+72^Bone Rush^Ground^Physical^10^25^0.90^The user strikes the foe with a bone in hand two to five times.
+73^Giga Drain^Grass^Special^10^75^1.00^A harsh attack that absorbs half the damage it inflicted to restore HP.
+74^Spark^Electric^Physical^20^65^1.00^An electrically charged tackle that may also paralyze the foe.
+75^Magnitude^Ground^Physical^30^0^1.00^A ground-shaking attack against all standing Pokémon. Its power varies.
+76^Synthesis^Grass^Status^5^0^0.00^Restores the user's HP. The amount of HP regained varies with the weather.
+77^Extreme Speed^Normal^Physical^5^80^1.00^Restores the user's HP. The amount of HP regained varies with the weather.
+78^Heat Wave^Fire^Special^10^95^0.90^The user exhales a heated breath to attack. It may also inflict a burn.
+79^Will-O-Wisp^Fire^Status^15^0^0.85^A sinister, bluish white flame is shot at the foe to inflict a burn.
+80^Facade^Normal^Physical^20^70^1.00^An attack that is boosted if user is burned, poisoned, or paralyzed.
+81^Poison Fang^Poison^Physical^15^50^1.00^The foe is bitten with toxic fangs. It may also badly poison the foe.
+82^Air Cutter^Flying^Special^25^60^0.95^The foe is hit with razor-like wind. It has a high critical-hit ratio.
+83^Overheat^Fire^Special^5^130^0.90^An intense attack that also sharply reduces the user's Sp. Atk stat.
+84^Aerial Ace^Flying^Physical^20^60^0.00^An extremely fast attack against one target. It can't be evaded.
+85^Mud Shot^Ground^Special^15^55^0.95^The user attacks by hurling mud. It also reduces the foe's Speed.
+86^Leaf Blade^Grass^Physical^15^90^1.00^The foe is slashed with a sharp leaf. It has a high critical-hit ratio.
+87^Shock Wave^Electric^Special^20^60^0.00^A rapid jolt of electricity strikes the foe. It can't be evaded.
+88^Water Pulse^Water^Special^20^60^1.00^An attack with a pulsing blast of water. It may also confuse the foe.
