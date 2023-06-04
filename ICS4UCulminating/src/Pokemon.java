@@ -4,16 +4,26 @@ import java.util.*;
 // All Pokemon will inherit this class
 public class Pokemon {
 	private String name; 
+	
+	// The BASE stats 
 	private int hp;
 	private int attack;
 	private int def;
 	private int spAtk;
 	private int spDef;
 	private int speed;
+
+	// Changes applied to the base stats for battle.
+	private int deltaHp = 0;
+	private int deltaAttack = 0;
+	private int deltaDef = 0;
+	private int deltaSpAtk = 0;
+	private int deltaSpDef = 0;
+	private int deltaSpeed = 0; 
+	
 	private Move[] moveList = new Move[4];
 	// moveSet is all moves that may be learned 
 	private ArrayList<Move> moveSet;
-	private int special;
 	private PokeType type1;
 	private PokeType type2;
 	private int status;
@@ -84,4 +94,84 @@ public class Pokemon {
 	public String toString() {
 		return this.name;
 	}
+	
+	// Getters
+	public String getName() {
+		return name;
+	}
+
+
+	public int getHp() {
+		return hp;
+	}
+
+
+	public int getAttack() {
+		return attack;
+	}
+
+
+	public int getDef() {
+		return def;
+	}
+
+
+	public int getSpAtk() {
+		return spAtk;
+	}
+
+
+	public int getSpDef() {
+		return spDef;
+	}
+
+
+	public int getSpeed() {
+		return speed;
+	}
+
+
+	public int getDeltaHp() {
+		return deltaHp;
+	}
+
+
+	public int getDeltaAttack() {
+		return deltaAttack;
+	}
+
+
+	public int getDeltaDef() {
+		return deltaDef;
+	}
+
+
+	public int getDeltaSpAtk() {
+		return deltaSpAtk;
+	}
+
+
+	public int getDeltaSpDef() {
+		return deltaSpDef;
+	}
+
+
+	public int getDeltaSpeed() {
+		return deltaSpeed;
+	}
+
+	public PokeType getType1() {
+		return type1;
+	}
+
+
+	public PokeType getType2() {
+		return type2;
+	}
+
+
+	public int getStatus() {
+		return status;
+	}
+	
 }
