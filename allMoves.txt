@@ -20,7 +20,7 @@
 20^Tail Whip^Normal^Status^30^0^1.00^The user wags its tail cutely, making the foe lower its Defense stat.
 21^Poison Sting^Poison^Physical^35^15^1.00^The foe is stabbed with a toxic barb, etc. It may poison the foe.
 22^Leer^Normal^Status^30^0^1.00^The foe is given an intimidating look that lowers its Defense stat.
-23^23^Normal^Status^40^0^1.00^The user growls in a cute way, making the foe lower its Attack. stat.
+23^Growl^Normal^Status^40^0^1.00^The user growls in a cute way, making the foe lower its Attack stat.
 24^Sonic Boom^Normal^Special^20^0^0.90^The foe is hit with a shock wave that always inflicts 20-HP damage.
 25^Acid^Poison^Special^30^40^1.00^The foe is sprayed with a harsh, hide-melting acid that may lower Defense.
 26^Ember^Fire^Special^25^40^1.00^The foe is attacked with small flames. The foe may suffer a burn.

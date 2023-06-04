@@ -3,6 +3,8 @@ import java.util.*;
 // Class Pokemon
 // All Pokemon will inherit this class
 public class Pokemon {
+	// ArrayList of Pokemon (could be temporary) 
+	public static ArrayList<Pokemon> pokeList = new ArrayList<>();
 	private String name; 
 	
 	// The BASE stats 
@@ -37,6 +39,7 @@ public class Pokemon {
 	public Pokemon (String name, PokeType type1, int hp, int attack, int def, int spAtk, int spDef, int speed, ArrayList<Move> moveSet) {
 		this.name = name; 
 		this.type1 = type1;
+		this.type2 = null;
 		this.hp = hp;
 		this.attack = attack; 
 		this.def = def; 
@@ -172,6 +175,10 @@ public class Pokemon {
 
 	public int getStatus() {
 		return status;
+	}
+	
+	public Move[] getMoves(){
+		return moveList;
 	}
 	
 }
