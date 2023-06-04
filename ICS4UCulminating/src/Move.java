@@ -23,7 +23,10 @@ public class Move {
 		this.accuracy = accuracy;
 		this.effect = effect;
 	}
-
+	public String getName() {
+		return name;
+	}
+	
 	public int getPP() {
 		return pp;
 	}

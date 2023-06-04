@@ -23,6 +23,7 @@ public class GameFunctions {
 			int i = 0;
 			while ((line = br.readLine())!=null) {
 				st = new StringTokenizer (line, " ");
+				Pokemon p = null;
 				// If there are 8 elements, it means the Pokemon has 1 type.
 				if (st.countTokens()==8) {
 					String name = st.nextToken();
@@ -33,8 +34,7 @@ public class GameFunctions {
 					int spAtk = Integer.parseInt(st.nextToken());
 					int spDef = Integer.parseInt(st.nextToken());
 					int speed = Integer.parseInt(st.nextToken());
-					Pokemon.pokeList.add(new Pokemon (name, type1, hp, attack, def, spAtk, spDef, speed, Move.moveSets[i]));
-					System.out.println(Pokemon.pokeList.get(Pokemon.pokeList.size()-1));
+					p = new Pokemon (name, type1, hp, attack, def, spAtk, spDef, speed, Move.moveSets[i]);
 				}
 				// If there are 9 elements, the Pokemon has 2 types
 				else if (st.countTokens()==9) {
@@ -47,9 +47,12 @@ public class GameFunctions {
 					int spAtk = Integer.parseInt(st.nextToken());
 					int spDef = Integer.parseInt(st.nextToken());
 					int speed = Integer.parseInt(st.nextToken());
-					Pokemon.pokeList.add(new Pokemon (name, type1, type2, hp, attack, def, spAtk, spDef, speed, Move.moveSets[i]));
-					System.out.println(Pokemon.pokeList.get(Pokemon.pokeList.size()-1));
+					p = new Pokemon (name, type1, type2, hp, attack, def, spAtk, spDef, speed, Move.moveSets[i]);
 				}
+				Pokemon.pokeList.add(p);
+				try {
+				System.out.println(p.getName() + " " + p.getMoves()[0].getName() + " " + p.getMoves()[1].getName() + " " + p.getMoves()[2].getName() + " " + p.getMoves()[3].getName());
+				} catch (NullPointerException e) {}
 				i++;
 			}
 			System.out.println(Pokemon.pokeList.size());
@@ -81,8 +84,8 @@ public class GameFunctions {
 	
 	public static void importMoveSets() throws IOException{
 		BufferedReader br = new BufferedReader(new FileReader("moveSet.txt"));
-		String line = "";
 		for (int i = 0; i < 59; i++) {
+			String line = br.readLine();
 			StringTokenizer st = new StringTokenizer(line, " ");
 			ArrayList<Move> m = new ArrayList<>();
 			while(st.hasMoreTokens()) {
