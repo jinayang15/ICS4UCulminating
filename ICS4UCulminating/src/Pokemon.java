@@ -3,6 +3,8 @@ import java.util.*;
 // Class Pokemon
 // All Pokemon will inherit this class
 public class Pokemon {
+	// ArrayList of Pokemon (could be temporary) 
+	public static ArrayList<Pokemon> pokeList = new ArrayList<>();
 	private String name; 
 	private int hp;
 	private int attack;

@@ -5,6 +5,7 @@ import java.util.*;
 // All Pokemon Moves will inherit this class
 public class Move {
 	public static ArrayList<Move> allMoves = new ArrayList<>();
+	public static ArrayList<Move>[] moveSets = new ArrayList[59];
 	private String name;
 	private PokeType type;
 	private String category;
