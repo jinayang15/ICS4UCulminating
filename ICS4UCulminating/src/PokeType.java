@@ -54,7 +54,7 @@ public class PokeType {
 		return typeChart[attackType][defendType];
 	}
 	public static double getTypeEffectiveness(int attackType, int defendType1, int defendType2) throws IOException {
-		return typeChart[attackType][defendType1] * typeChart[attackType][defendType1];
+		return typeChart[attackType][defendType1] * typeChart[attackType][defendType2];
 	}
 	public String toString() {
 		return type;
