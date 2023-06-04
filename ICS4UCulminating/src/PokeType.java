@@ -50,10 +50,7 @@ public class PokeType {
 	}
 	
 	// Getter that will return the value of the effectiveness (will be multiplied to the attack damage)
-
-	public static double getTypeEffectiveness(int attackType, int defendType1, int defendType2) {
-		return typeChart[attackType][defendType1] * typeChart[attackType][defendType2];
-	}	public static double getTypeEffectiveness(int attackType, int defendType) throws IOException {
+	public static double getTypeEffectiveness(int attackType, int defendType) throws IOException {
 		return typeChart[attackType][defendType];
 	}
 <<<<<<< HEAD
