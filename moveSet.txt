@@ -1,59 +1,59 @@
-23 16 13 39 40 42 (bulbasaur line)
+23 16 13 39 40 42 # (bulbasaur line)
 23 16 13 39 40 42 18
 23 16 13 39 40 42 18 19
-23 6 26 (charmander line)
+23 6 26 # (charmander line)
 23 6 26 67 27
 23 6 26 67 27 78
-16 20 28 51 88 (squirtle line) 
+16 20 28 51 88 # (squirtle line) 
 16 20 28 51 88 59
 16 20 28 51 88 59 29
-9 16 (pidgey)
+9 16 # (pidgey)
 9 50 16 10
 10 84 50 
-16 (rattata)
+16 # (rattata)
 65 18 50
-21 (ekans)
+21 # (ekans)
 21 16
-50 43 45 (pikachu)
+50 43 45 # (pikachu)
 50 44 45 
-6 58 (sandshrew)
+6 58 # (sandshrew)
 47 7 6 48
-16 (nidoran female)
+16 # (nidoran female)
 16 21
 47 44 49 27
-16 (nidoran male)
+16 # (nidoran male)
 16 21
 47 44 49 27
-26 20 50 (vulpix)
+26 20 50 # (vulpix)
 26 20 50 27
-81 82 (zubat)
+81 82 # (zubat)
 81 82 84
-36 38 25 37 40 42 73 (oddish line)
+36 38 25 37 40 42 73 # (oddish line)
 36 38 25 37 40 42 73 49
 36 38 25 37 40 42 73 49
-6 71 (diglett)
+6 71 # (diglett)
 71 47 7
-6 (meowth)
+6 # (meowth)
 6 84 44
-6 20 28 88 (psyduck line)
+6 20 28 88 # (psyduck line)
 6 20 28 88 29
-26 22 27 18 (growlithe line)
+26 22 27 18 # (growlithe line)
 26 22 27 18 77
-28 1 85 31 (poliwag line)
+28 1 85 31 # (poliwag line)
 28 1 85 31 19
 28 1 85 31 19 29
-28 21 (tentacool)
+28 21 # (tentacool)
 29 30 54
-1 71 54 (grimer) 
+1 71 54 # (grimer) 
 54 49 18
-16 45 (voltorb)
+16 45 # (voltorb)
 44 53 45
-71 20 (cubone)
+71 20 # (cubone)
 72 64 47 84
-16 54 53 (koffing)
+16 54 53 # (koffing)
 16 54 53 49
-36 41 38 37 13 40 73 (tangela)
-50 44 4 22 (electabuzz)
-4 27 32 5 (magmar)
-16 (magikarp)
+36 41 38 37 13 40 73 # (tangela)
+50 44 4 22 # (electabuzz)
+4 27 32 5 # (magmar)
+16 # (magikarp)
 57 32 47 44
