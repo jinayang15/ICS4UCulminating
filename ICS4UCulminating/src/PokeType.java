@@ -56,6 +56,12 @@ public class PokeType {
 	}	public static double getTypeEffectiveness(int attackType, int defendType) throws IOException {
 		return typeChart[attackType][defendType];
 	}
+<<<<<<< HEAD
+=======
+	public static double getTypeEffectiveness(int attackType, int defendType1, int defendType2) throws IOException {
+		return typeChart[attackType][defendType1] * typeChart[attackType][defendType2];
+	}
+>>>>>>> branch 'master' of https://github.com/jinayang15/ICS4UCulminating
 	public String toString() {
 		return type;
 	}
