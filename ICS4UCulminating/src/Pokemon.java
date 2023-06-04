@@ -69,31 +69,6 @@ public class Pokemon {
 		}
 	}
 	
-	// Temporary (?) ------------------
-	public Pokemon (String name, PokeType type1, int hp, int attack, int def, int spAtk, int spDef, int speed) {
-		this.name = name; 
-		this.type1 = type1;
-		this.hp = hp;
-		this.attack = attack; 
-		this.def = def; 
-		this.spAtk = spAtk;
-		this.spDef = spDef; 
-		this.speed = speed; 
-	}
-	
-	public Pokemon (String name, PokeType type1, PokeType type2, int hp, int attack, int def, int spAtk, int spDef, int speed) {
-		this.name = name; 
-		this.type1 = type1;
-		this.type2 = type2; 
-		this.hp = hp;
-		this.attack = attack; 
-		this.def = def; 
-		this.spAtk = spAtk;
-		this.spDef = spDef; 
-		this.speed = speed; 
-	}
-	// ---------------------------------
-	
 	public String toString() {
 		return this.name;
 	}
