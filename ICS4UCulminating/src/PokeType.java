@@ -1,5 +1,5 @@
 import java.io.*;
-import java.util.*; 
+import java.util.*;
 
 // The Type class
 // This class is used to import the type effectiveness chart, which determines how much damage each 
@@ -23,42 +23,51 @@ import java.util.*;
 public class PokeType {
 	private String type;
 	private int typeNum;
-	private static double[][] typeChart = new double[8][8]; 
-	
+	private static double[][] typeChart = new double[8][8];
+
 	public PokeType(String type) {
 		this.type = type;
-		if (type.toLowerCase().equals("fire")) typeNum = 0;
-		else if (type.toLowerCase().equals("water")) typeNum = 1;
-		else if (type.toLowerCase().equals("grass")) typeNum = 2;
-		else if (type.toLowerCase().equals("electric")) typeNum = 3;
-		else if (type.toLowerCase().equals("ground")) typeNum = 4;
-		else if (type.toLowerCase().equals("normal")) typeNum = 5;
-		else if (type.toLowerCase().equals("flying")) typeNum = 6;
-		else if (type.toLowerCase().equals("poison")) typeNum = 7;
+		if (type.toLowerCase().equals("fire"))
+			typeNum = 0;
+		else if (type.toLowerCase().equals("water"))
+			typeNum = 1;
+		else if (type.toLowerCase().equals("grass"))
+			typeNum = 2;
+		else if (type.toLowerCase().equals("electric"))
+			typeNum = 3;
+		else if (type.toLowerCase().equals("ground"))
+			typeNum = 4;
+		else if (type.toLowerCase().equals("normal"))
+			typeNum = 5;
+		else if (type.toLowerCase().equals("flying"))
+			typeNum = 6;
+		else if (type.toLowerCase().equals("poison"))
+			typeNum = 7;
 	}
+
 	// Importing to the 2D array from the typeChartFile text file
 	public static void addToChart() throws IOException {
-		BufferedReader br = new BufferedReader (new FileReader ("typeChartFile.txt"));
+		BufferedReader br = new BufferedReader(new FileReader("typeChartFile.txt"));
 		StringTokenizer st;
-		for (int i = 0; i<8; i++) {
+		for (int i = 0; i < 8; i++) {
 			String line = br.readLine();
-			st = new StringTokenizer (line, " ");
-			for (int j = 0; j<8; j++) {
+			st = new StringTokenizer(line, " ");
+			for (int j = 0; j < 8; j++) {
 				typeChart[i][j] = Double.parseDouble(st.nextToken());
 			}
 		}
 	}
-	
-	// Getter that will return the value of the effectiveness (will be multiplied to the attack damage)
+
+	// Getter that will return the value of the effectiveness (will be multiplied to
+	// the attack damage)
 	public static double getTypeEffectiveness(int attackType, int defendType) throws IOException {
 		return typeChart[attackType][defendType];
 	}
-<<<<<<< HEAD
-=======
+
 	public static double getTypeEffectiveness(int attackType, int defendType1, int defendType2) throws IOException {
 		return typeChart[attackType][defendType1] * typeChart[attackType][defendType2];
 	}
->>>>>>> branch 'master' of https://github.com/jinayang15/ICS4UCulminating
+
 	public String toString() {
 		return type;
 	}
