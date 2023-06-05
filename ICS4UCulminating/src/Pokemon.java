@@ -155,4 +155,32 @@ public class Pokemon {
 		return moveList;
 	}
 	
+	public void setDeltaHp(int deltaHp) {
+		this.deltaHp = deltaHp;
+	}
+
+
+	public void setDeltaAttack(int deltaAttack) {
+		this.deltaAttack = deltaAttack;
+	}
+
+
+	public void setDeltaDef(int deltaDef) {
+		this.deltaDef = deltaDef;
+	}
+
+
+	public void setDeltaSpAtk(int deltaSpAtk) {
+		this.deltaSpAtk = deltaSpAtk;
+	}
+
+
+	public void setDeltaSpDef(int deltaSpDef) {
+		this.deltaSpDef = deltaSpDef;
+	}
+
+
+	public void setDeltaSpeed(int deltaSpeed) {
+		this.deltaSpeed = deltaSpeed;
+	}
 }

@@ -8,7 +8,7 @@ public class Move {
 	public static ArrayList<Move>[] moveSets = new ArrayList[59];
 	private String name;
 	private PokeType type;
-	private String category;
+	private String category; // physical, status, or special 
 	private int pp;
 	private int atkPower;
 	private double accuracy;
@@ -46,10 +46,15 @@ public class Move {
 	public double getAccuracy() {
 		return accuracy;
 	}
-
+	
+	public String getCategory() {
+		return category;
+	}
+	
 	public void setAccuracy(int accuracy) {
 		this.accuracy = accuracy;
 	}
+	
 	
 	public String toString() {
 		return name + "-" + type + "-" + category +  "-" + pp + "-" + atkPower + "-" + accuracy + "-" + effect;
