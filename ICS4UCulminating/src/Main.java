@@ -6,6 +6,7 @@ public class Main {
 		GameFunctions.importMoves();
 		GameFunctions.importMoveSets();
 		GameFunctions.importPokemon();
+		Images.importAllImages();
 	}
 
 }

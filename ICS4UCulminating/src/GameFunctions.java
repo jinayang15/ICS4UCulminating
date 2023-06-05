@@ -81,7 +81,8 @@ public class GameFunctions {
 			Move.allMoves.add(m);
 		}
 	}
-
+	
+	// imports all move sets of each pokemon
 	public static void importMoveSets() throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("moveSet.txt"));
 		for (int i = 0; i < 59; i++) {

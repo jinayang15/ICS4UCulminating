@@ -35,7 +35,6 @@ public class Pokemon {
 	// Sleep - 4
 	
 	// Overloaded constructors, which initializes the base stats and adds the moves to an array of moves. 
-	
 	public Pokemon (String name, PokeType type1, int hp, int attack, int def, int spAtk, int spDef, int speed, ArrayList<Move> moveSet) {
 		this.name = name; 
 		this.type1 = type1;
