@@ -35,7 +35,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		thread = new Thread(this);
 		thread.start();
 	}
-
 	@Override
 	public void run() {
 		try {
@@ -58,9 +57,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	public void initialize() throws IOException {
 		// setups before the game starts running
 		try {
-			GameFunctions.importMoves();
-			GameFunctions.importMoveSets();
-			GameFunctions.importPokemon();
+			GameFunctions.importEverything();
 			Images.importAllImages();
 		} catch (FileNotFoundException e) {
 		}
