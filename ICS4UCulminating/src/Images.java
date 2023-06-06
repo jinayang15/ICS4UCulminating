@@ -8,7 +8,10 @@ import java.io.*;
 public class Images {
 	
 	static BufferedImage[] pewterCity = new BufferedImage[4];
-	static BufferedImage fireRedPressStart;
+	static BufferedImage[] trainerDown = new BufferedImage[3];
+	static BufferedImage[] trainerUp = new BufferedImage[3];
+	static BufferedImage[] trainerSide = new BufferedImage[3];
+ 	static BufferedImage fireRedPressStart;
 	public static void importAllImages() throws IOException{
 		importMisc();
 		importPewterCity();
@@ -23,6 +26,9 @@ public class Images {
 		BufferedImage pewterCitySheet = ImageIO.read(new File("PewterCitySheet.png"));
 		pewterCity[0] = pewterCitySheet.getSubimage(0, 0, 768, 640);
 		pewterCity[0] = resizeImage(pewterCity[0], 3072, 2560);
+	}
+	public static void importTrainer() throws IOException {
+		
 	}
 	
 	public static BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) throws IOException {

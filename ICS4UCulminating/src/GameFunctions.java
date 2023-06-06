@@ -6,10 +6,6 @@ import java.util.*;
 
 public class GameFunctions {
 
-	public GameFunctions() {
-
-	}
-
 	// The importPokemon method is used to import the Pokemon from the textfile
 	public static void importPokemon() {
 		// Order of text file:
