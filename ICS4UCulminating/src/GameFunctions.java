@@ -100,5 +100,12 @@ public class GameFunctions {
 			Move.moveSets[i] = m;
 		}
 	}
+	
+	public static void importEverything() throws IOException{
+		GameFunctions.importMoves();
+		GameFunctions.importMoveSets();
+		GameFunctions.importPokemon();
+		Images.importAllImages();
+	}
 
 }

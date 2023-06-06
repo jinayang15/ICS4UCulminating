@@ -79,7 +79,7 @@ public class Battle {
 				int beforeAttack = otherMon.getDeltaHp();
 				applyTrainerAttack(attack, stab);
 				int afterAttack = otherMon.getDeltaHp();
-				trainerMon.setDeltaHp(afterAttack-beforeAttack);
+				trainerMon.setDeltaHp(trainerMon.getDeltaHp() + (int)Math.round((afterAttack-beforeAttack)*0.25));
 				updateStats();
 			}
 			else if (attack.getName().equals("Dig")) {
@@ -91,7 +91,9 @@ public class Battle {
 				updateStats();
 			}
 		}
-		
+		else if (attack.getCategory().equals("Special")) {
+			
+		}
 	}
 	
 	// The otherAttack is for the opponent 
