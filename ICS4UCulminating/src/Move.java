@@ -30,6 +30,10 @@ public class Move {
 	public int getPP() {
 		return pp;
 	}
+	
+	public PokeType getType() {
+		return type;
+	}
 
 	public void setPP(int pp) {
 		this.pp = pp;

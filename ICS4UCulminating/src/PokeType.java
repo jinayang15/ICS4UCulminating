@@ -71,4 +71,13 @@ public class PokeType {
 	public String toString() {
 		return type;
 	}
+
+	public boolean equals(Object o) {
+		PokeType t = (PokeType) o;
+		return t.type.equals(this.type);
+	}
+	
+	public int getTypeNum() {
+		return typeNum;
+	}
 }

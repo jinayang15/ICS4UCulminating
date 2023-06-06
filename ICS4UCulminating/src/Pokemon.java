@@ -8,6 +8,7 @@ public class Pokemon {
 	private String name; 
 	
 	// The BASE stats 
+	private int level;
 	private int hp;
 	private int attack;
 	private int def;
@@ -28,6 +29,7 @@ public class Pokemon {
 	private ArrayList<Move> moveSet;
 	private PokeType type1;
 	private PokeType type2;
+	private ArrayList <PokeType> typeList = new ArrayList<>();
 	private int status;
 	// Poison - 1
 	// Burn - 2
@@ -38,6 +40,7 @@ public class Pokemon {
 	public Pokemon (String name, PokeType type1, int hp, int attack, int def, int spAtk, int spDef, int speed, ArrayList<Move> moveSet) {
 		this.name = name; 
 		this.type1 = type1;
+		typeList.add(type1);
 		this.type2 = null;
 		this.hp = hp;
 		this.attack = attack; 
@@ -56,6 +59,8 @@ public class Pokemon {
 		this.name = name; 
 		this.type1 = type1;
 		this.type2 = type2;
+		typeList.add(type1);
+		typeList.add(type2);
 		this.hp = hp;
 		this.attack = attack; 
 		this.def = def; 
@@ -73,6 +78,11 @@ public class Pokemon {
 	}
 	
 	// Getters
+	
+	public int getLevel() {
+		return level;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -153,6 +163,10 @@ public class Pokemon {
 	
 	public Move[] getMoves(){
 		return moveList;
+	}
+	
+	public ArrayList<PokeType> getTypeList() {
+		return typeList;
 	}
 	
 	public void setDeltaHp(int deltaHp) {
