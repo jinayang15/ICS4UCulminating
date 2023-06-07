@@ -73,6 +73,10 @@ public class Pokemon {
 		}
 	}
 	
+	public Pokemon (Pokemon mon) {
+		
+	}
+	
 	public String toString() {
 		return this.name;
 	}
