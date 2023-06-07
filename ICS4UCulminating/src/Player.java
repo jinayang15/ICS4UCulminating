@@ -8,8 +8,9 @@ public class Player {
 	private Pokemon[] pokemonList = new Pokemon[3];
 	
 	public Player (String type) {
-		if (type.equals("Fire")) {
-			
+		if (type.equals("Grass")) {
+			pokemonList[0] = new Pokemon (Pokemon.pokeList.get(1));
+			System.out.println(pokemonList[0]);
 		}
 	}
 }

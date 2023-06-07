@@ -74,7 +74,13 @@ public class Pokemon {
 	}
 	
 	public Pokemon (Pokemon mon) {
-		
+		this.level = mon.level; // Placeholder 
+		this.hp = mon.hp;
+		this.attack = mon.attack;
+		this.def = mon.def;
+		this.spAtk = mon.spAtk;
+		this.spDef = mon.spDef;
+		this.speed = mon.speed;
 	}
 	
 	public String toString() {

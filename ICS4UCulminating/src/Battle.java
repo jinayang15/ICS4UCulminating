@@ -16,6 +16,28 @@ public class Battle {
 	private boolean quickAttack = false; 
 	private int trainerMonHp;
 	private int otherMonHp;
+	private int trainerMonStatus = 0; 
+	private int otherMonStatus = 0; 
+	
+	// These trainerMon / otherMon stat counters are used to coordinate the number of stat raising/lowering.
+	// The maximum number of times a stat can be raised is 6 stages, and there are moves that can raise your stats
+	// 1 to 2 stages. These are used to ensure that the number of stat stage raising/lowering does not exceed 6 or -6. 
+	private int trainerMonAtkCount = 0; 
+	private int trainerMonDefCount = 0; 
+	private int trainerMonSpAtkCount = 0;
+	private int trainerMonSpDefCount = 0; 
+	private int trainerMonSpeedCount = 0;
+	
+	private int otherMonAtkCount = 0; 
+	private int otherMonDefCount = 0; 
+	private int otherMonSpAtkCount = 0;
+	private int otherMonSpDefCount = 0; 
+	private int otherMonSpeedCount = 0;
+	
+	// Poison - 1
+	// Burn - 2
+	// Paralyzed - 3
+	// Sleep - 4
 	
 	// Constructor
 	public Battle (Pokemon trainerMon, Pokemon otherMon) {
@@ -31,7 +53,7 @@ public class Battle {
 		// Determining who goes first 
 		while (battleContinue) {
 			if (trainerMon.getSpeed()>=trainerMon.getSpeed()) {
-				trainerAttack(); // will fix
+				// trainerAttack(); // will fix
 				updateStats();
 				checkBattle();
 				otherAttack();
@@ -42,7 +64,7 @@ public class Battle {
 				otherAttack();
 				updateStats();
 				checkBattle();
-				trainerAttack(); // will fix
+				// trainerAttack(); // will fix
 				updateStats();
 				checkBattle();
 			}
@@ -82,8 +104,11 @@ public class Battle {
 				trainerMon.setDeltaHp(trainerMon.getDeltaHp() + (int)Math.round((afterAttack-beforeAttack)*0.25));
 				updateStats();
 			}
-			else if (attack.getName().equals("Dig")) {
-				System.out.println(trainerMon.getName() + " has gone underground!");
+//			else if (attack.getName().equals("Dig")) {
+//				System.out.println(trainerMon.getName() + " has gone underground!");
+//				
+//			}
+			else if (attack.getName().equals("Skull Bash")) {
 				
 			}
 			else {
@@ -92,7 +117,9 @@ public class Battle {
 			}
 		}
 		else if (attack.getCategory().equals("Special")) {
-			
+			if (attack.getName().equals("Acid")) {
+				
+			}
 		}
 	}
 	
