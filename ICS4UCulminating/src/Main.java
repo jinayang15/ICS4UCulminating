@@ -164,7 +164,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		// it might mess up your graphics and collisions
 		frame.setResizable(false);
 		initialize();
-		System.out.println(Pokemon.pokeList);
-		System.out.println(new Player ("Grass"));
+		System.out.println(new Player ("Fire"));
+		System.out.println(new Trainer());
 	}
 }

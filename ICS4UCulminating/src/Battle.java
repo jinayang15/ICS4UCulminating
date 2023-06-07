@@ -14,10 +14,31 @@ public class Battle {
 	private boolean switchPokemon = false; // Boolean that sees if the user is switching Pokemon
 	private boolean battleContinue = true; // Boolean to see if the battle is going to continue 
 	private boolean quickAttack = false; 
+	private boolean trainerSkipTurn = false; // Boolean to determine if the trainers turn is skipped 
+	private boolean otherSkipTurn = false; // These variables are for moves like hyper beam, which require a one turn rest
+	private boolean hit = false; // To check if the attack hit the other pokemon
+	
 	private int trainerMonHp;
+	private int trainerMonAttack;
+	private int trainerMonDef;
+	private int trainerMonSpAtk;
+	private int trainerMonSpDef;
+	private int trainerMonSpeed;
+	
 	private int otherMonHp;
+	private int otherMonAttack;
+	private int otherMonDef;
+	private int otherMonSpAtk;
+	private int otherMonSpDef;
+	private int otherMonSpeed;
+	
+	
 	private int trainerMonStatus = 0; 
 	private int otherMonStatus = 0; 
+	// Poison - 1
+	// Burn - 2
+	// Paralyzed - 3
+	// Sleep - 4
 	
 	// These trainerMon / otherMon stat counters are used to coordinate the number of stat raising/lowering.
 	// The maximum number of times a stat can be raised is 6 stages, and there are moves that can raise your stats
@@ -34,10 +55,7 @@ public class Battle {
 	private int otherMonSpDefCount = 0; 
 	private int otherMonSpeedCount = 0;
 	
-	// Poison - 1
-	// Burn - 2
-	// Paralyzed - 3
-	// Sleep - 4
+	
 	
 	// Constructor
 	public Battle (Pokemon trainerMon, Pokemon otherMon) {
@@ -45,6 +63,7 @@ public class Battle {
 		this.otherMon = otherMon;
 		trainerMonHp = trainerMon.getHp() - trainerMon.getDeltaHp();
 		otherMonHp = otherMon.getHp() - otherMon.getDeltaHp();
+		updateStats();
 		battleStart();
 	}
 	
@@ -52,22 +71,10 @@ public class Battle {
 	public void battleStart() {
 		// Determining who goes first 
 		while (battleContinue) {
-			if (trainerMon.getSpeed()>=trainerMon.getSpeed()) {
-				// trainerAttack(); // will fix
-				updateStats();
-				checkBattle();
-				otherAttack();
-				updateStats();
-				checkBattle();
-			}
-			else {
-				otherAttack();
-				updateStats();
-				checkBattle();
-				// trainerAttack(); // will fix
-				updateStats();
-				checkBattle();
-			}
+			trainerChooseAttack();
+			opponentChooseAttack();
+			// blah blah people go
+			applyStatus();
 		}
 	}
 	
@@ -85,7 +92,7 @@ public class Battle {
 	public void trainerAttack(Move attack) {
 		// TEMPORARY 
 		double stab = 1; // STAB stands for 'Same Type Attack Bonus'. If the Pokemon attacks with a move that has the same type as itself, it gets this bonus
-		
+		int random; // Used for the random status effects 
 		// Cycling through arraylist of moves to see if there is STAB 
 		for (int i = 0; i<trainerMon.getTypeList().size(); i++) {
 			if (trainerMon.getTypeList().get(i).equals(attack.getType())) {
@@ -100,9 +107,12 @@ public class Battle {
 				// To keep track of this, I am creating a tracker to see how much damage is done, then multiplying that by 0.25
 				int beforeAttack = otherMon.getDeltaHp();
 				applyTrainerAttack(attack, stab);
-				int afterAttack = otherMon.getDeltaHp();
-				trainerMon.setDeltaHp(trainerMon.getDeltaHp() + (int)Math.round((afterAttack-beforeAttack)*0.25));
-				updateStats();
+				if (hit) {
+					int afterAttack = otherMon.getDeltaHp();
+					trainerMon.setDeltaHp(trainerMon.getDeltaHp() + (int)Math.round((afterAttack-beforeAttack)*0.25));
+				}
+				hit = false;
+				
 			}
 //			else if (attack.getName().equals("Dig")) {
 //				System.out.println(trainerMon.getName() + " has gone underground!");
@@ -113,12 +123,87 @@ public class Battle {
 			}
 			else {
 				applyTrainerAttack(attack,stab);
-				updateStats();
 			}
 		}
 		else if (attack.getCategory().equals("Special")) {
 			if (attack.getName().equals("Acid")) {
-				
+				applyTrainerAttack(attack, stab);
+				if (hit) {
+					if (otherMonDefCount>-6) {
+						random = (int) (Math.random()*(3)) + 1;
+						// 33% chance of lowering defense by 1 stage
+						if (random==1) {
+							otherMonDefCount--;
+							otherMon.setDeltaDef(otherMon.getDeltaDef() + (int) Math.floor(otherMon.getDeltaDef()/6));
+						}
+					}
+					hit = false;
+				}
+			}
+			else if (attack.getName().equals("Ember") || attack.getName().equals("Flamethrower") || attack.getName().equals("Fire Blast") || attack.getName().equals("Heat Wave")) {
+				applyTrainerAttack(attack, stab);
+				if (otherMonStatus==0) {
+					if (hit) {
+						// 10% chance to burn the enemy, and fire Pokemon cannot get burned
+						random = (int) (Math.random()* (10)) + 1;
+						if (random==1 && !otherMon.getType1().equals(new PokeType ("Fire")) && !otherMon.getType1().equals(new PokeType("Fire"))) {
+							otherMonStatus = 2; 
+						}
+					}
+					hit = false;
+				}
+			}
+			else if (attack.getName().equals("Bubble Beam") || attack.getName().equals("Bubble")) {
+				applyTrainerAttack(attack, stab);
+				if (hit) {
+					// 33% chance to drop speed
+					random = (int) (Math.random() * (3)) + 1;
+					if (otherMonSpeedCount>-6 && random==1) {
+						otherMonSpeedCount--;
+						otherMon.setDeltaSpeed(otherMon.getDeltaSpeed() + (int) Math.floor(otherMon.getDeltaSpeed()/6));
+					}
+				}
+				hit = false;
+			}
+			
+			else if (attack.getName().equals("Absorb") || attack.getName().equals("Mega Drain") || attack.getName().equals("Giga Drain")) {
+				// In addition to hitting the opponent, it will also absorb HP based on half of the damage dealt. 
+				int beforeAttack = otherMon.getDeltaHp();
+				applyTrainerAttack(attack, stab);
+				if (hit) {
+					int afterAttack = otherMon.getDeltaHp();
+					trainerMon.setDeltaHp(trainerMon.getDeltaHp() - (int) (0.5*(afterAttack-beforeAttack)));
+				}
+				hit = false;
+			}
+
+			else if (attack.getName().equals("Mud Shot")) {
+				applyTrainerAttack(attack, stab);
+				if (hit) {
+					if (otherMonSpeedCount>-6) {
+						otherMonSpeedCount--;
+						otherMon.setDeltaSpeed(otherMon.getDeltaSpeed() + (int) Math.floor(otherMon.getDeltaSpeed()/6));
+					}
+				}
+				hit = false;
+			}
+			updateStats();
+		}
+		// If the user chooses status moves 
+		else if (attack.getCategory().equals("Status")) {
+			// Swords dance will raise the attack stat by 2 stages. If the user is already at +5 stage, it will only add 1 extra one. 
+			if (attack.getName().equals("Swords Dance") && trainerMonAtkCount<6) {
+				if (trainerMonAtkCount==5) {
+					trainerMonAtkCount++; 
+					trainerMon.setDeltaAttack(trainerMon.getDeltaAttack() + (int) Math.floor(trainerMon.getAttack()/6));
+				}
+				else {
+					trainerMonAtkCount+=2; 
+					trainerMon.setDeltaAttack(trainerMon.getDeltaAttack() + (int) (2*Math.floor(trainerMon.getAttack()/6)));
+				}
+			}
+			else if (attack.getName().equals("Tail Whip") || attack.getName().equals("Leer")) {
+				start from here
 			}
 		}
 	}
@@ -133,18 +218,19 @@ public class Battle {
 	// It returns nothing 
 	public void updateStats() {
 		trainerMonHp = trainerMon.getHp() - trainerMon.getDeltaHp();
-		trainerMonHp = trainerMon.getAttack() - trainerMon.getDeltaAttack();
-		trainerMonHp = trainerMon.getDef() - trainerMon.getDeltaDef();
-		trainerMonHp = trainerMon.getSpAtk() - trainerMon.getSpAtk();
-		trainerMonHp = trainerMon.getSpDef() - trainerMon.getDeltaSpDef();
-		trainerMonHp = trainerMon.getSpeed() - trainerMon.getDeltaSpeed();
+		trainerMonAttack = trainerMon.getAttack() - trainerMon.getDeltaAttack();
+		trainerMonDef = trainerMon.getDef() - trainerMon.getDeltaDef();
+		trainerMonSpAtk = trainerMon.getSpAtk() - trainerMon.getSpAtk();
+		trainerMonSpDef = trainerMon.getSpDef() - trainerMon.getDeltaSpDef();
+		trainerMonSpeed = trainerMon.getSpeed() - trainerMon.getDeltaSpeed();
 		
 		otherMonHp = otherMon.getHp() - otherMon.getDeltaHp();
-		otherMonHp = otherMon.getAttack() - otherMon.getDeltaAttack();
-		otherMonHp = otherMon.getDef() - otherMon.getDeltaDef();
-		otherMonHp = otherMon.getSpAtk() - otherMon.getSpAtk();
-		otherMonHp = otherMon.getSpDef() - otherMon.getDeltaSpDef();
-		otherMonHp = otherMon.getSpeed() - otherMon.getDeltaSpeed();
+		otherMonAttack = otherMon.getAttack() - otherMon.getDeltaAttack();
+		otherMonDef = otherMon.getDef() - otherMon.getDeltaDef();
+		otherMonSpAtk = otherMon.getSpAtk() - otherMon.getSpAtk();
+		otherMonSpDef = otherMon.getSpDef() - otherMon.getDeltaSpDef();
+		otherMonSpeed = otherMon.getSpeed() - otherMon.getDeltaSpeed();
+		
 	}
 	
 	// The checkBattle method is used to see if the CURRENT battle will continue (i.e. same Pokemon)
@@ -187,6 +273,13 @@ public class Battle {
 	// Applies the users attack
 	public void applyTrainerAttack(Move attack, double stab) {
 		int newHp = 0;
+		double accuracy = Math.random();
+		// Applying accuracy %. If the attack misses, the damage is not applied. 
+		if (accuracy>attack.getAccuracy()) {
+			System.out.println("Missed!");
+			return;
+		}
+		hit = true;
 		// If the other pokemon has 2 types
 		if (otherMon.getTypeList().size()==2) {
 			int type1 = otherMon.getType1().getTypeNum();
@@ -197,7 +290,7 @@ public class Battle {
 			catch (IOException e) {
 				
 			}
-			otherMon.setDeltaHp(newHp);
+			otherMon.setDeltaHp(otherMon.getDeltaHp() + newHp);
 		}
 		else {
 			int type1 = otherMon.getType1().getTypeNum();
@@ -207,7 +300,7 @@ public class Battle {
 			catch (IOException e) {
 				
 			}
-			otherMon.setDeltaHp(newHp);
+			otherMon.setDeltaHp(otherMon.getDeltaHp() + newHp);
 		}
 	}
 	
@@ -215,4 +308,25 @@ public class Battle {
 	public void applyOtherAttack(Move attack) {
 		
 	}
+	
+	public void applyStatus() {
+		
+	}
+	
+	// Electric attacks (for otherMon):
+	
+//	else if (attack.getName().equals("Thunder Shock") || attack.getName().equals("Thunderbolt") || attack.getName().equals("Thunder")) {
+//		applyTrainerAttack(attack, stab); 
+//		if (hit) {
+//			// 10% chance of paralysis
+//			random = (int) (Math.random()*(10)) + 1;
+//			if (otherMonStatus==0 && !otherMon.getType1().equals(new PokeType ("Electric")) && !otherMon.getType2().equals(new PokeType ("Electric"))) {
+//				otherMonStatus = 3;
+//			}
+//		}
+//		hit = false;
+//	}
+	
+	
+	
 }
