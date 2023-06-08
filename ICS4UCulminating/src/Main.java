@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.awt.*;
-
+import java.util.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
@@ -25,6 +25,9 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	// background top-left corner position, x and y value
 	int bgX = 0;
 	int bgY = 0;
+	// last bg position
+	int saveBGX = -722;
+	int saveBGY = -1920;
 
 	public Main() {
 		// sets up JPanel
@@ -69,24 +72,20 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		// update stuff
 		if (gameState == 0) {
 			currentBG = Images.fireRedPressStart;
-			bgX = 0;
-			bgY = 0;
 		} else if (gameState == 1) {
 
 		} else if (gameState == 2) {
 			currentBG = Images.pewterCity[0];
-			bgX = -722;
-			bgY = -1920;
+			Animations.walk();
 		}
 	}
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.drawImage(currentBG, bgX, bgY, null);
-		for (int i = 0; i < 3; i++) {
-			g.drawImage(Images.trainerUp[i], 100*(i+1), 100, null);
+		if (gameState == 2) {
+			g.drawImage(Images.currentPlayerImage, 100, 100, null);	
 		}
-
 	}
 
 	@Override
@@ -96,23 +95,61 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	}
 
 	@Override
+	// changes direction depending on key pressed and sets moving to true !
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-
+		if (e.getKeyChar() == 'w') {
+			Player.setDirection(1);
+			Player.setMoving(true);
+		}
+		else if (e.getKeyChar() == 's') {
+			Player.setDirection(2);
+			Player.setMoving(true);
+		}
+		else if (e.getKeyChar() == 'a') {
+			Player.setDirection(3);
+			Player.setMoving(true);
+		}
+		else if (e.getKeyChar() == 'd') {
+			Player.setDirection(4);
+			Player.setMoving(true);
+		}
 	}
 
 	@Override
+	// reset to still image depending on direction
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-
+		if (e.getKeyChar() == 'w') {
+			Player.setMoving(false);
+			Animations.resetWalk();
+		}
+		else if (e.getKeyChar() == 's') {
+			Player.setMoving(false);
+			Animations.resetWalk();
+		}
+		else if (e.getKeyChar() == 'a') {
+			Player.setMoving(false);
+			Animations.resetWalk();
+		}
+		else if (e.getKeyChar() == 'd') {
+			Player.setMoving(false);
+			Animations.resetWalk();
+		}
+	
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (gameState == 0)
+		if (gameState == 0) {
 			gameState = 2;
-		else
+			bgX = saveBGX;
+			bgY = saveBGY;
+		} else {
 			gameState = 0;
+			saveBGX = bgX;
+			saveBGY = bgY;
+			bgX = 0;
+			bgY = 0;
+		}
 	}
 
 	@Override
@@ -166,7 +203,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		// it might mess up your graphics and collisions
 		frame.setResizable(false);
 		initialize();
-		System.out.println(new Player ("Fire"));
+		System.out.println(new Player("Fire"));
 		System.out.println(new Trainer());
 	}
 }

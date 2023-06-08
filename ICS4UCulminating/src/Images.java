@@ -3,19 +3,28 @@ import java.util.*;
 import javax.imageio.ImageIO;
 
 import java.awt.Image;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.awt.image.AffineTransformOp;
+
 public class Images {
 	
-	static BufferedImage[] pewterCity = new BufferedImage[4];
-	static BufferedImage[] trainerDown = new BufferedImage[3];
-	static BufferedImage[] trainerUp = new BufferedImage[3];
-	static BufferedImage[] trainerSide = new BufferedImage[3];
- 	static BufferedImage fireRedPressStart;
+	public static BufferedImage[] pewterCity = new BufferedImage[4];
+	public static BufferedImage[] trainerDown = new BufferedImage[3];
+	public static BufferedImage[] trainerUp = new BufferedImage[3];
+	public static BufferedImage[] trainerLeft = new BufferedImage[3];
+	public static BufferedImage[] trainerRight = new BufferedImage[3];
+	
+ 	public static BufferedImage fireRedPressStart;
+ 	
+ 	public static BufferedImage currentPlayerImage;
+ 	
 	public static void importAllImages() throws IOException{
 		importMisc();
 		importPewterCity();
 		importTrainer();
+		currentPlayerImage = trainerUp[1];
 	}
 	
 	public static void importMisc() throws IOException{
@@ -40,8 +49,14 @@ public class Images {
 		}
 		
 		for (int i = 0; i < 3; i++) {
-			trainerSide[i]  = trainerSprites.getSubimage(8+16*i, 100, 16, 20);
-			trainerSide[i]  = resizeImage(trainerSide[i], 64, 80);
+			trainerLeft[i]  = trainerSprites.getSubimage(8+16*i, 100, 16, 20);
+			trainerLeft[i]  = resizeImage(trainerLeft[i], 64, 80);
+			// flips the image horizontally
+			AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
+			tx.translate(-trainerLeft[i].getWidth(null), 0);
+			AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+			// -------------------------------------------
+			trainerRight[i] = op.filter(trainerLeft[i], null);
 		}
 	}
 	
