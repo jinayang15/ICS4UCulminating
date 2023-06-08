@@ -14,6 +14,11 @@ public class GameFunctions {
 			BufferedReader br = new BufferedReader(new FileReader("allPokemon.txt"));
 			StringTokenizer st;
 			String line = "";
+			// Temporary Pokemon in index 0 
+			ArrayList<Move> tempMoveList = new ArrayList<>();
+			tempMoveList.add(Move.allMoves.get(0));
+			Pokemon.pokeList.add(new Pokemon ("peepeepoopoo", new PokeType("Water"),1,1,1,1,1,1,tempMoveList));
+			//----------------------------
 			int i = 0;
 			while ((line = br.readLine()) != null) {
 				st = new StringTokenizer(line, " ");
@@ -48,6 +53,7 @@ public class GameFunctions {
 					System.out.println(p.getName() + " " + p.getMoves()[0].getName() + " " + p.getMoves()[1].getName()
 							+ " " + p.getMoves()[2].getName() + " " + p.getMoves()[3].getName());
 				} catch (NullPointerException e) {
+					System.out.println("BAD");
 				}
 				i++;
 			}
@@ -98,9 +104,9 @@ public class GameFunctions {
 	}
 	
 	public static void importEverything() throws IOException{
-		GameFunctions.importMoves();
-		GameFunctions.importMoveSets();
-		GameFunctions.importPokemon();
+		importMoves();
+		importMoveSets();
+		importPokemon();
 	}
 
 }

@@ -55,7 +55,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		}
 	}
 
-	public void initialize() throws IOException {
+	public static void initialize() throws IOException {
 		// setups before the game starts running
 		try {
 			GameFunctions.importEverything();
@@ -139,7 +139,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 		// The following lines creates your window
 
@@ -165,5 +165,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		// self explanatory. You don't want to resize your window because
 		// it might mess up your graphics and collisions
 		frame.setResizable(false);
+		initialize();
+		System.out.println(new Player ("Fire"));
+		System.out.println(new Trainer());
 	}
 }

@@ -71,10 +71,25 @@ public class Pokemon {
 		for (int i = 0; i < Math.min(moveSet.size(), 4); i++) {
 			moveList[i] = moveSet.get(i);
 		}
+		
 	}
 	
 	public Pokemon (Pokemon mon) {
-		
+		this.level = mon.level; // Placeholder 
+		this.name = mon.name;
+		this.hp = mon.hp;
+		this.attack = mon.attack;
+		this.def = mon.def;
+		this.spAtk = mon.spAtk;
+		this.spDef = mon.spDef;
+		this.speed = mon.speed;
+		this.type1 = mon.type1;
+		if (typeList.size()==2) {
+			this.type2 = type2;
+		}
+		for (int i = 0; i<mon.moveList.length; i++) {
+			this.moveList[i] = mon.moveList[i];
+		}
 	}
 	
 	public String toString() {
