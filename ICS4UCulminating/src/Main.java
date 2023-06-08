@@ -26,7 +26,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	int bgX = 0;
 	int bgY = 0;
 	// last bg position
-	int saveBGX = -722;
+	int saveBGX = -704;
 	int saveBGY = -1920;
 
 	public Main() {

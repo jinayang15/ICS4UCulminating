@@ -11,24 +11,24 @@ import javax.swing.*;
 public class Animations {
 	static int walkIndex = 1;
 	static int walkTickSpeed = 10;
-	static int walkCurrentTick = 0;
+	static int walkCurrentTick = 6;
 	// animations goes 1 -> 2 -> 1 -> 0 -> 1 -> 2 ....
-	static int idxBounce = 1;
+	static int bounce = 1;
 
 	// walk animation
 	public static void walk() {
 		if (Player.getMoving()) {
+			walkCurrentTick++;
 			if (walkCurrentTick >= walkTickSpeed) {
 				walkCurrentTick = 0;
 				if (walkIndex == 2) {
-					idxBounce = -1;
+					bounce = -1;
 				}
 				else if (walkIndex == 0) {
-					idxBounce = 1;
+					bounce = 1;
 				}
-				walkIndex += idxBounce;
+				walkIndex += bounce;
 			}
-			walkCurrentTick++;
 			switch (Player.getDirection()) {
 			case 1:
 				Images.currentPlayerImage = Images.trainerUp[walkIndex];
@@ -48,7 +48,7 @@ public class Animations {
 	// standing still image
 	public static void resetWalk() {
 		walkIndex = 1;
-		walkCurrentTick = 0;
+		walkCurrentTick = 6;
 		switch (Player.getDirection()) {
 		case 1:
 			Images.currentPlayerImage = Images.trainerUp[1];
