@@ -35,6 +35,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		thread = new Thread(this);
 		thread.start();
 	}
+
 	@Override
 	public void run() {
 		try {
@@ -81,9 +82,10 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		update();
-
 		g.drawImage(currentBG, bgX, bgY, null);
+		for (int i = 0; i < 3; i++) {
+			g.drawImage(Images.trainerUp[i], 100*(i+1), 100, null);
+		}
 
 	}
 

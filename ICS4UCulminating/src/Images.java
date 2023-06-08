@@ -15,6 +15,7 @@ public class Images {
 	public static void importAllImages() throws IOException{
 		importMisc();
 		importPewterCity();
+		importTrainer();
 	}
 	
 	public static void importMisc() throws IOException{
@@ -28,7 +29,20 @@ public class Images {
 		pewterCity[0] = resizeImage(pewterCity[0], 3072, 2560);
 	}
 	public static void importTrainer() throws IOException {
+		BufferedImage trainerSprites = ImageIO.read(new File("trainerSprites.png"));
+		for (int i = 0; i < 3; i++) {
+			trainerDown[i] = trainerSprites.getSubimage(8 + 16*i, 36, 16, 20);
+			trainerDown[i]  = resizeImage(trainerDown[i], 64, 80);
+		}
+		for (int i = 0; i < 3; i++) {
+			trainerUp[i] = trainerSprites.getSubimage(8 + 16*i, 68, 16, 20);
+			trainerUp[i]  = resizeImage(trainerUp[i], 64, 80);
+		}
 		
+		for (int i = 0; i < 3; i++) {
+			trainerSide[i]  = trainerSprites.getSubimage(8+16*i, 100, 16, 20);
+			trainerSide[i]  = resizeImage(trainerSide[i], 64, 80);
+		}
 	}
 	
 	public static BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) throws IOException {
