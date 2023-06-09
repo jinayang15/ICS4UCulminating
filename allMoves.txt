@@ -74,7 +74,7 @@
 74^Spark^Electric^Physical^20^65^1.00^An electrically charged tackle that may also paralyze the foe.
 75^Magnitude^Ground^Physical^30^0^1.00^A ground-shaking attack against all standing Pokémon. Its power varies.
 76^Synthesis^Grass^Status^5^0^0.00^Restores the user's HP. The amount of HP regained varies with the weather.
-77^Extreme Speed^Normal^Physical^5^80^1.00^Restores the user's HP. The amount of HP regained varies with the weather.
+77^Extreme Speed^Normal^Physical^5^80^1.00^A blindingly speedy charge attack that always goes before any other.
 78^Heat Wave^Fire^Special^10^95^0.90^The user exhales a heated breath to attack. It may also inflict a burn.
 79^Will-O-Wisp^Fire^Status^15^0^0.85^A sinister, bluish white flame is shot at the foe to inflict a burn.
 80^Facade^Normal^Physical^20^70^1.00^An attack that is boosted if user is burned, poisoned, or paralyzed.
