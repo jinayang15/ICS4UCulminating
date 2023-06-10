@@ -17,14 +17,12 @@ public class Images {
 	public static BufferedImage[] trainerRight = new BufferedImage[3];
 	
  	public static BufferedImage fireRedPressStart;
- 	
- 	public static BufferedImage currentPlayerImage;
+
  	
 	public static void importAllImages() throws IOException{
 		importMisc();
 		importPewterCity();
 		importTrainer();
-		currentPlayerImage = trainerUp[1];
 	}
 	
 	public static void importMisc() throws IOException{
@@ -33,7 +31,7 @@ public class Images {
 	}
 	
 	public static void importPewterCity() throws IOException {
-		BufferedImage pewterCitySheet = ImageIO.read(new File("PewterCitySheet.png"));
+		BufferedImage pewterCitySheet = ImageIO.read(new File("PewterCitySheetTiles.png"));
 		pewterCity[0] = pewterCitySheet.getSubimage(0, 0, 768, 640);
 		pewterCity[0] = resizeImage(pewterCity[0], 3072, 2560);
 	}

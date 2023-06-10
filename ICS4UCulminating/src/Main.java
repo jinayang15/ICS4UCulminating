@@ -9,7 +9,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 
 @SuppressWarnings("serial") // funky warning, just suppress it. It's not gonna do anything.
-// will probably be moved to main or rename, empty frame is the temp name
 public class Main extends JPanel implements Runnable, KeyListener, MouseListener {
 	/*
 	 * 0 - initial menu 1 - Options Menu 2 - Pewter City 3 - Battle 4 - PokeCenter 5
@@ -21,13 +20,19 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	Thread thread;
 	int screenWidth = 960;
 	int screenHeight = 640;
+	int tileSize = 64;
 	BufferedImage currentBG;
 	// background top-left corner position, x and y value
 	int bgX = 0;
 	int bgY = 0;
+	int bgShiftPixels = 4;
 	// last bg position
-	int saveBGX = -704;
+	int saveBGX = -960;
 	int saveBGY = -1920;
+
+	long lastActionTime = 0;
+	char lastKeyPressed = ' ';
+	char lastKeyReleased = ' ';
 
 	public Main() {
 		// sets up JPanel
@@ -48,8 +53,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		}
 		while (true) {
 			// main game loop
-			update();
 			this.repaint();
+			update();
 			try {
 				Thread.sleep(1000 / FPS);
 			} catch (Exception e) {
@@ -77,6 +82,10 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		} else if (gameState == 2) {
 			currentBG = Images.pewterCity[0];
 			Animations.walk();
+			Animations.resetWalk();
+			bgShift();
+			bgAdjust();
+			System.out.println(Animations.walkCurrentTick + " " + Player.getMoving());
 		}
 	}
 
@@ -84,7 +93,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		super.paintComponent(g);
 		g.drawImage(currentBG, bgX, bgY, null);
 		if (gameState == 2) {
-			g.drawImage(Images.currentPlayerImage, 100, 100, null);	
+			g.drawImage(Player.getCurrentPlayerImage(), Player.getPlayerX(), Player.getPlayerY(), null);
 		}
 	}
 
@@ -97,44 +106,33 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	@Override
 	// changes direction depending on key pressed and sets moving to true !
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyChar() == 'w') {
-			Player.setDirection(1);
-			Player.setMoving(true);
+		System.out.println("Pressed " + e.getKeyChar() + "");
+		if (e.getKeyChar() != lastKeyPressed) {
+			if (e.getKeyChar() == 'w') {
+				Player.setDirection(1);
+			} else if (e.getKeyChar() == 's') {
+				Player.setDirection(2);
+			} else if (e.getKeyChar() == 'a') {
+				Player.setDirection(3);
+			} else if (e.getKeyChar() == 'd') {
+				Player.setDirection(4);
+			}
+			lastKeyPressed = e.getKeyChar();
 		}
-		else if (e.getKeyChar() == 's') {
-			Player.setDirection(2);
-			Player.setMoving(true);
-		}
-		else if (e.getKeyChar() == 'a') {
-			Player.setDirection(3);
-			Player.setMoving(true);
-		}
-		else if (e.getKeyChar() == 'd') {
-			Player.setDirection(4);
-			Player.setMoving(true);
-		}
+		Player.setMoving(true);
+		lastActionTime = System.currentTimeMillis();
 	}
 
 	@Override
 	// reset to still image depending on direction
 	public void keyReleased(KeyEvent e) {
-		if (e.getKeyChar() == 'w') {
-			Player.setMoving(false);
-			Animations.resetWalk();
+		System.out.println("Released " + e.getKeyChar() + "");
+		if (e.getKeyChar() != lastKeyReleased) {
+			if (e.getKeyChar() == 'w' || e.getKeyChar() == 's' || e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
+				Player.setMoving(false);
+			}
+			lastKeyReleased = e.getKeyChar();
 		}
-		else if (e.getKeyChar() == 's') {
-			Player.setMoving(false);
-			Animations.resetWalk();
-		}
-		else if (e.getKeyChar() == 'a') {
-			Player.setMoving(false);
-			Animations.resetWalk();
-		}
-		else if (e.getKeyChar() == 'd') {
-			Player.setMoving(false);
-			Animations.resetWalk();
-		}
-	
 	}
 
 	@Override
@@ -205,5 +203,38 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		initialize();
 		System.out.println(new Player("Fire"));
 		System.out.println(new Trainer());
+	}
+
+	public void bgShift() {
+		if (Player.getMoving()) {
+			if (Player.getDirection() == 1) {
+				bgY += bgShiftPixels;
+			} else if (Player.getDirection() == 2) {
+				bgY -= bgShiftPixels;
+			} else if (Player.getDirection() == 3) {
+				bgX += bgShiftPixels;
+			} else if (Player.getDirection() == 4) {
+				bgX -= bgShiftPixels;
+			}
+		}
+	}
+
+	public void bgAdjust() {
+		if (!Player.getMoving()) {
+			if (bgX % tileSize != 0) {
+				if (Player.getDirection() == 3) {
+					bgX += bgShiftPixels;
+				} else if (Player.getDirection() == 4) {
+					bgX -= bgShiftPixels;
+				}
+			}
+			if (bgY % tileSize != 0) {
+				if (Player.getDirection() == 1) {
+					bgY += bgShiftPixels;
+				} else if (Player.getDirection() == 2) {
+					bgY -= bgShiftPixels;
+				}
+			}
+		}
 	}
 }
