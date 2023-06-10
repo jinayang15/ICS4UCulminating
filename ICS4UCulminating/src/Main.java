@@ -127,8 +127,14 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	// reset to still image depending on direction
 	public void keyReleased(KeyEvent e) {
 		System.out.println("Released " + e.getKeyChar() + "");
-		if (e.getKeyChar() != lastKeyReleased) {
-			if (e.getKeyChar() == 'w' || e.getKeyChar() == 's' || e.getKeyChar() == 'a' || e.getKeyChar() == 'd') {
+		if (e.getKeyChar() == lastKeyPressed) {
+			if (e.getKeyChar() == 'w') {
+				Player.setMoving(false);
+			} else if (e.getKeyChar() == 's') {
+				Player.setMoving(false);
+			} else if (e.getKeyChar() == 'a') {
+				Player.setMoving(false);
+			} else if (e.getKeyChar() == 'd') {
 				Player.setMoving(false);
 			}
 			lastKeyReleased = e.getKeyChar();
