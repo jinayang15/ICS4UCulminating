@@ -15,7 +15,7 @@ public class Battle {
 	private boolean battleContinue = true; // Boolean to see if the battle is going to continue 
 	private boolean quickAttack = false; 
 	private boolean trainerSkipTurn = false; // Boolean to determine if the trainers turn is skipped 
-	private boolean otherSkipTurn = false; // These variables are for moves like hyper beam, which require a one turn rest
+	private boolean otherSkipTurn = false; // Same as last one, except its for opponent 
 	private boolean hit = false; // To check if the attack hit the other pokemon
 	
 	private int trainerMonHp;
@@ -57,7 +57,6 @@ public class Battle {
 	private int otherMonSpeedCount = 0;
 	
 	
-	
 	// Constructor
 	public Battle (Pokemon trainerMon, Pokemon otherMon) {
 		this.trainerMon = trainerMon;
@@ -78,13 +77,41 @@ public class Battle {
 			applyStatus();
 		}
 	}
-	
+	// The trainerChooseAttack method is used to determine what attack the user chooses
+	// It takes in no parameter
+	// It returns nothing
 	public void trainerChooseAttack() {
 		// WHAT THE USER CHOOSES BASED ON THE GRAPHICS THINGY 
 	}
 	
-	public void opponentChooseAttack() {
+	// The opponentChooseAttack method randomly chooses a move for the opponent to use
+	// It takes in no parameters
+	// It returns nothing 
+	public Move opponentChooseAttack() {
+		int random = (int) (Math.random()*4) + 1;
+		while (otherMon.getMoves()[random-1].equals(null)) {
+			random--;
+		}
+		return otherMon.getMoves()[random-1];
+	}
+	
+	// The coordinateBattle method is used to coordinate the battle. It will check for speed, priority moves, etc. 
+	// This is why it is important to know what both Pokemon will do first, and then finalizing the order 
+	// This method takes in no parameters
+	// It also returns nothing 
+	public void coordinateBattle() {
+		// This is going to be such a fucking pain in the ass holy SHIT 
 		
+		// things to check for:
+		// Quick attacks (if both use, then higher speed goes first) 
+		// If lets say I go first and apply a status, that will DIRECTLY AFFECT the opponent that is going RIGHT AFTER 
+		// (fix is by applying status right after each move???)
+		// such as applyTrainer()
+		// applyStatus()
+		// applyOther()
+		
+		trainerSkipTurn = false;
+		otherSkipTurn = false;
 	}
 
 		
@@ -726,5 +753,96 @@ public class Battle {
 	
 	public void applyStatus() {
 		
+		// Trainer Pokemon Status
+		
+		if (trainerMonStatus==0) {
+			return; // No status 
+		}
+		// Poison - Takes away 1/8th of the Pokemon's HP
+		else if (trainerMonStatus==1) {
+			trainerMon.setDeltaHp(trainerMon.getDeltaHp() + trainerMon.getHp()/8);
+		}
+		// Burn - Takes away 1/16th of HP every turn and HALVES the current attack stat.
+		else if (trainerMonStatus==2) {
+			trainerMon.setDeltaHp(trainerMon.getDeltaHp() + (trainerMon.getHp()/16));
+			trainerMon.setDeltaAttack(trainerMonAttack/2);
+		}
+		// Paralyze
+		else if (trainerMonStatus==3) {
+			
+		}
+		// Sleep
+		else if (trainerMonStatus==4) {
+			
+		}
+		// Badly Poisoned (through the move Toxic)
+		else {
+			
+		}
+		
+		// Opponent Pokemon Status
+		if (otherMonStatus==0) {
+			return; // No status 
+		}
+		// Poison 
+		else if (otherMonStatus==1) {
+			otherMon.setDeltaHp(otherMon.getDeltaHp() + otherMon.getHp()/8);
+		}
+		// Burn - Takes away 1/16th of HP every turn and HALVES the current attack stat.
+		else if (otherMonStatus==2) {
+			otherMon.setDeltaHp(otherMon.getDeltaHp() + (otherMon.getHp()/16));
+			otherMon.setDeltaAttack(otherMonAttack/2);
+		}
+		// Paralyze
+		else if (otherMonStatus==3) {
+			
+		}
+		// Sleep
+		else if (otherMonStatus==4) {
+			
+		}
+		// Badly Poisoned (through the move Toxic)
+		else {
+			
+		}
+		
+	}
+	
+	public void cureStatus(Pokemon mon, int oldStatus) {
+		if (mon.equals(trainerMon)) {
+			if (oldStatus==1) {
+				
+			}
+			else if (oldStatus==2) {
+				
+			}
+			else if (oldStatus==3) {
+				
+			}
+			else if (oldStatus==4) {
+				
+			}
+			else {
+				
+			}
+		}
+		
+		else {
+			if (oldStatus==1) {
+				
+			}
+			else if (oldStatus==2) {
+				
+			}
+			else if (oldStatus==3) {
+				
+			}
+			else if (oldStatus==4) {
+				
+			}
+			else {
+				
+			}
+		}
 	}
 }
