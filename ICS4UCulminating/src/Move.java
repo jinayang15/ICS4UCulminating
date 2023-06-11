@@ -63,4 +63,5 @@ public class Move {
 	public String toString() {
 		return name + "-" + type + "-" + category +  "-" + pp + "-" + atkPower + "-" + accuracy + "-" + effect;
 	}
+
 }

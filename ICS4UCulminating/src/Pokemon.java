@@ -180,6 +180,10 @@ public class Pokemon {
 		return status;
 	}
 	
+	public void setStatus(int status) {
+		this.status=status;
+	}
+	
 	public Move[] getMoves(){
 		return moveList;
 	}

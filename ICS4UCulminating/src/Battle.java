@@ -32,9 +32,6 @@ public class Battle {
 	private int otherMonSpDef;
 	private int otherMonSpeed;
 	
-	
-	private int trainerMonStatus = 0; 
-	private int otherMonStatus = 0; 
 	// Poison - 1
 	// Burn - 2
 	// Paralyzed - 3
@@ -56,13 +53,30 @@ public class Battle {
 	private int otherMonSpDefCount = 0; 
 	private int otherMonSpeedCount = 0;
 	
+	// Status counter variables - used to count status conditions
+	private int trainerSleepCounter = 0;
+	private int trainerToxicCounter = 1;
+	private int otherSleepCounter = 0;
+	private int otherToxicCounter = 1;
 	
 	// Constructor
 	public Battle (Pokemon trainerMon, Pokemon otherMon) {
 		this.trainerMon = trainerMon;
 		this.otherMon = otherMon;
 		trainerMonHp = trainerMon.getHp() - trainerMon.getDeltaHp();
+		trainerMonAttack = trainerMon.getAttack();
+		trainerMonDef = trainerMon.getDef();
+		trainerMonSpAtk = trainerMon.getSpAtk();
+		trainerMonSpDef = trainerMon.getSpDef();
+		trainerMonSpeed = trainerMon.getSpeed();
+		
 		otherMonHp = otherMon.getHp() - otherMon.getDeltaHp();
+		otherMonAttack = otherMon.getAttack();
+		otherMonDef = otherMon.getDef();
+		otherMonSpAtk = otherMon.getSpAtk();
+		otherMonSpDef = otherMon.getSpDef();
+		otherMonSpeed = otherMon.getSpeed();
+	
 		updateStats();
 		battleStart();
 	}
@@ -71,17 +85,18 @@ public class Battle {
 	public void battleStart() {
 		// Determining who goes first 
 		while (battleContinue) {
-			trainerChooseAttack();
-			opponentChooseAttack();
-			// blah blah people go
-			applyStatus();
+			coordinateBattle();
+			oi you need to check battle here 
+			also need to check battle right after every attack 
 		}
 	}
+	
 	// The trainerChooseAttack method is used to determine what attack the user chooses
 	// It takes in no parameter
 	// It returns nothing
-	public void trainerChooseAttack() {
+	public Move trainerChooseAttack() {
 		// WHAT THE USER CHOOSES BASED ON THE GRAPHICS THINGY 
+		return trainerMon.getMoves()[0]; // TEMP
 	}
 	
 	// The opponentChooseAttack method randomly chooses a move for the opponent to use
@@ -102,16 +117,163 @@ public class Battle {
 	public void coordinateBattle() {
 		// This is going to be such a fucking pain in the ass holy SHIT 
 		
-		// things to check for:
-		// Quick attacks (if both use, then higher speed goes first) 
-		// If lets say I go first and apply a status, that will DIRECTLY AFFECT the opponent that is going RIGHT AFTER 
-		// (fix is by applying status right after each move???)
-		// such as applyTrainer()
-		// applyStatus()
-		// applyOther()
+		applyStatus(); // Apply status first to determine if moves are going to be skipped 
 		
-		trainerSkipTurn = false;
-		otherSkipTurn = false;
+		Move trainerMove = trainerChooseAttack();
+		Move otherMove = opponentChooseAttack();
+		
+		// If both Pokemon choose to use quick attack, which is a priority move, then the one with the higher speed stat will go first
+		if (trainerMove.getName().equals("Quick Attack") && otherMove.getName().equals("Quick Attack")) {
+			if (trainerMonSpeed>=otherMonSpeed) {
+				if (!trainerSkipTurn) {
+					attack(trainerMove, trainerMon, otherMon);
+				}
+				else {
+					if (trainerMon.getStatus()==3) {
+						System.out.println(trainerMon.getName() + " was fully paralyzed!");
+					}
+					else if (trainerMon.getStatus()==4) {
+						System.out.println(trainerMon.getName() + " is asleep!");
+					}
+				}
+				if (!otherSkipTurn) {
+					attack(otherMove, otherMon, trainerMon);
+				}
+				else {
+					if (otherMon.getStatus()==3) {
+						System.out.println(otherMon.getName() + " was fully paralyzed!");
+					}
+					else if (otherMon.getStatus()==4) {
+						System.out.println(otherMon.getName() + " is asleep!");
+					}
+				}
+				
+			}
+			else {
+				if (!otherSkipTurn) {
+					attack(otherMove, otherMon, trainerMon);
+				}
+				else {
+					if (otherMon.getStatus()==3) {
+						System.out.println(otherMon.getName() + " was fully paralyzed!");
+					}
+					else if (otherMon.getStatus()==4) {
+						System.out.println(otherMon.getName() + " is asleep!");
+					}
+				}
+				if (!trainerSkipTurn) {
+					attack(trainerMove, trainerMon, otherMon);
+				}
+				else {
+					if (trainerMon.getStatus()==3) {
+						System.out.println(trainerMon.getName() + " was fully paralyzed!");
+					}
+					else if (trainerMon.getStatus()==4) {
+						System.out.println(trainerMon.getName() + " is asleep!");
+					}
+				}
+			}
+		}
+		// If only the user chooses quick attack, they are guaranteed to go first 
+		else if (trainerMove.getName().equals("Quick Attack")) {
+			if (!trainerSkipTurn) {
+				attack(trainerMove, trainerMon, otherMon);
+			}
+			else {
+				if (trainerMon.getStatus()==3) {
+					System.out.println(trainerMon.getName() + " was fully paralyzed!");
+				}
+				else if (trainerMon.getStatus()==4) {
+					System.out.println(trainerMon.getName() + " is asleep!");
+				}
+			}
+			if (!otherSkipTurn) {
+				attack(otherMove, otherMon, trainerMon);
+			}
+			else {
+				if (otherMon.getStatus()==3) {
+					System.out.println(otherMon.getName() + " was fully paralyzed!");
+				}
+				else if (otherMon.getStatus()==4) {
+					System.out.println(otherMon.getName() + " is asleep!");
+				}
+			}
+		}
+		// If the only the opponent uses quick attack, they are guaranteed to go first
+		else if (otherMove.getName().equals("Quick Attack")) {
+			if (!otherSkipTurn) {
+				attack(otherMove, otherMon, trainerMon);
+			}
+			else {
+				if (otherMon.getStatus()==3) {
+					System.out.println(otherMon.getName() + " was fully paralyzed!");
+				}
+				else if (otherMon.getStatus()==4) {
+					System.out.println(otherMon.getName() + " is asleep!");
+				}
+			}
+			if (!trainerSkipTurn) {
+				attack(trainerMove, trainerMon, otherMon);
+			}
+			else {
+				if (trainerMon.getStatus()==3) {
+					System.out.println(trainerMon.getName() + " was fully paralyzed!");
+				}
+				else if (trainerMon.getStatus()==4) {
+					System.out.println(trainerMon.getName() + " is asleep!");
+				}
+			}
+		}
+		else {
+			if (trainerMonSpeed>=otherMonSpeed) {
+				if (!trainerSkipTurn) {
+					attack(trainerMove, trainerMon, otherMon);
+				}
+				else {
+					if (trainerMon.getStatus()==3) {
+						System.out.println(trainerMon.getName() + " was fully paralyzed!");
+					}
+					else if (trainerMon.getStatus()==4) {
+						System.out.println(trainerMon.getName() + " is asleep!");
+					}
+				}
+				if (!otherSkipTurn) {
+					attack(otherMove, otherMon, trainerMon);
+				}
+				else {
+					if (otherMon.getStatus()==3) {
+						System.out.println(otherMon.getName() + " was fully paralyzed!");
+					}
+					else if (otherMon.getStatus()==4) {
+						System.out.println(otherMon.getName() + " is asleep!");
+					}
+				}
+			}
+			else {
+				if (!otherSkipTurn) {
+					attack(otherMove, otherMon, trainerMon);
+				}
+				else {
+					if (otherMon.getStatus()==3) {
+						System.out.println(otherMon.getName() + " was fully paralyzed!");
+					}
+					else if (otherMon.getStatus()==4) {
+						System.out.println(otherMon.getName() + " is asleep!");
+					}
+				}
+				if (!trainerSkipTurn) {
+					attack(trainerMove, trainerMon, otherMon);
+				}
+				else {
+					if (trainerMon.getStatus()==3) {
+						System.out.println(trainerMon.getName() + " was fully paralyzed!");
+					}
+					else if (trainerMon.getStatus()==4) {
+						System.out.println(trainerMon.getName() + " is asleep!");
+					}
+				}
+			}
+		}
 	}
 
 		
@@ -159,31 +321,31 @@ public class Battle {
 			// These next moves are only possible by the opposing Pokemon, so there is no need to check if it is from the player 
 			else if (attack.getName().equals("Fire Punch")) {
 				applyOtherAttack (attack, stab); 
-				if (hit && trainerMonStatus==0 && !trainerMon.getType1().equals(new PokeType ("Fire")) && !trainerMon.getType2().equals(new PokeType ("Fire"))) {
+				if (hit && trainerMon.getStatus()==0 && !trainerMon.getType1().equals(new PokeType ("Fire")) && !trainerMon.getType2().equals(new PokeType ("Fire"))) {
 					random = (int) (Math.random()*10) + 1;
 					if (random==1) {
-						trainerMonStatus = 2; 
+						trainerMon.setStatus(2);
 					}
 				}
 				hit = false;
 			}
 			else if (attack.getName().equals("Thunder Punch")) {
 				applyOtherAttack (attack, stab); 
-				if (hit && trainerMonStatus==0 && !trainerMon.getType1().equals(new PokeType ("Electric")) && !trainerMon.getType2().equals(new PokeType ("Electric"))) {
+				if (hit && trainerMon.getStatus()==0 && !trainerMon.getType1().equals(new PokeType ("Electric")) && !trainerMon.getType2().equals(new PokeType ("Electric"))) {
 					random = (int) (Math.random()*10) + 1;
 					if (random==1) {
-						trainerMonStatus = 3; 
+						trainerMon.setStatus(3);
 					}
 				}
 				hit = false;
 			}
 			else if (attack.getName().equals("Poison Sting")) {
 				applyOtherAttack (attack, stab);
-				if (hit && trainerMonStatus==0 && !trainerMon.getType1().equals(new PokeType ("Poison")) && !trainerMon.getType2().equals(new PokeType ("Poison"))) {
+				if (hit && trainerMon.getStatus()==0 && !trainerMon.getType1().equals(new PokeType ("Poison")) && !trainerMon.getType2().equals(new PokeType ("Poison"))) {
 					random = (int) (Math.random()*10) + 1;
 					// 30% chance to poison the target
 					if (random<=3) {
-						trainerMonStatus = 1; 
+						trainerMon.setStatus(1);
 					}
 				}
 				hit = false;
@@ -198,10 +360,10 @@ public class Battle {
 			}
 			else if (attack.getName().equals("Poison Fang")) {
 				applyOtherAttack (attack, stab);
-				if (hit && trainerMonStatus==0 && !trainerMon.getType1().equals(new PokeType ("Poison")) && !trainerMon.getType2().equals(new PokeType ("Poison"))) {
+				if (hit && trainerMon.getStatus()==0 && !trainerMon.getType1().equals(new PokeType ("Poison")) && !trainerMon.getType2().equals(new PokeType ("Poison"))) {
 					random = (int) (Math.random()*10) + 1;
 					if (random<=3) {
-						trainerMonStatus = 5; 
+						trainerMon.setStatus(5);
 					}
 				}
 				hit = false;
@@ -243,23 +405,23 @@ public class Battle {
 			else if (attack.getName().equals("Ember") || attack.getName().equals("Flamethrower") || attack.getName().equals("Fire Blast") || attack.getName().equals("Heat Wave")) {
 				applyAttackChecker (attackMon, attack, stab);
 				if (attackMon.equals(trainerMon)) {
-					if (otherMonStatus==0) {
+					if (otherMon.getStatus()==0) {
 						if (hit) {
 							// 10% chance to burn the enemy, and fire Pokemon cannot get burned
 							random = (int) (Math.random()* (10)) + 1;
 							if (random==1 && !otherMon.getType1().equals(new PokeType ("Fire")) && !otherMon.getType1().equals(new PokeType("Fire"))) {
-								otherMonStatus = 2; 
+								otherMon.setStatus(2);
 							}
 						}
 					}
 				}
 				else if (attackMon.equals(otherMon)) {
-					if (trainerMonStatus==0) {
+					if (trainerMon.getStatus()==0) {
 						if (hit) {
 							// 10% chance to burn the enemy, and fire Pokemon cannot get burned
 							random = (int) (Math.random()* (10)) + 1;
 							if (random==1 && !trainerMon.getType1().equals(new PokeType ("Fire")) && !trainerMon.getType1().equals(new PokeType("Fire"))) {
-								trainerMonStatus = 2; 
+								trainerMon.setStatus(2); 
 							}
 						}
 					}
@@ -335,8 +497,8 @@ public class Battle {
 				if (hit) {
 					// 10% chance of paralysis
 					random = (int) (Math.random()*(10)) + 1;
-					if (otherMonStatus==0 && random==1 && !otherMon.getType1().equals(new PokeType ("Electric")) && !otherMon.getType2().equals(new PokeType ("Electric"))) {
-						otherMonStatus = 3;
+					if (trainerMon.getStatus()==0 && random==1 && !trainerMon.getType1().equals(new PokeType ("Electric")) && !trainerMon.getType2().equals(new PokeType ("Electric"))) {
+						trainerMon.setStatus(3);
 					}
 				}
 				hit = false;
@@ -344,20 +506,20 @@ public class Battle {
 			else if (attack.getName().equals("Sludge")) {
 				applyOtherAttack(attack, stab);
 				// 
-				if (hit && trainerMonStatus==0 && !trainerMon.getType1().equals(new PokeType ("Poison")) && !trainerMon.getType2().equals(new PokeType ("Poison"))) {
+				if (hit && trainerMon.getStatus()==0 && !trainerMon.getType1().equals(new PokeType ("Poison")) && !trainerMon.getType2().equals(new PokeType ("Poison"))) {
 					random = (int) (Math.random()*10) + 1;
 					if (random<=3) {
-						trainerMonStatus = 1;
+						trainerMon.setStatus(1);
 					}
 				}
 				hit = false;
 			}
-			else if (attack.getName().equals("Mud-Slap")) {
-				applyOtherAttack(attack, stab);
-				if (hit) {
-					// LOWER ACCURACY SOMEHOW 
-				}
-			}
+//			else if (attack.getName().equals("Mud-Slap")) {
+//				applyOtherAttack(attack, stab);
+//				if (hit) {
+//					// LOWER ACCURACY SOMEHOW 
+//				}
+//			}
 			else {
 				applyAttackChecker (attackMon, attack, stab);
 				hit = false;
@@ -447,12 +609,12 @@ public class Battle {
 				// If a Pokemon already has a status applied, other statuses will not work! 
 				if (hit) {
 					if (attackMon.equals(trainerMon)) {
-						if (otherMonStatus!=0) {
+						if (otherMon.getStatus()!=0) {
 							System.out.println("It had no effect!");
 						}
 						else {
 							if (!otherMon.getType1().equals(new PokeType ("Poison")) && !otherMon.getType2().equals(new PokeType("Poison"))) {
-								otherMonStatus = 1;
+								otherMon.setStatus(1);
 							}
 							else {
 								System.out.println("It had no effect!");
@@ -460,12 +622,12 @@ public class Battle {
 						}
 					}
 					else {
-						if (trainerMonStatus!=0) {
+						if (trainerMon.getStatus()!=0) {
 							System.out.println("It had no effect!");
 						}
 						else {
 							if (!trainerMon.getType1().equals(new PokeType ("Poison")) && !trainerMon.getType2().equals(new PokeType("Poison"))) {
-								trainerMonStatus = 1;
+								trainerMon.setStatus(1);
 							}
 							else {
 								System.out.println("It had no effect!");
@@ -480,12 +642,12 @@ public class Battle {
 				applyAttackChecker(attackMon, attack, stab);
 				if (hit) {
 					if (attackMon.equals(trainerMon)) {
-						if (otherMonStatus!=0) {
+						if (otherMon.getStatus()!=0) {
 							System.out.println("It had no effect!");
 						}
 						else {
 							if (!otherMon.getType1().equals(new PokeType ("Electric")) && !otherMon.getType2().equals(new PokeType ("Electric"))) {
-								otherMonStatus = 3;
+								otherMon.setStatus(3);
 							}
 							else {
 								System.out.println("It had no effect!");
@@ -493,12 +655,12 @@ public class Battle {
 						}
 					}
 					else {
-						if (trainerMonStatus!=0) {
+						if (trainerMon.getStatus()!=0) {
 							System.out.println("It had no effect!");
 						}
 						else {
 							if (!trainerMon.getType1().equals(new PokeType ("Electric")) && !trainerMon.getType2().equals(new PokeType ("Electric"))) {
-								trainerMonStatus = 3;
+								trainerMon.setStatus(3);
 							}
 							else {
 								System.out.println("It had no effect!");
@@ -512,22 +674,22 @@ public class Battle {
 			else if (attack.getName().equals("Sleep Powder")) {
 				applyAttackChecker(attackMon, attack, stab);
 				if (attackMon.equals(trainerMon)) {
-					if (otherMonStatus!=0) {
+					if (otherMon.getStatus()!=0) {
 						System.out.println("It had no effect!");
 					}
 					else {
 						if (hit) {
-							otherMonStatus = 4; 
+							otherMon.setStatus(4); 
 						}
 					}
 				}
 				else {
-					if (trainerMonStatus!=0) {
+					if (trainerMon.getStatus()!=0) {
 						System.out.println("It had no effect!");
 					}
 					else {
 						if (hit) {
-							trainerMonStatus = 4; 
+							trainerMon.setStatus(4); 
 						}
 					}
 				}
@@ -537,12 +699,12 @@ public class Battle {
 				applyAttackChecker(attackMon, attack, stab);
 				if (hit) {
 					if (attackMon.equals(trainerMon)) {
-						if (otherMonStatus!=0) {
+						if (otherMon.getStatus()!=0) {
 							System.out.println("It had no effect!");
 						}
 						else {
 							if (!otherMon.getType1().equals(new PokeType ("Electric")) && !otherMon.getType2().equals(new PokeType ("Electric"))) {
-								otherMonStatus = 3;
+								otherMon.setStatus(3);
 							}
 							else {
 								System.out.println("It had no effect!");
@@ -550,12 +712,12 @@ public class Battle {
 						}
 					}
 					else {
-						if (trainerMonStatus!=0) {
+						if (trainerMon.getStatus()!=0) {
 							System.out.println("It had no effect!");
 						}
 						else {
 							if (!trainerMon.getType1().equals(new PokeType ("Electric")) && !trainerMon.getType2().equals(new PokeType ("Electric"))) {
-								trainerMonStatus = 3;
+								trainerMon.setStatus(3);
 							}
 							else {
 								System.out.println("It had no effect!");
@@ -569,12 +731,12 @@ public class Battle {
 				applyAttackChecker(attackMon, attack, stab);
 				if (hit) {
 					if (attackMon.equals(trainerMon)) {
-						if (otherMonStatus!=0) {
+						if (otherMon.getStatus()!=0) {
 							System.out.println("It had no effect!");
 						}
 						else {
 							if (!otherMon.getType1().equals(new PokeType("Poison")) && !otherMon.getType2().equals(new PokeType("Poison"))) {
-								otherMonStatus = 5; 
+								otherMon.setStatus(5); 
 							}
 							else {
 								System.out.println("It had no effect!");
@@ -582,12 +744,12 @@ public class Battle {
 						}
 					}
 					else {
-						if (trainerMonStatus!=0) {
+						if (trainerMon.getStatus()!=0) {
 							System.out.println("It had no effect!");
 						}
 						else {
 							if (!trainerMon.getType1().equals(new PokeType("Poison")) && !trainerMon.getType2().equals(new PokeType("Poison"))) {
-								trainerMonStatus = 5; 
+								trainerMon.setStatus(5); 
 							}
 							else {
 								System.out.println("It had no effect!");
@@ -632,7 +794,6 @@ public class Battle {
 		otherMonSpAtk = otherMon.getSpAtk() - otherMon.getSpAtk();
 		otherMonSpDef = otherMon.getSpDef() - otherMon.getDeltaSpDef();
 		otherMonSpeed = otherMon.getSpeed() - otherMon.getDeltaSpeed();
-		
 	}
 	
 	// The checkBattle method is used to see if the CURRENT battle will continue (i.e. same Pokemon)
@@ -685,6 +846,11 @@ public class Battle {
 	public void applyTrainerAttack(Move attack, double stab) {
 		int newHp = 0;
 		double accuracy = Math.random();
+		// If the trainer's turn is skipped, nothing will happen 
+		if (trainerSkipTurn) {
+			trainerSkipTurn=false;
+			return;
+		}
 		if (attack.getAccuracy()==0) {} // 100% accurate moves have an accuracy STAT of 0.0
 		// Applying accuracy %. If the attack misses, the damage is not applied. 
 		else if (accuracy>attack.getAccuracy()) {
@@ -720,6 +886,10 @@ public class Battle {
 	public void applyOtherAttack(Move attack, double stab) {
 		int newHp = 0;
 		double accuracy = Math.random();
+		if (otherSkipTurn) {
+			otherSkipTurn = false;
+			return;
+		}
 		// Applying accuracy %. If the attack misses, the damage is not applied. 
 		if (attack.getAccuracy()==0) {}
 		else if (accuracy>attack.getAccuracy()) {
@@ -750,60 +920,115 @@ public class Battle {
 			trainerMon.setDeltaHp(trainerMon.getDeltaHp() + newHp);
 		}
 	}
-	
+	// Statuses are applied at the end of every turn 
 	public void applyStatus() {
-		
 		// Trainer Pokemon Status
-		
-		if (trainerMonStatus==0) {
+		if (trainerMon.getStatus()==0) {
 			return; // No status 
 		}
 		// Poison - Takes away 1/8th of the Pokemon's HP
-		else if (trainerMonStatus==1) {
+		else if (trainerMon.getStatus()==1) {
 			trainerMon.setDeltaHp(trainerMon.getDeltaHp() + trainerMon.getHp()/8);
 		}
 		// Burn - Takes away 1/16th of HP every turn and HALVES the current attack stat.
-		else if (trainerMonStatus==2) {
+		else if (trainerMon.getStatus()==2) {
 			trainerMon.setDeltaHp(trainerMon.getDeltaHp() + (trainerMon.getHp()/16));
 			trainerMon.setDeltaAttack(trainerMonAttack/2);
 		}
 		// Paralyze
-		else if (trainerMonStatus==3) {
-			
+		// This will cut the Pokemon's speed to 25% 
+		// There is also a 25% chance for the Pokemon to be fully paralyzed, rendering it unable to move for a turn
+		else if (trainerMon.getStatus()==3) {
+			trainerMon.setDeltaSpeed(trainerMon.getDeltaSpeed()/4);
+			int random = (int) (Math.random()*4) + 1;
+			if (random==1) {
+				trainerSkipTurn = true;
+			}
 		}
 		// Sleep
-		else if (trainerMonStatus==4) {
-			
+		else if (trainerMon.getStatus()==4) {
+			// Guaranteed turn of sleep 
+			if (trainerSleepCounter==0) {
+				trainerSkipTurn = true;
+				trainerSleepCounter++;
+			}
+			// Forced to wake up to prevent infinite sleep 
+			else if (trainerSleepCounter==3){
+				trainerSleepCounter=0;
+				trainerMon.setStatus(0);
+				trainerSkipTurn = false;
+			}
+			else { // 50% chance to wake up 
+				int random = (int) (Math.random()*2) + 1;
+				if (random==1) {
+					trainerSleepCounter=0;
+					trainerMon.setStatus(0);
+					trainerSkipTurn = false;
+				}
+				else {
+					trainerSkipTurn = true;
+					trainerSleepCounter++;
+				}
+			}
 		}
 		// Badly Poisoned (through the move Toxic)
+		// It will do damage N*1/16 of max HP, where N is a counter that increases per turn. 
 		else {
-			
+			trainerMon.setDeltaHp(trainerMon.getDeltaHp() + trainerToxicCounter*trainerMon.getHp()/16);
+			trainerToxicCounter++; 
 		}
 		
 		// Opponent Pokemon Status
-		if (otherMonStatus==0) {
+		if (otherMon.getStatus()==0) {
 			return; // No status 
 		}
 		// Poison 
-		else if (otherMonStatus==1) {
+		else if (otherMon.getStatus()==1) {
 			otherMon.setDeltaHp(otherMon.getDeltaHp() + otherMon.getHp()/8);
 		}
 		// Burn - Takes away 1/16th of HP every turn and HALVES the current attack stat.
-		else if (otherMonStatus==2) {
+		else if (otherMon.getStatus()==2) {
 			otherMon.setDeltaHp(otherMon.getDeltaHp() + (otherMon.getHp()/16));
 			otherMon.setDeltaAttack(otherMonAttack/2);
 		}
 		// Paralyze
-		else if (otherMonStatus==3) {
-			
+		else if (otherMon.getStatus()==3) {
+			otherMon.setDeltaSpeed(otherMon.getDeltaSpeed()/4);
+			int random = (int) (Math.random()*4) + 1;
+			if (random==1) {
+				otherSkipTurn = true;
+			}
 		}
 		// Sleep
-		else if (otherMonStatus==4) {
-			
+		else if (otherMon.getStatus()==4) {
+			// Guaranteed turn of sleep 
+			if (otherSleepCounter==0) {
+				otherSkipTurn = true;
+				otherSleepCounter++;
+			}
+			// Forced to wake up to prevent infinite sleep 
+			else if (otherSleepCounter==3){
+				otherSleepCounter=0;
+				otherMon.setStatus(0);
+				otherSkipTurn = false;
+			}
+			else {
+				int random = (int) (Math.random()*2) + 1;
+				if (random==1) {
+					otherSleepCounter=0;
+					otherMon.setStatus(0);
+					otherSkipTurn = false;
+				}
+				else {
+					otherSkipTurn = true;
+					otherSleepCounter++; 
+				}
+			}
 		}
 		// Badly Poisoned (through the move Toxic)
 		else {
-			
+			otherMon.setDeltaHp(otherMon.getDeltaHp() + otherToxicCounter*otherMon.getHp()/16);
+			otherToxicCounter++; 
 		}
 		
 	}
