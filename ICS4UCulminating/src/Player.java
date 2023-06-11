@@ -12,7 +12,7 @@ public class Player {
 	static int playerY;
 	static int playerHeight = 80;
 	static int playerWidth = 64;
-	static Rectangle hitbox = new Rectangle(new Dimension(64,80));
+	static Rectangle hitbox = new Rectangle(new Dimension(48,64));
 	static BufferedImage currentPlayerImage;
 	// 1 - up, 2 - down, 3 - left, 4 - right
 	static int direction;
@@ -24,8 +24,8 @@ public class Player {
 	public Player (String type) {
 		playerX = 512 - playerWidth;
 		playerY = 384 - playerHeight;
-		hitbox.x = playerX;
-		hitbox.y = playerY;
+		hitbox.x = playerX + 8;
+		hitbox.y = playerY + 8;
 		direction = 1;
 		moving = false;
 		currentPlayerImage = Images.trainerUp[1];

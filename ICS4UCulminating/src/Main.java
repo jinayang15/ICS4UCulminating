@@ -27,10 +27,10 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	static int tileMapHeight = 40;
 	BufferedImage currentBG;
 	// background top-left corner position, x and y value
-	int bgX = 0;
-	int bgY = 0;
-	int bgShiftPixels = 4;
-	boolean bgAdjusting = false;
+	static int bgX = 0;
+	static int bgY = 0;
+	static int bgShiftPixels = 4;
+	static boolean bgAdjusting = false;
 	// last bg position
 	int saveBGX = -960;
 	int saveBGY = -1920;
@@ -41,6 +41,10 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 
 	public static Rectangle[][] allWalls = new Rectangle[tileMapHeight][tileMapWidth];
 	public static Rectangle[][] currentWindowWalls = new Rectangle[tileScreenHeight][tileScreenWidth];
+	public static boolean collisionUp = false;
+	public static boolean collisionDown = false;
+	public static boolean collisionLeft = false;
+	public static boolean collisionRight = false;
 
 	public Main() {
 		// sets up JPanel
@@ -91,14 +95,16 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			currentBG = Images.pewterCity[0];
 			Animations.walk();
 			Animations.resetWalk();
+			adjustWalls();
+			for (int i = 0; i < 40; i++) {
+				for (int j = 0; j < 48; j++) {
+					if (allWalls[i][j] != null) {
+						checkCollision(allWalls[i][j]);
+					}
+				}
+			}
+			System.out.println(collisionUp + " " + collisionDown + " " + collisionLeft + " " + collisionRight);
 			bgShift();
-			bgAdjust();
-//			for (int i = 0; i < 40; i++) {
-//				for (int j = 0; j < 48; j++) {
-//					if (walls[i][j] != null)
-//						checkCollision(walls[i][j]);
-//				}
-//			}
 		}
 	}
 
@@ -109,9 +115,9 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			g.drawImage(Player.getCurrentPlayerImage(), Player.hitbox.x, Player.hitbox.y, null);
 //			for (int i = 0; i < 40; i++) {
 //				for (int j = 0; j < 48; j++) {
-//					if (walls[i][j] != null) {
+//					if (allWalls[i][j] != null) {
 //						g.setColor(Color.RED);
-//						g.fillRect(walls[i][j].x, walls[i][j].y, 64, 64);
+//						g.fillRect(allWalls[i][j].x, allWalls[i][j].y, 64, 64);
 //					}
 //				}
 //			}
@@ -236,26 +242,42 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	// background shifts with the player
 	public void bgShift() {
 		if (Player.getMoving()) {
-			if (Player.getDirection() == 1) {
+			if (Player.getDirection() == 1 && !collisionUp) {
 				if (bgY + bgShiftPixels > 0)
 					bgY = 0;
 				else
 					bgY += bgShiftPixels;
-			} else if (Player.getDirection() == 2) {
+				collisionUp = false;
+				collisionDown = false;
+				collisionLeft = false;
+				collisionRight = false;
+			} else if (Player.getDirection() == 2 && !collisionDown) {
 				if (bgY - bgShiftPixels < -tileMapHeight * tileSize + screenHeight)
 					bgY = -tileMapHeight * tileSize + screenHeight;
 				else
 					bgY -= bgShiftPixels;
-			} else if (Player.getDirection() == 3) {
+				collisionUp = false;
+				collisionDown = false;
+				collisionLeft = false;
+				collisionRight = false;
+			} else if (Player.getDirection() == 3 && !collisionLeft) {
 				if (bgX + bgShiftPixels > 0)
 					bgX = 0;
 				else
 					bgX += bgShiftPixels;
-			} else if (Player.getDirection() == 4) {
+				collisionUp = false;
+				collisionDown = false;
+				collisionLeft = false;
+				collisionRight = false;
+			} else if (Player.getDirection() == 4 && !collisionRight) {
 				if (bgX - bgShiftPixels < -tileMapWidth * tileSize + screenWidth)
 					bgX = -tileMapWidth * tileSize + screenWidth;
 				else
 					bgX -= bgShiftPixels;
+				collisionUp = false;
+				collisionDown = false;
+				collisionLeft = false;
+				collisionRight = false;
 			}
 		}
 	}
@@ -284,10 +306,20 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		}
 	}
 
+	public static void adjustWalls() {
+		for (int i = 0; i < 40; i++) {
+			for (int j = 0; j < 48; j++) {
+				if (allWalls[i][j] != null) {
+					allWalls[i][j].x = j * 64 + bgX;
+					allWalls[i][j].y = i * 64 + bgY;
+				}
+			}
+		}
+	}
+
 	void checkCollision(Rectangle wall) {
 		// check if Player.hitbox touches wall
 		if (Player.hitbox.intersects(wall)) {
-			System.out.println("collision");
 			// stop the Player.hitbox from moving
 			double left1 = Player.hitbox.getX();
 			double right1 = Player.hitbox.getX() + Player.hitbox.getWidth();
@@ -297,25 +329,26 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			double right2 = wall.getX() + wall.getWidth();
 			double top2 = wall.getY();
 			double bottom2 = wall.getY() + wall.getHeight();
-
+			
 			if (right1 > left2 && left1 < left2 && right1 - left2 < bottom1 - top2 && right1 - left2 < bottom2 - top1) {
 				// Player.hitbox collides from left side of the wall
 				Player.hitbox.x = wall.x - Player.hitbox.width;
+				collisionRight = true;
 			} else if (left1 < right2 && right1 > right2 && right2 - left1 < bottom1 - top2
 					&& right2 - left1 < bottom2 - top1) {
 				// Player.hitbox collides from right side of the wall
 				Player.hitbox.x = wall.x + wall.width;
+				collisionLeft = true;
 			} else if (bottom1 > top2 && top1 < top2) {
 				// Player.hitbox collides from top side of the wall
 				Player.hitbox.y = wall.y - Player.hitbox.height;
+				collisionDown = true;
 			} else if (top1 < bottom2 && bottom1 > bottom2) {
 				// Player.hitbox collides from bottom side of the wall
 				Player.hitbox.y = wall.y + wall.height;
+				collisionUp = true;
 			}
 		}
-	}
-
-	public static void updateCurrentWindow() {
 	}
 
 	public static void changeDirection() {
