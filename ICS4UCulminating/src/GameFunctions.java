@@ -1,6 +1,7 @@
 // The GameFunctions class is used to perform all the game functions 
 // These game functions include text file reading, etc. 
 
+import java.awt.Rectangle;
 import java.io.*;
 import java.util.*;
 
@@ -102,10 +103,25 @@ public class GameFunctions {
 			Move.moveSets[i] = m;
 		}
 	}
+	public static void importWalls() throws IOException {
+		BufferedReader br = new BufferedReader(new FileReader("PewterCity.txt"));
+		for (int i = 0; i < 40; i++) {
+			String line = br.readLine();
+			StringTokenizer st = new StringTokenizer(line);
+			for (int j = 0; j < 48; j++) {
+				if (Integer.parseInt(st.nextToken()) == 1) {
+					Main.allWalls[i][j] = new Rectangle(i*64, j*64, 64,64);
+				}
+				System.out.println(Main.allWalls[i][j]);
+			}
+			System.out.println();
+		}
+	}
 	
 	public static void importEverything() throws IOException{
 		importMoves();
 		importMoveSets();
+		importWalls();
 		importPokemon();
 	}
 

@@ -65,7 +65,7 @@ public class Animations {
 	public static void resetWalk() {
 		if (!Player.getMoving()) {
 			walkIndex = 1;
-			walkCurrentTick = 9;
+			walkCurrentTick = 10;
 			switch (Player.getDirection()) {
 			case 1:
 				Player.setCurrentPlayerImage(Images.trainerUp[1]);

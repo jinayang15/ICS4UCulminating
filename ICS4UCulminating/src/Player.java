@@ -1,3 +1,5 @@
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 
 // The Player class is used to store the user's Pokemon, items, and money.
@@ -10,6 +12,7 @@ public class Player {
 	static int playerY;
 	static int playerHeight = 80;
 	static int playerWidth = 64;
+	static Rectangle hitbox = new Rectangle(new Dimension(64,80));
 	static BufferedImage currentPlayerImage;
 	// 1 - up, 2 - down, 3 - left, 4 - right
 	static int direction;
@@ -21,6 +24,8 @@ public class Player {
 	public Player (String type) {
 		playerX = 512 - playerWidth;
 		playerY = 384 - playerHeight;
+		hitbox.x = playerX;
+		hitbox.y = playerY;
 		direction = 1;
 		moving = false;
 		currentPlayerImage = Images.trainerUp[1];
@@ -89,5 +94,9 @@ public class Player {
 	}
 	public static void setCurrentPlayerImage(BufferedImage b) {
 		currentPlayerImage = b;
+	}
+	
+	public static Rectangle getHitbox() {
+		return hitbox;	
 	}
 }
