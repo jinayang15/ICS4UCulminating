@@ -99,4 +99,8 @@ public class Player {
 	public static Rectangle getHitbox() {
 		return hitbox;	
 	}
+	
+	public Pokemon[] getPokemonList() {
+		return pokemonList;
+	}
 }

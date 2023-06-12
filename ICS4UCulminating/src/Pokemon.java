@@ -31,6 +31,7 @@ public class Pokemon {
 	private PokeType type2;
 	private ArrayList <PokeType> typeList = new ArrayList<>();
 	private int status;
+	private boolean faint = false;
 	// Poison - 1
 	// Burn - 2
 	// Paralyzed - 3
@@ -190,6 +191,14 @@ public class Pokemon {
 	
 	public ArrayList<PokeType> getTypeList() {
 		return typeList;
+	}
+	
+	public boolean getFaint() {
+		return faint; 
+	}
+	
+	public void setFaint(boolean faint) {
+		this.faint = faint;
 	}
 	
 	public void setDeltaHp(int deltaHp) {

@@ -8,6 +8,9 @@ import java.io.*;
 public class Battle {
 
 	// Variables 
+	Player player;
+	Trainer other;
+	
 	Pokemon trainerMon;
 	Pokemon otherMon;
 	private boolean attack = false; 
@@ -60,9 +63,14 @@ public class Battle {
 	private int otherToxicCounter = 1;
 	
 	// Constructor
-	public Battle (Pokemon trainerMon, Pokemon otherMon) {
-		this.trainerMon = trainerMon;
-		this.otherMon = otherMon;
+	public Battle (Player player, Trainer other) {
+		
+		this.player = player;
+		this.other = other;
+		
+		trainerMon = player.getPokemonList()[0];
+		otherMon = other.getPokemonList()[0];
+
 		trainerMonHp = trainerMon.getHp() - trainerMon.getDeltaHp();
 		trainerMonAttack = trainerMon.getAttack();
 		trainerMonDef = trainerMon.getDef();
@@ -81,13 +89,33 @@ public class Battle {
 		battleStart();
 	}
 	
+	// Overloaded constructor for switching in Pokemon 
+	// It will get the index of the Pokemon that wants to be switched in 
+	public Battle (int index) {
+		trainerMon = player.getPokemonList()[index];
+		trainerMonHp = trainerMon.getHp() - trainerMon.getDeltaHp();
+		trainerMonAttack = trainerMon.getAttack();
+		trainerMonDef = trainerMon.getDef();
+		trainerMonSpAtk = trainerMon.getSpAtk();
+		trainerMonSpDef = trainerMon.getSpDef();
+		trainerMonSpeed = trainerMon.getSpeed();
+		updateStats();
+		battleStart(); 
+	}
+	
+	// Overloaded constructor for switching the enemy Pokemon 
+	public Battle (Pokemon trainerMon, Pokemon otherMon, int index) {
+		this.trainerMon = trainerMon; // Shouldn't affect anything...
+		
+		come here too 
+		test if overloading constructor will change stats? 
+	}
+	
 	// BATTLE START
 	public void battleStart() {
 		// Determining who goes first 
 		while (battleContinue) {
-			coordinateBattle();
-			oi you need to check battle here 
-			also need to check battle right after every attack 
+			coordinateBattle(); 
 		}
 	}
 	
@@ -115,7 +143,6 @@ public class Battle {
 	// This method takes in no parameters
 	// It also returns nothing 
 	public void coordinateBattle() {
-		// This is going to be such a fucking pain in the ass holy SHIT 
 		
 		applyStatus(); // Apply status first to determine if moves are going to be skipped 
 		
@@ -147,7 +174,6 @@ public class Battle {
 						System.out.println(otherMon.getName() + " is asleep!");
 					}
 				}
-				
 			}
 			else {
 				if (!otherSkipTurn) {
@@ -782,6 +808,10 @@ public class Battle {
 	// It returns nothing 
 	public void updateStats() {
 		trainerMonHp = trainerMon.getHp() - trainerMon.getDeltaHp();
+		if (trainerMonHp<=0) {
+			trainerMon.setStatus(0);
+			trainerSkipTurn = true; 
+		}
 		trainerMonAttack = trainerMon.getAttack() - trainerMon.getDeltaAttack();
 		trainerMonDef = trainerMon.getDef() - trainerMon.getDeltaDef();
 		trainerMonSpAtk = trainerMon.getSpAtk() - trainerMon.getSpAtk();
@@ -789,22 +819,48 @@ public class Battle {
 		trainerMonSpeed = trainerMon.getSpeed() - trainerMon.getDeltaSpeed();
 		
 		otherMonHp = otherMon.getHp() - otherMon.getDeltaHp();
+		if (otherMonHp<=0) {
+			otherMon.setStatus(0);
+			otherSkipTurn = true; 
+		}
 		otherMonAttack = otherMon.getAttack() - otherMon.getDeltaAttack();
 		otherMonDef = otherMon.getDef() - otherMon.getDeltaDef();
 		otherMonSpAtk = otherMon.getSpAtk() - otherMon.getSpAtk();
 		otherMonSpDef = otherMon.getSpDef() - otherMon.getDeltaSpDef();
 		otherMonSpeed = otherMon.getSpeed() - otherMon.getDeltaSpeed();
+		checkBattle(); 
 	}
 	
 	// The checkBattle method is used to see if the CURRENT battle will continue (i.e. same Pokemon)
 	// The battle will not continue if a Pokemon has fainted, or the user has switched out
-	public void checkBattle() {
+	// It will return TRUE if the battle is good, FALSE if the battle must end. 
+	public boolean checkBattle() {
+		if (otherMonHp<=0) {
+			otherMon.setFaint(true);
+			for (int i = 0; i<other.getPokemonList().length; i++) {
+				if (other.getPokemonList()[i].getFaint()==false) {
+					// new Battle(trainerMon, otherMon, i) 
+					break;
+				}
+				else if (i==other.getPokemonList().length-1) {
+					battleContinue = false;
+				}
+			}
+		}
+		
+		guo lai 
+		when a pokemon dies, change status to 0
+		then, in the coordinateBattle method, check if pokemon faints? 
+		if enemy dies, new constructor and essentially a "new" battle
+		
+		
 		if (trainerMonHp<=0 || otherMonHp<=0) { // OR SWITCH POKEMON 
 			battleContinue = false;
 			// MUST CHOOSE POKEMON, AND CONSTRUCTOR WILL BE USED AGAIN 
 		}
 		if (!battleContinue) {
 			// ----------------------------------------------------------------------------------------------------
+			endBattle(); 
 		}
 	}
 	
