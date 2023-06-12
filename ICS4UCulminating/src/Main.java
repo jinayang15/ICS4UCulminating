@@ -134,7 +134,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	// changes direction depending on key pressed and sets moving to true !
 	public void keyPressed(KeyEvent e) {
 
-		if (e.getKeyChar() != lastKeyPressed) {
+		if (e.getKeyChar() != lastKeyPressed || !Player.getMoving()) {
 			if (e.getKeyChar() == 'w') {
 				Player.setDirection(1);
 				Player.setMoving(true);
