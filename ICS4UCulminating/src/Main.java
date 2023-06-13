@@ -15,6 +15,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	 * - PokeMart
 	 */
 	public static int gameState = 0;
+	public static Player player;
 	// self explanatory variables
 	int FPS = 60;
 	Thread thread;
@@ -29,7 +30,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	// background top-left corner position, x and y value
 	static int bgX = 0;
 	static int bgY = 0;
-	static int bgShiftPixels = 4;
+	static int defaultShiftPixels = 4;
 	static boolean bgAdjusting = false;
 	// last bg position
 	int saveBGX = -960;
@@ -38,9 +39,9 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	long lastActionTime = 0;
 	char lastKeyPressed = ' ';
 	char lastKeyReleased = ' ';
+	Queue movesQ = new LinkedList();
 
-	public static Rectangle[][] allWalls = new Rectangle[tileMapHeight][tileMapWidth];
-	public static Rectangle[][] currentWindowWalls = new Rectangle[tileScreenHeight][tileScreenWidth];
+	public static Wall[][] allWalls = new Wall[tileMapHeight][tileMapWidth];
 	public static boolean collisionUp = false;
 	public static boolean collisionDown = false;
 	public static boolean collisionLeft = false;
@@ -93,8 +94,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 
 		} else if (gameState == 2) {
 			currentBG = Images.pewterCity[0];
-			Animations.walk();
-			Animations.resetWalk();
 			adjustWalls();
 			for (int i = 0; i < 40; i++) {
 				for (int j = 0; j < 48; j++) {
@@ -103,8 +102,15 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 					}
 				}
 			}
-			System.out.println(collisionUp + " " + collisionDown + " " + collisionLeft + " " + collisionRight);
-			bgShift();
+			Animations.walk();
+			Animations.resetWalk();
+			
+			if (movesQ.size() > 1) {
+				bgAdjust();
+			} else {
+				bgShift();
+			}
+			//System.out.println(collisionUp + " " + collisionDown + " " + collisionLeft + " " + collisionRight);
 		}
 	}
 
@@ -112,15 +118,18 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		super.paintComponent(g);
 		g.drawImage(currentBG, bgX, bgY, null);
 		if (gameState == 2) {
-			g.drawImage(Player.getCurrentPlayerImage(), Player.hitbox.x, Player.hitbox.y, null);
-//			for (int i = 0; i < 40; i++) {
-//				for (int j = 0; j < 48; j++) {
-//					if (allWalls[i][j] != null) {
-//						g.setColor(Color.RED);
-//						g.fillRect(allWalls[i][j].x, allWalls[i][j].y, 64, 64);
-//					}
-//				}
-//			}
+
+			g.drawImage(Player.getCurrentPlayerImage(), Player.getPlayerX(), Player.getPlayerY(), null);
+			g.drawRect(Player.hitbox.x, Player.hitbox.y, Player.hitbox.width, Player.hitbox.height);
+			System.out.println(Player.getPlayerX() + " " + Player.getPlayerY());
+			for (int i = 0; i < 40; i++) {
+				for (int j = 0; j < 48; j++) {
+					if (allWalls[i][j] != null) {
+						g.setColor(Color.RED);
+						g.fillRect(allWalls[i][j].x, allWalls[i][j].y, 64, 64);
+					}
+				}
+			}
 		}
 	}
 
@@ -133,22 +142,32 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	@Override
 	// changes direction depending on key pressed and sets moving to true !
 	public void keyPressed(KeyEvent e) {
-
-		if (e.getKeyChar() != lastKeyPressed || !Player.getMoving()) {
-			if (e.getKeyChar() == 'w') {
+		char x = e.getKeyChar();
+		if (!Player.getMoving() || x != lastKeyPressed) {
+//			if (x != lastKeyPressed) {
+//				movesQ.add(e.getKeyChar());
+//			} 
+//			if (checkTile()) {
+//				x = (char) movesQ.remove();
+			if (x == 'w') {
 				Player.setDirection(1);
 				Player.setMoving(true);
-			} else if (e.getKeyChar() == 's') {
+				if (bgX == -448 && bgY == -768) {
+//						Battle b = new Battle(player, new Trainer());
+				}
+			} else if (x == 's') {
 				Player.setDirection(2);
 				Player.setMoving(true);
-			} else if (e.getKeyChar() == 'a') {
+			} else if (x == 'a') {
 				Player.setDirection(3);
 				Player.setMoving(true);
-			} else if (e.getKeyChar() == 'd') {
+			} else if (x == 'd') {
 				Player.setDirection(4);
 				Player.setMoving(true);
 			}
 			lastKeyPressed = e.getKeyChar();
+//			}
+//			System.out.println(checkTile());
 		}
 	}
 
@@ -235,7 +254,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		// it might mess up your graphics and collisions
 		frame.setResizable(false);
 		initialize();
-		System.out.println(new Player("Fire"));
+		Player player = new Player("Fire");
+		System.out.println();
 		System.out.println(new Trainer());
 	}
 
@@ -243,37 +263,109 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	public void bgShift() {
 		if (Player.getMoving()) {
 			if (Player.getDirection() == 1 && !collisionUp) {
-				if (bgY + bgShiftPixels > 0)
-					bgY = 0;
-				else
-					bgY += bgShiftPixels;
-				collisionUp = false;
-				collisionDown = false;
-				collisionLeft = false;
-				collisionRight = false;
+				bgShiftUp(defaultShiftPixels);
 			} else if (Player.getDirection() == 2 && !collisionDown) {
-				if (bgY - bgShiftPixels < -tileMapHeight * tileSize + screenHeight)
-					bgY = -tileMapHeight * tileSize + screenHeight;
-				else
-					bgY -= bgShiftPixels;
-				collisionUp = false;
-				collisionDown = false;
-				collisionLeft = false;
-				collisionRight = false;
+				bgShiftDown(defaultShiftPixels);
 			} else if (Player.getDirection() == 3 && !collisionLeft) {
-				if (bgX + bgShiftPixels > 0)
-					bgX = 0;
-				else
-					bgX += bgShiftPixels;
+				bgShiftLeft(defaultShiftPixels);
+			} else if (Player.getDirection() == 4 && !collisionRight) {
+				bgShiftRight(defaultShiftPixels);
+			}
+		}
+	}
+
+	public void bgShiftUp(int bgShiftPixels) {
+		if (bgY + bgShiftPixels > 0) {
+			bgY = 0;
+		} else {
+			bgY += bgShiftPixels;
+			collisionUp = false;
+			collisionDown = false;
+			collisionLeft = false;
+			collisionRight = false;
+		}
+	}
+	public void bgShiftUp(double bgShiftPixels) {
+		if (bgY + bgShiftPixels > 0) {
+			bgY = 0;
+		} else {
+			bgY += bgShiftPixels;
+			collisionUp = false;
+			collisionDown = false;
+			collisionLeft = false;
+			collisionRight = false;
+		}
+	}
+
+	public void bgShiftDown(int bgShiftPixels) {
+		if (bgY - bgShiftPixels < -tileMapHeight * tileSize + screenHeight)
+			bgY = -tileMapHeight * tileSize + screenHeight;
+		else {
+			bgY -= bgShiftPixels;
+			collisionUp = false;
+			collisionDown = false;
+			collisionLeft = false;
+			collisionRight = false;
+		}
+	}
+	public void bgShiftDown(double bgShiftPixels) {
+		if (bgY - bgShiftPixels < -tileMapHeight * tileSize + screenHeight)
+			bgY = -tileMapHeight * tileSize + screenHeight;
+		else {
+			bgY -= bgShiftPixels;
+			collisionUp = false;
+			collisionDown = false;
+			collisionLeft = false;
+			collisionRight = false;
+		}
+	}
+
+	public void bgShiftLeft(int bgShiftPixels) {
+		if (Player.getDirection() == 3 && !collisionLeft) {
+			if (bgX + bgShiftPixels > 0)
+				bgX = 0;
+			else {
+				bgX += bgShiftPixels;
 				collisionUp = false;
 				collisionDown = false;
 				collisionLeft = false;
 				collisionRight = false;
-			} else if (Player.getDirection() == 4 && !collisionRight) {
-				if (bgX - bgShiftPixels < -tileMapWidth * tileSize + screenWidth)
-					bgX = -tileMapWidth * tileSize + screenWidth;
-				else
-					bgX -= bgShiftPixels;
+			}
+		}
+	}
+	public void bgShiftLeft(double bgShiftPixels) {
+		if (Player.getDirection() == 3 && !collisionLeft) {
+			if (bgX + bgShiftPixels > 0)
+				bgX = 0;
+			else {
+				bgX += bgShiftPixels;
+				collisionUp = false;
+				collisionDown = false;
+				collisionLeft = false;
+				collisionRight = false;
+			}
+		}
+	}
+	
+	public void bgShiftRight(int bgShiftPixels) {
+		if (Player.getDirection() == 4 && !collisionRight) {
+			if (bgX - bgShiftPixels < -tileMapWidth * tileSize + screenWidth)
+				bgX = -tileMapWidth * tileSize + screenWidth;
+			else {
+				bgX -= bgShiftPixels;
+				collisionUp = false;
+				collisionDown = false;
+				collisionLeft = false;
+				collisionRight = false;
+			}
+		}
+	}
+	public void bgShiftRight(double bgShiftPixels) {
+		if (Player.getDirection() == 4 && !collisionRight) {
+			if (bgX - bgShiftPixels < -tileMapWidth * tileSize + screenWidth)
+				bgX = -tileMapWidth * tileSize + screenWidth;
+			else {
+				bgX -= bgShiftPixels;
 				collisionUp = false;
 				collisionDown = false;
 				collisionLeft = false;
@@ -288,19 +380,19 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 				System.out.println("Horizontal Shift " + Math.abs(bgX) % tileSize + " " + Player.getDirection());
 				if (Player.getDirection() == 3) {
 					System.out.println("Slide to the left");
-					bgX += bgShiftPixels;
+					bgX += defaultShiftPixels;
 				} else if (Player.getDirection() == 4) {
 					System.out.println("Slide to the right");
-					bgX -= bgShiftPixels;
+					bgX -= defaultShiftPixels;
 				}
 			} else if (Math.abs(bgY) % tileSize != 0) {
 				System.out.println("Vertical Shift " + Math.abs(bgY) % tileSize + " " + Player.getDirection());
 				if (Player.getDirection() == 1) {
 					System.out.println("Slide up");
-					bgY += bgShiftPixels;
+					bgY += defaultShiftPixels;
 				} else if (Player.getDirection() == 2) {
 					System.out.println("Slide down");
-					bgY -= bgShiftPixels;
+					bgY -= defaultShiftPixels;
 				}
 			}
 		}
@@ -317,7 +409,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		}
 	}
 
-	void checkCollision(Rectangle wall) {
+	void checkCollision(Wall wall) {
 		// check if Player.hitbox touches wall
 		if (Player.hitbox.intersects(wall)) {
 			// stop the Player.hitbox from moving
@@ -329,29 +421,33 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			double right2 = wall.getX() + wall.getWidth();
 			double top2 = wall.getY();
 			double bottom2 = wall.getY() + wall.getHeight();
+
 			
 			if (right1 > left2 && left1 < left2 && right1 - left2 < bottom1 - top2 && right1 - left2 < bottom2 - top1) {
 				// Player.hitbox collides from left side of the wall
-				Player.hitbox.x = wall.x - Player.hitbox.width;
 				collisionRight = true;
 			} else if (left1 < right2 && right1 > right2 && right2 - left1 < bottom1 - top2
 					&& right2 - left1 < bottom2 - top1) {
 				// Player.hitbox collides from right side of the wall
-				Player.hitbox.x = wall.x + wall.width;
 				collisionLeft = true;
 			} else if (bottom1 > top2 && top1 < top2) {
 				// Player.hitbox collides from top side of the wall
-				Player.hitbox.y = wall.y - Player.hitbox.height;
 				collisionDown = true;
 			} else if (top1 < bottom2 && bottom1 > bottom2) {
 				// Player.hitbox collides from bottom side of the wall
-				Player.hitbox.y = wall.y + wall.height;
 				collisionUp = true;
 			}
 		}
 	}
 
-	public static void changeDirection() {
+	public static boolean checkTile() {
+		if (Math.abs(bgX) % tileSize != 0 && Math.abs(bgY) % tileSize != 0) {
+			return true;
+		}
+		return false;
 
+	}
+
+	public static void startBattle() {
 	}
 }

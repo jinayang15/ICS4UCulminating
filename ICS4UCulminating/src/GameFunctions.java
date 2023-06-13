@@ -15,11 +15,11 @@ public class GameFunctions {
 			BufferedReader br = new BufferedReader(new FileReader("allPokemon.txt"));
 			StringTokenizer st;
 			String line = "";
-			// Temporary Pokemon in index 0 
+			// Temporary Pokemon in index 0
 			ArrayList<Move> tempMoveList = new ArrayList<>();
 			tempMoveList.add(Move.allMoves.get(0));
-			Pokemon.pokeList.add(new Pokemon ("peepeepoopoo", new PokeType("Water"),1,1,1,1,1,1,tempMoveList));
-			//----------------------------
+			Pokemon.pokeList.add(new Pokemon("peepeepoopoo", new PokeType("Water"), 1, 1, 1, 1, 1, 1, tempMoveList));
+			// ----------------------------
 			int i = 0;
 			while ((line = br.readLine()) != null) {
 				st = new StringTokenizer(line, " ");
@@ -84,7 +84,7 @@ public class GameFunctions {
 			Move.allMoves.add(m);
 		}
 	}
-	
+
 	// imports all move sets of each pokemon
 	public static void importMoveSets() throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("moveSet.txt"));
@@ -103,6 +103,7 @@ public class GameFunctions {
 			Move.moveSets[i] = m;
 		}
 	}
+
 	public static void importWalls() throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("PewterCity.txt"));
 		for (int i = 0; i < 40; i++) {
@@ -110,15 +111,42 @@ public class GameFunctions {
 			StringTokenizer st = new StringTokenizer(line);
 			for (int j = 0; j < 48; j++) {
 				if (Integer.parseInt(st.nextToken()) == 1) {
-					Main.allWalls[i][j] = new Rectangle(i*64, j*64, 64,64);
+					Main.allWalls[i][j] = new Wall(i * Main.tileSize, j * Main.tileSize, Main.tileSize, Main.tileSize);
 				}
 				System.out.println(Main.allWalls[i][j]);
 			}
 			System.out.println();
 		}
+		for (int i = 0; i < Main.tileMapHeight; i++) {
+			for (int j = 0; j < Main.tileMapWidth; j++) {
+				Wall w = Main.allWalls[i][j];
+				if (w != null) {
+					if (i - 1 >= 0) {
+						if (Main.allWalls[i - 1][j] != null) {
+							w.setBlockedUp(true);
+						}
+					}
+					if (i + 1 < Main.tileMapHeight ) {
+						if (Main.allWalls[i + 1][j] != null) {
+							w.setBlockedDown(true);
+						}
+					}
+					if (j - 1 >= 0) {
+						if (Main.allWalls[i][j-1] != null) {
+							w.setBlockedLeft(true);
+						}
+					}
+					if (j + 1 < Main.tileMapHeight ) {
+						if (Main.allWalls[i][j+1] != null) {
+							w.setBlockedRight(true);
+						}
+					}
+				}
+			}
+		}
 	}
-	
-	public static void importEverything() throws IOException{
+
+	public static void importEverything() throws IOException {
 		importMoves();
 		importMoveSets();
 		importWalls();
