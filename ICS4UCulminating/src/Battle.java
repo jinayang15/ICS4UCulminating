@@ -5,6 +5,7 @@
 // which ALWAYS goes first. As a result, we will first get what the user wants to do, then get what the computer wants, and THEN apply it. 
 
 import java.io.*; 
+import java.util.*;
 public class Battle {
 
 	// Variables 
@@ -139,18 +140,44 @@ public class Battle {
 	// It returns nothing
 	public Move trainerChooseAttack() {
 		// WHAT THE USER CHOOSES BASED ON THE GRAPHICS THINGY 
-		return trainerMon.getMoves()[0]; // TEMP
+		int index = 0;
+		Scanner s = new Scanner (System.in);
+		System.out.println("Choose an attack: ");
+		for (int i = 0; i < trainerMon.getMoves().length; i++) {
+			try {
+				System.out.println((i+1) + ") " + trainerMon.getMoves()[i].getName());
+			}
+			catch (NullPointerException e) {
+				break;
+			}
+		}
+		while (index==0) {
+			index = Integer.parseInt(s.nextLine());
+		}
+		System.out.println(trainerMon.getName() + " used " + trainerMon.getMoves()[index-1].getName() + "!");
+		return trainerMon.getMoves()[index-1];
 	}
 	
 	// The opponentChooseAttack method randomly chooses a move for the opponent to use
 	// It takes in no parameters
 	// It returns nothing 
 	public Move opponentChooseAttack() {
+		Move tempMove = otherMon.getMoves()[0];
+		boolean valid = false;
 		int random = (int) (Math.random()*4) + 1;
-		while (otherMon.getMoves()[random-1].equals(null)) {
-			random--;
+		while (!valid) {
+			try {
+				tempMove = otherMon.getMoves()[random-1];
+				String temp = tempMove.getName(); // Prevents other type to be null (I'm pretty sure as it throws exception...)
+				valid = true;
+			}
+			catch (NullPointerException e) {
+				System.out.println("other move failed");
+				random--; 
+			}
 		}
-		return otherMon.getMoves()[random-1];
+		System.out.println("\n" + otherMon.getName() + " used " + tempMove.getName() + "!");
+		return tempMove;
 	}
 	
 	// The coordinateBattle method is used to coordinate the battle. It will check for speed, priority moves, etc. 
@@ -158,6 +185,12 @@ public class Battle {
 	// This method takes in no parameters
 	// It also returns nothing 
 	public void coordinateBattle() {
+		
+		System.out.println("\nYOU\t" +  trainerMon.getName() + " HP: " + trainerMonHp);
+		System.out.println("--------------------");
+		System.out.println("THEM\t" +  otherMon.getName() + " HP: " + otherMonHp);
+		System.out.println("\n");
+		
 		
 		applyStatus(); // Apply status first to determine if moves are going to be skipped 
 		
@@ -336,7 +369,7 @@ public class Battle {
 	// WAS PREVIOUSLY trainerAttack method (so if this does not work, go back)
 	// attack = trainerMon.getMoves()[index]
 	 public void attack (Move attack, Pokemon attackMon, Pokemon defendMon) {
-		 
+		boolean keepGoing = true;
 		// PP Counter!!
 		 
 		// TEMPORARY 
@@ -375,32 +408,49 @@ public class Battle {
 			}
 			// These next moves are only possible by the opposing Pokemon, so there is no need to check if it is from the player 
 			else if (attack.getName().equals("Fire Punch")) {
-				applyOtherAttack (attack, stab); 
-				if (hit && trainerMon.getStatus()==0 && !trainerMon.getType1().equals(new PokeType ("Fire")) && !trainerMon.getType2().equals(new PokeType ("Fire"))) {
-					random = (int) (Math.random()*10) + 1;
-					if (random==1) {
-						trainerMon.setStatus(2);
+				applyOtherAttack (attack, stab);  
+				if (hit && trainerMon.getStatus()==0) {
+					for (int i = 0; i<trainerMon.getTypeList().size(); i++) {
+						if (trainerMon.getTypeList().get(i).equals(new PokeType ("Fire"))) keepGoing = false;
+					}
+					if (keepGoing) {
+						random = (int) (Math.random()*10) + 1;
+						if (random==1) {
+							trainerMon.setStatus(2);
+						}
 					}
 				}
 				hit = false;
 			}
 			else if (attack.getName().equals("Thunder Punch")) {
-				applyOtherAttack (attack, stab); 
-				if (hit && trainerMon.getStatus()==0 && !trainerMon.getType1().equals(new PokeType ("Electric")) && !trainerMon.getType2().equals(new PokeType ("Electric"))) {
-					random = (int) (Math.random()*10) + 1;
-					if (random==1) {
-						trainerMon.setStatus(3);
+				applyOtherAttack (attack, stab); // ELECTRIC 
+				if (hit && trainerMon.getStatus()==0) {
+					for (int i = 0; i<trainerMon.getTypeList().size(); i++) {
+						if (trainerMon.getTypeList().get(i).equals(new PokeType ("Electric"))) keepGoing = false;
+					}
+					if (keepGoing) {
+						random = (int) (Math.random()*10) + 1;
+						if (random==1) {
+							trainerMon.setStatus(3);
+							System.out.println(trainerMon.getName() + " was paralyzed!");
+						}
 					}
 				}
 				hit = false;
 			}
 			else if (attack.getName().equals("Poison Sting")) {
 				applyOtherAttack (attack, stab);
-				if (hit && trainerMon.getStatus()==0 && !trainerMon.getType1().equals(new PokeType ("Poison")) && !trainerMon.getType2().equals(new PokeType ("Poison"))) {
-					random = (int) (Math.random()*10) + 1;
-					// 30% chance to poison the target
-					if (random<=3) {
-						trainerMon.setStatus(1);
+				if (hit && trainerMon.getStatus()==0) {
+					for (int i = 0; i<trainerMon.getTypeList().size(); i++) {
+						if (trainerMon.getTypeList().get(i).equals(new PokeType ("Poison"))) keepGoing = false;
+					}
+					if (keepGoing) {
+						random = (int) (Math.random()*10) + 1;
+						// 30% chance to poison the target
+						if (random<=3) {
+							trainerMon.setStatus(1);
+							System.out.println(trainerMon.getName() + " was poisoned!");
+						}
 					}
 				}
 				hit = false;
@@ -415,13 +465,16 @@ public class Battle {
 			}
 			else if (attack.getName().equals("Poison Fang")) {
 				applyOtherAttack (attack, stab);
-				if (hit && trainerMon.getStatus()==0 && !trainerMon.getType1().equals(new PokeType ("Poison")) && !trainerMon.getType2().equals(new PokeType ("Poison"))) {
+				for (int i = 0; i<trainerMon.getTypeList().size(); i++) {
+					if (trainerMon.getTypeList().get(i).equals(new PokeType ("Poison"))) keepGoing = false;
+				}
+				if (keepGoing) {
 					random = (int) (Math.random()*10) + 1;
+					// 30% chance to poison the target
 					if (random<=3) {
-						trainerMon.setStatus(5);
+						trainerMon.setStatus(1);
 					}
 				}
-				hit = false;
 			}
 			else {
 				applyAttackChecker (attackMon, attack, stab);
@@ -453,30 +506,37 @@ public class Battle {
 							}
 						}
 					}
-					
 					hit = false;
 				}
 			}
 			else if (attack.getName().equals("Ember") || attack.getName().equals("Flamethrower") || attack.getName().equals("Fire Blast") || attack.getName().equals("Heat Wave")) {
 				applyAttackChecker (attackMon, attack, stab);
-				if (attackMon.equals(trainerMon)) {
+				if (attackMon.equals(trainerMon) && hit) {
 					if (otherMon.getStatus()==0) {
-						if (hit) {
+						for (int i = 0; i<otherMon.getTypeList().size(); i++) {
+							if (otherMon.getTypeList().get(i).equals(new PokeType ("Fire"))) keepGoing = false;
+						}
+						if (keepGoing) {
 							// 10% chance to burn the enemy, and fire Pokemon cannot get burned
 							random = (int) (Math.random()* (10)) + 1;
-							if (random==1 && !otherMon.getType1().equals(new PokeType ("Fire")) && !otherMon.getType1().equals(new PokeType("Fire"))) {
+							if (random==1) {
 								otherMon.setStatus(2);
+								System.out.println("The opposing " + otherMon.getName() + " was burned!");
 							}
 						}
 					}
 				}
 				else if (attackMon.equals(otherMon)) {
 					if (trainerMon.getStatus()==0) {
-						if (hit) {
+						for (int i = 0; i<trainerMon.getTypeList().size(); i++) {
+							if (trainerMon.getTypeList().get(i).equals(new PokeType ("Fire"))) keepGoing = false;
+						}
+						if (keepGoing) {
 							// 10% chance to burn the enemy, and fire Pokemon cannot get burned
 							random = (int) (Math.random()* (10)) + 1;
-							if (random==1 && !trainerMon.getType1().equals(new PokeType ("Fire")) && !trainerMon.getType1().equals(new PokeType("Fire"))) {
-								trainerMon.setStatus(2); 
+							if (random==1) {
+								trainerMon.setStatus(2);
+								System.out.println(trainerMon.getName() + " was burned!");
 							}
 						}
 					}
@@ -549,22 +609,34 @@ public class Battle {
 			
 			else if (attack.getName().equals("Thunder Shock") || attack.getName().equals("Thunderbolt")) {
 				applyOtherAttack(attack, stab); 
-				if (hit) {
-					// 10% chance of paralysis
-					random = (int) (Math.random()*(10)) + 1;
-					if (trainerMon.getStatus()==0 && random==1 && !trainerMon.getType1().equals(new PokeType ("Electric")) && !trainerMon.getType2().equals(new PokeType ("Electric"))) {
-						trainerMon.setStatus(3);
+				if (hit) { 
+					for (int i = 0; i<trainerMon.getTypeList().size(); i++) {
+						if (trainerMon.getTypeList().get(i).equals(new PokeType ("Electric"))) keepGoing = false;
+					}
+					if (keepGoing) {
+						// 10% chance of paralysis
+						random = (int) (Math.random()*(10)) + 1;
+						if (trainerMon.getStatus()==0 && random==1) {
+							trainerMon.setStatus(3);
+							System.out.println(trainerMon.getName() + " was paralyzed!");
+						}
 					}
 				}
 				hit = false;
 			}
 			else if (attack.getName().equals("Sludge")) {
 				applyOtherAttack(attack, stab);
-				// 
-				if (hit && trainerMon.getStatus()==0 && !trainerMon.getType1().equals(new PokeType ("Poison")) && !trainerMon.getType2().equals(new PokeType ("Poison"))) {
-					random = (int) (Math.random()*10) + 1;
-					if (random<=3) {
-						trainerMon.setStatus(1);
+				// 30% chance to poison
+				if (hit && trainerMon.getStatus()==0) {
+					for (int i = 0; i<trainerMon.getTypeList().size(); i++) {
+						if (trainerMon.getTypeList().get(i).equals(new PokeType ("Poison"))) keepGoing = false;
+					}
+					if (keepGoing) {
+						random = (int) (Math.random()*10) + 1;
+						if (random<=3) {
+							trainerMon.setStatus(1);
+							System.out.println(trainerMon.getName() + " was poisoned!");
+						}
 					}
 				}
 				hit = false;
@@ -668,8 +740,12 @@ public class Battle {
 							System.out.println("It had no effect!");
 						}
 						else {
-							if (!otherMon.getType1().equals(new PokeType ("Poison")) && !otherMon.getType2().equals(new PokeType("Poison"))) {
+							for (int i = 0; i<otherMon.getTypeList().size(); i++) {
+								if (otherMon.getTypeList().get(i).equals(new PokeType ("Poison"))) keepGoing = false;
+							}
+							if (keepGoing) {
 								otherMon.setStatus(1);
+								System.out.println("The opposing " + otherMon.getName() + " was poisoned!");
 							}
 							else {
 								System.out.println("It had no effect!");
@@ -680,13 +756,15 @@ public class Battle {
 						if (trainerMon.getStatus()!=0) {
 							System.out.println("It had no effect!");
 						}
+						for (int i = 0; i<trainerMon.getTypeList().size(); i++) {
+							if (trainerMon.getTypeList().get(i).equals(new PokeType ("Poison"))) keepGoing = false;
+						}
+						if (keepGoing) {
+							trainerMon.setStatus(1);
+							System.out.println(trainerMon.getName() + " was poisoned!");
+						}
 						else {
-							if (!trainerMon.getType1().equals(new PokeType ("Poison")) && !trainerMon.getType2().equals(new PokeType("Poison"))) {
-								trainerMon.setStatus(1);
-							}
-							else {
-								System.out.println("It had no effect!");
-							}
+							System.out.println("It had no effect!");
 						}
 					}
 				}
@@ -701,8 +779,12 @@ public class Battle {
 							System.out.println("It had no effect!");
 						}
 						else {
-							if (!otherMon.getType1().equals(new PokeType ("Electric")) && !otherMon.getType2().equals(new PokeType ("Electric"))) {
+							for (int i = 0; i<otherMon.getTypeList().size(); i++) {
+								if (otherMon.getTypeList().get(i).equals(new PokeType ("Electric"))) keepGoing = false;
+							}
+							if (keepGoing) {
 								otherMon.setStatus(3);
+								System.out.println("The opposing " + otherMon.getName() + " was paralyzed! It may be unable to move!");
 							}
 							else {
 								System.out.println("It had no effect!");
@@ -714,8 +796,12 @@ public class Battle {
 							System.out.println("It had no effect!");
 						}
 						else {
-							if (!trainerMon.getType1().equals(new PokeType ("Electric")) && !trainerMon.getType2().equals(new PokeType ("Electric"))) {
+							for (int i = 0; i<trainerMon.getTypeList().size(); i++) {
+								if (trainerMon.getTypeList().get(i).equals(new PokeType ("Electric"))) keepGoing = false;
+							}
+							if (keepGoing) {
 								trainerMon.setStatus(3);
+								System.out.println(trainerMon.getName() + " was paralyzed! It may be unable to move!");
 							}
 							else {
 								System.out.println("It had no effect!");
@@ -758,8 +844,12 @@ public class Battle {
 							System.out.println("It had no effect!");
 						}
 						else {
-							if (!otherMon.getType1().equals(new PokeType ("Electric")) && !otherMon.getType2().equals(new PokeType ("Electric"))) {
+							for (int i = 0; i<otherMon.getTypeList().size(); i++) {
+								if (otherMon.getTypeList().get(i).equals(new PokeType ("Electric"))) keepGoing = false;
+							}
+							if (keepGoing) {
 								otherMon.setStatus(3);
+								System.out.println("The opposing " + otherMon.getName() + " was paralyzed! It may be unable to move!");
 							}
 							else {
 								System.out.println("It had no effect!");
@@ -771,8 +861,12 @@ public class Battle {
 							System.out.println("It had no effect!");
 						}
 						else {
-							if (!trainerMon.getType1().equals(new PokeType ("Electric")) && !trainerMon.getType2().equals(new PokeType ("Electric"))) {
+							for (int i = 0; i<trainerMon.getTypeList().size(); i++) {
+								if (trainerMon.getTypeList().get(i).equals(new PokeType ("Electric"))) keepGoing = false;
+							}
+							if (keepGoing) {
 								trainerMon.setStatus(3);
+								System.out.println(trainerMon.getName() + " was paralyzed! It may be unable to move!");
 							}
 							else {
 								System.out.println("It had no effect!");
@@ -790,8 +884,12 @@ public class Battle {
 							System.out.println("It had no effect!");
 						}
 						else {
-							if (!otherMon.getType1().equals(new PokeType("Poison")) && !otherMon.getType2().equals(new PokeType("Poison"))) {
-								otherMon.setStatus(5); 
+							for (int i = 0; i<otherMon.getTypeList().size(); i++) {
+								if (otherMon.getTypeList().get(i).equals(new PokeType ("Poison"))) keepGoing = false;
+							}
+							if (keepGoing) {
+								otherMon.setStatus(5);
+								System.out.println("The opposing " + otherMon.getName() + " was badly poisoned!");
 							}
 							else {
 								System.out.println("It had no effect!");
@@ -803,8 +901,12 @@ public class Battle {
 							System.out.println("It had no effect!");
 						}
 						else {
-							if (!trainerMon.getType1().equals(new PokeType("Poison")) && !trainerMon.getType2().equals(new PokeType("Poison"))) {
-								trainerMon.setStatus(5); 
+							for (int i = 0; i<trainerMon.getTypeList().size(); i++) {
+								if (trainerMon.getTypeList().get(i).equals(new PokeType ("Poison"))) keepGoing = false;
+							}
+							if (keepGoing) {
+								trainerMon.setStatus(5);
+								System.out.println(trainerMon.getName() + " was badly poisoned!");
 							}
 							else {
 								System.out.println("It had no effect!");
@@ -962,7 +1064,7 @@ public class Battle {
 				newHp = (int) Math.round((2*(trainerMon.getLevel()+2)*attack.getAtkPower()*(trainerMon.getAttack()/otherMon.getDef())/50+2) * stab * PokeType.getTypeEffectiveness(attack.getType().getTypeNum(), type1, type2));
 			}
 			catch (IOException e) {
-				
+
 			}
 			otherMon.setDeltaHp(otherMon.getDeltaHp() + newHp);
 		}
@@ -972,10 +1074,11 @@ public class Battle {
 				newHp = (int) Math.round((2*(trainerMon.getLevel()+2)*attack.getAtkPower()*(trainerMon.getAttack()/otherMon.getDef())/50+2) * stab * PokeType.getTypeEffectiveness(attack.getType().getTypeNum(), type1));
 			}
 			catch (IOException e) {
-				
+				System.out.println("EXCEPTION");
 			}
 			otherMon.setDeltaHp(otherMon.getDeltaHp() + newHp);
 		}
+		updateStats();
 	}
 	
 	// Applies the opponents attack 
@@ -1015,6 +1118,7 @@ public class Battle {
 			}
 			trainerMon.setDeltaHp(trainerMon.getDeltaHp() + newHp);
 		}
+		updateStats();
 	}
 	// Statuses are applied at the end of every turn 
 	public void applyStatus() {
