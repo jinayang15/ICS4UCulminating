@@ -106,9 +106,24 @@ public class Battle {
 	// Overloaded constructor for switching the enemy Pokemon 
 	public Battle (Pokemon trainerMon, Pokemon otherMon, int index) {
 		this.trainerMon = trainerMon; // Shouldn't affect anything...
+		otherMon = other.getPokemonList()[index];
+
+		trainerMonHp = trainerMon.getHp() - trainerMon.getDeltaHp();
+		trainerMonAttack = trainerMon.getAttack();
+		trainerMonDef = trainerMon.getDef();
+		trainerMonSpAtk = trainerMon.getSpAtk();
+		trainerMonSpDef = trainerMon.getSpDef();
+		trainerMonSpeed = trainerMon.getSpeed();
 		
-		come here too 
-		test if overloading constructor will change stats? 
+		otherMonHp = otherMon.getHp() - otherMon.getDeltaHp();
+		otherMonAttack = otherMon.getAttack();
+		otherMonDef = otherMon.getDef();
+		otherMonSpAtk = otherMon.getSpAtk();
+		otherMonSpDef = otherMon.getSpDef();
+		otherMonSpeed = otherMon.getSpeed();
+	
+		updateStats();
+		battleStart();
 	}
 	
 	// BATTLE START
@@ -162,6 +177,15 @@ public class Battle {
 					else if (trainerMon.getStatus()==4) {
 						System.out.println(trainerMon.getName() + " is asleep!");
 					}
+					else if (trainerMon.getStatus()==0) { // TRAINER POKEMON DIES
+						if (!battleContinue) {
+							return;
+						}
+						else {
+							// Choose battle
+							// new Battle (); 
+						}
+					}
 				}
 				if (!otherSkipTurn) {
 					attack(otherMove, otherMon, trainerMon);
@@ -172,6 +196,11 @@ public class Battle {
 					}
 					else if (otherMon.getStatus()==4) {
 						System.out.println(otherMon.getName() + " is asleep!");
+					}
+					else if (otherMon.getStatus()==0) {
+						if (!battleContinue) {
+							return;
+						}
 					}
 				}
 			}
@@ -834,12 +863,12 @@ public class Battle {
 	// The checkBattle method is used to see if the CURRENT battle will continue (i.e. same Pokemon)
 	// The battle will not continue if a Pokemon has fainted, or the user has switched out
 	// It will return TRUE if the battle is good, FALSE if the battle must end. 
-	public boolean checkBattle() {
+	public void checkBattle() {
 		if (otherMonHp<=0) {
 			otherMon.setFaint(true);
 			for (int i = 0; i<other.getPokemonList().length; i++) {
 				if (other.getPokemonList()[i].getFaint()==false) {
-					// new Battle(trainerMon, otherMon, i) 
+					new Battle(trainerMon, otherMon, i); 
 					break;
 				}
 				else if (i==other.getPokemonList().length-1) {
@@ -848,11 +877,22 @@ public class Battle {
 			}
 		}
 		
-		guo lai 
-		when a pokemon dies, change status to 0
-		then, in the coordinateBattle method, check if pokemon faints? 
-		if enemy dies, new constructor and essentially a "new" battle
-		
+		if (trainerMonHp<=0) {
+			trainerMon.setFaint(true);
+			for (int i = 0; i<player.getPokemonList().length; i++) {
+				if (player.getPokemonList()[i].getFaint()==false) {
+					break;
+				}
+				else if (i==player.getPokemonList().length-1) {
+					battleContinue = false;
+				}
+			}
+		}
+//		
+//		guo lai 
+//		when a pokemon dies, change status to 0
+//		then, in the coordinateBattle method, check if pokemon faints? 
+//		if enemy dies, new constructor and essentially a "new" battle
 		
 		if (trainerMonHp<=0 || otherMonHp<=0) { // OR SWITCH POKEMON 
 			battleContinue = false;

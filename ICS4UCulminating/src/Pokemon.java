@@ -8,7 +8,7 @@ public class Pokemon {
 	private String name; 
 	
 	// The BASE stats 
-	private int level;
+	private int level = 1;
 	private int hp;
 	private int attack;
 	private int def;
