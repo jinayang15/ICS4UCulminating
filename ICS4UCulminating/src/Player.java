@@ -31,27 +31,27 @@ public class Player {
 		currentPlayerImage = Images.trainerUp[1];
 		if (type.equals("Grass")) {
 			pokemonList[0] = new Pokemon (Pokemon.pokeList.get(1));
+			pokemonList[0].setLevel(9);
 			pokemonList[1] = new Pokemon (Pokemon.pokeList.get(31));
+			pokemonList[1].setLevel(9);
 			pokemonList[2] = new Pokemon (Pokemon.pokeList.get(55));
-			for (Pokemon a: pokemonList) {
-				System.out.println(a);
-			}
+			pokemonList[2].setLevel(9);
 		}
 		else if (type.equals("Fire")) {
 			pokemonList[0] = new Pokemon (Pokemon.pokeList.get(4));
+			pokemonList[0].setLevel(9);
 			pokemonList[1] = new Pokemon (Pokemon.pokeList.get(27));
+			pokemonList[1].setLevel(9);
 			pokemonList[2] = new Pokemon (Pokemon.pokeList.get(40));
-			for (Pokemon a: pokemonList) {
-				System.out.println(a);
-			}
+			pokemonList[2].setLevel(9);
 		}
 		else if (type.equals("Water")) {
 			pokemonList[0] = new Pokemon (Pokemon.pokeList.get(7));
+			pokemonList[0].setLevel(9);
 			pokemonList[1] = new Pokemon (Pokemon.pokeList.get(38));
+			pokemonList[1].setLevel(9);
 			pokemonList[2] = new Pokemon (Pokemon.pokeList.get(42));
-			for (Pokemon a: pokemonList) {
-				System.out.println(a);
-			}
+			pokemonList[2].setLevel(9);
 		}
 	}
 	
