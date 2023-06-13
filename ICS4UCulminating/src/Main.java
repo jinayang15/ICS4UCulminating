@@ -81,6 +81,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		try {
 			GameFunctions.importEverything();
 			Images.importAllImages();
+			PokeType.addToChart();
 		} catch (FileNotFoundException e) {
 		}
 

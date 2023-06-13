@@ -4,6 +4,7 @@
 public class Trainer {
 	private Pokemon[] pokemonList = new Pokemon[3];
 	
+	// Constructor 
 	public Trainer() {
 		// Randomly generates 3 Pokemon for the opposing trainer. 
 		// Repeats are allowed. 
@@ -13,6 +14,9 @@ public class Trainer {
 			pokemonList[i] = Pokemon.pokeList.get(random);
 			System.out.println(pokemonList[i]);
 		}
-		
+	}
+	
+	public Pokemon[] getPokemonList() {
+		return pokemonList;
 	}
 }
