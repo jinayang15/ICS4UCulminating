@@ -18,10 +18,10 @@ Pikachu Electric 35 55 40 50 50 90
 Raichu Electric 60 90 55 90 80 110
 Sandshrew Ground 50 75 85 20 30 40
 Sandslash Ground 75 100 110 45 55 65
-Nidoran♀ Poison 55 47 52 40 40 41
+Nidoran Poison 55 47 52 40 40 41
 Nidorina Poison 70 62 67 55 55 56
 Nidoqueen Poison Ground 90 92 87 75 85 76
-Nidoran♂ Poison 46 57 40 40 40 50
+Nidoran Poison 46 57 40 40 40 50
 Nidorino Poison 61 72 57 55 55 65
 Nidoking Poison Ground 81 102 77 85 75 85
 Vulpix Fire 38 41 40 50 65 65

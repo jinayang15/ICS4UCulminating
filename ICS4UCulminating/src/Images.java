@@ -198,6 +198,7 @@ public class Images {
 		battleSpritesIdx.put("venusaur", 2);
 		battleSpritesIdx.put("charmander", 3);
 		battleSpritesIdx.put("charmeleon", 4);
+		battleSpritesIdx.put("charizard", 5);
 		battleSpritesIdx.put("squirtle", 6);
 		battleSpritesIdx.put("wartortle", 7);
 		battleSpritesIdx.put("blastoise", 8);
@@ -237,7 +238,7 @@ public class Images {
 		battleSpritesIdx.put("poliwhirl", 60);
 		battleSpritesIdx.put("poliwrath", 61);
 		battleSpritesIdx.put("tentacool", 71);
-		battleSpritesIdx.put("tentracruel", 72);
+		battleSpritesIdx.put("tentacruel", 72);
 		battleSpritesIdx.put("grimer", 87);
 		battleSpritesIdx.put("muk", 88);
 		battleSpritesIdx.put("voltorb", 99);
