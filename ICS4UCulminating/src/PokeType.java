@@ -61,11 +61,25 @@ public class PokeType {
 	// Getter that will return the value of the effectiveness (will be multiplied to
 	// the attack damage)
 	public static double getTypeEffectiveness(int attackType, int defendType) throws IOException {
-		return typeChart[attackType][defendType];
+		double damage = typeChart[attackType][defendType];
+		if (damage<1) { 
+			System.out.println("It wasn't very effective...");
+		}
+		else if (damage>1) {
+			System.out.println("It was super effective!");
+		}
+		return damage;
 	}
 
 	public static double getTypeEffectiveness(int attackType, int defendType1, int defendType2) throws IOException {
-		return typeChart[attackType][defendType1] * typeChart[attackType][defendType2];
+		double damage = typeChart[attackType][defendType1] * typeChart[attackType][defendType2];
+		if (damage<1) { 
+			System.out.println("It wasn't very effective...");
+		}
+		else if (damage>1) {
+			System.out.println("It was super effective!");
+		}
+		return damage;
 	}
 
 	public String toString() {

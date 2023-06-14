@@ -229,4 +229,19 @@ public class Pokemon {
 	public void setDeltaSpeed(int deltaSpeed) {
 		this.deltaSpeed = deltaSpeed;
 	}
+	
+	public void setLevel (int level) {
+		this.level = level;
+		hp += Math.round((level/50.0)*(this.hp));
+		attack += Math.round((level/50.0)*(this.attack));
+		def += Math.round((level/50.0)*(def));
+		spAtk += Math.round((level/50.0)*(spAtk));
+		spDef += Math.round((level/50.0)*(spDef));
+		speed += Math.round((level/50.0)*(speed));
+		
+	}
+	
+	public void levelUp() {
+		
+	}
 }
