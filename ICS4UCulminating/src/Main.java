@@ -121,7 +121,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 
 			g.drawImage(Player.getCurrentPlayerImage(), Player.getPlayerX(), Player.getPlayerY(), null);
 			g.drawRect(Player.hitbox.x, Player.hitbox.y, Player.hitbox.width, Player.hitbox.height);
-			System.out.println(Player.getPlayerX() + " " + Player.getPlayerY());
+//			System.out.println(Player.getPlayerX() + " " + Player.getPlayerY());
 			for (int i = 0; i < 40; i++) {
 				for (int j = 0; j < 48; j++) {
 					if (allWalls[i][j] != null) {
@@ -132,11 +132,17 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			}
 		}
 		if (gameState == 3) {
-			g.drawImage(Images.battleMenu[4], 0, 0, null);
-			g.drawImage(Images.battleMenu[5], 0, 200, null);
-			for (int i = 0; i < 28; i++) {
-				g.drawImage(Images.battleFont[i], 10 + i*6, 210, null);
-			}
+			g.drawImage(Images.battleMenu[5], 0, 640-Images.battleMenu[5].getHeight(), null);
+			g.drawImage(Images.battleMenu[2], 960-Images.battleMenu[2].getWidth(), 640-Images.battleMenu[2].getHeight(), null);
+//			for (int i = 0; i < 26; i++) {
+//				g.drawImage(Images.battleFont[i], 200 + (i)*30, 200, null);
+//				System.out.println(Images.battleFont[i].getWidth());
+//			}
+			displayText(g, Images.battleFontIdx, Images.battleFont, "Elephant", 200, 300);
+//			displayText(g, Images.battleFontIdx, Images.battleFont, "abcdefghijklmnopqrstuvwxyz", 200, 250);
+//			displayText(g, Images.battleFontIdx, Images.battleFont, "0123456789.,!?/-", 200, 300);
+//			displaySymbol(g, Images.battleFontIdx, Images.battleFont, "boy", 200, 350);
+			
 		}
 	}
 
@@ -463,5 +469,24 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	}
 
 	public static void startBattle() {
+	}
+
+	public static void displayText(Graphics g, HashMap<String, Integer> map, BufferedImage[] images, String text, int x,
+			int y) {
+		int xPos = x;
+		for (int i = 0; i < text.length(); i++) {
+			int idx = map.get(""+text.charAt(i));
+			g.drawImage(images[idx], xPos, y, null);
+			xPos += images[idx].getWidth()-4;
+
+		}
+
+	}
+
+	public static void displaySymbol(Graphics g, HashMap<String, Integer> map, BufferedImage[] images, String sym,
+			int x, int y) {
+		int idx = map.get(sym);
+		g.drawImage(images[idx], x, y, null);
+
 	}
 }

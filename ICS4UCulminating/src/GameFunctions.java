@@ -103,7 +103,7 @@ public class GameFunctions {
 			Move.moveSets[i] = m;
 		}
 	}
-
+	// walls in Pewter City
 	public static void importWalls() throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("PewterCity.txt"));
 		for (int i = 0; i < 40; i++) {
@@ -113,9 +113,7 @@ public class GameFunctions {
 				if (Integer.parseInt(st.nextToken()) == 1) {
 					Main.allWalls[i][j] = new Wall(i * Main.tileSize, j * Main.tileSize, Main.tileSize, Main.tileSize);
 				}
-				System.out.println(Main.allWalls[i][j]);
 			}
-			System.out.println();
 		}
 		for (int i = 0; i < Main.tileMapHeight; i++) {
 			for (int j = 0; j < Main.tileMapWidth; j++) {
