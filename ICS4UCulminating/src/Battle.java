@@ -4,6 +4,7 @@
 // We cannot simply choose who goes first based on speed, because there are some moves that have priority - more specifically, quick attack,
 // which ALWAYS goes first. As a result, we will first get what the user wants to do, then get what the computer wants, and THEN apply it. 
 
+import java.awt.Graphics;
 import java.io.*; 
 import java.util.*;
 public class Battle {
@@ -65,7 +66,6 @@ public class Battle {
 	
 	// Constructor
 	public Battle (Player player, Trainer other) {
-		
 		this.player = player;
 		this.other = other;
 		
@@ -143,9 +143,9 @@ public class Battle {
 	
 	// BATTLE START
 	public void battleStart() { 
-		while (battleContinue) {
-			coordinateBattle(); 
-		}
+//		while (battleContinue) {
+//			coordinateBattle(); 
+//		}
 	}
 	
 	// The trainerChooseAttack method is used to determine what attack the user chooses

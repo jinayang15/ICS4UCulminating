@@ -50,6 +50,15 @@ public class GameFunctions {
 					p = new Pokemon(name, type1, type2, hp, attack, def, spAtk, spDef, speed, Move.moveSets[i]);
 				}
 				Pokemon.pokeList.add(p);
+
+//				for (int k = 0; k < p.getMoves().length; k++) {
+//					if (p.getMoves()[k] != null) {
+//					System.out.print(p.getMoves()[k].getName() + " ");
+//					}else {
+//						System.out.print(null + " ");
+//					}
+//				}
+//				System.out.println();
 				i++;
 			}
 		} catch (IOException e) {
@@ -96,6 +105,7 @@ public class GameFunctions {
 			Move.moveSets[i] = m;
 		}
 	}
+
 	// walls in Pewter City
 	public static void importWalls() throws IOException {
 		BufferedReader br = new BufferedReader(new FileReader("PewterCity.txt"));
@@ -117,18 +127,18 @@ public class GameFunctions {
 							w.setBlockedUp(true);
 						}
 					}
-					if (i + 1 < Main.tileMapHeight ) {
+					if (i + 1 < Main.tileMapHeight) {
 						if (Main.allWalls[i + 1][j] != null) {
 							w.setBlockedDown(true);
 						}
 					}
 					if (j - 1 >= 0) {
-						if (Main.allWalls[i][j-1] != null) {
+						if (Main.allWalls[i][j - 1] != null) {
 							w.setBlockedLeft(true);
 						}
 					}
-					if (j + 1 < Main.tileMapHeight ) {
-						if (Main.allWalls[i][j+1] != null) {
+					if (j + 1 < Main.tileMapHeight) {
+						if (Main.allWalls[i][j + 1] != null) {
 							w.setBlockedRight(true);
 						}
 					}
