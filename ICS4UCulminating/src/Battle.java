@@ -22,12 +22,12 @@ public class Battle {
 	private boolean otherSkipTurn = false; // Same as last one, except its for opponent 
 	private boolean hit = false; // To check if the attack hit the other pokemon
 	
-	private int trainerMonHp;
-	private int trainerMonAttack;
-	private int trainerMonDef;
-	private int trainerMonSpAtk;
-	private int trainerMonSpDef;
-	private int trainerMonSpeed;
+	private int playerMonHp;
+	private int playerMonAttack;
+	private int playerMonDef;
+	private int playerMonSpAtk;
+	private int playerMonSpDef;
+	private int playerMonSpeed;
 	
 	private int otherMonHp;
 	private int otherMonAttack;
@@ -46,10 +46,10 @@ public class Battle {
 	// The maximum number of times a stat can be raised is 6 stages, and there are moves that can raise your stats
 	// 1 to 2 stages. These are used to ensure that the number of stat stage raising/lowering does not exceed 6 or -6. 
 	private int trainerMonAtkCount = 0; 
-	private int trainerMonDefCount = 0; 
-	private int trainerMonSpAtkCount = 0;
-	private int trainerMonSpDefCount = 0; 
-	private int trainerMonSpeedCount = 0;
+	private int playerMonDefCount = 0; 
+	private int playerMonSpAtkCount = 0;
+	private int playerMonSpDefCount = 0; 
+	private int playerMonSpeedCount = 0;
 	
 	private int otherMonAtkCount = 0; 
 	private int otherMonDefCount = 0; 
@@ -72,12 +72,12 @@ public class Battle {
 		playerMon = player.getPokemonList()[0];
 		otherMon = other.getPokemonList()[0];
 
-		trainerMonHp = playerMon.getHp() - playerMon.getDeltaHp();
-		trainerMonAttack = playerMon.getAttack();
-		trainerMonDef = playerMon.getDef();
-		trainerMonSpAtk = playerMon.getSpAtk();
-		trainerMonSpDef = playerMon.getSpDef();
-		trainerMonSpeed = playerMon.getSpeed();
+		playerMonHp = playerMon.getHp() - playerMon.getDeltaHp();
+		playerMonAttack = playerMon.getAttack();
+		playerMonDef = playerMon.getDef();
+		playerMonSpAtk = playerMon.getSpAtk();
+		playerMonSpDef = playerMon.getSpDef();
+		playerMonSpeed = playerMon.getSpeed();
 		
 		otherMonHp = otherMon.getHp() - otherMon.getDeltaHp();
 		otherMonAttack = otherMon.getAttack();
@@ -92,14 +92,26 @@ public class Battle {
 	
 	// Overloaded constructor for switching in Pokemon 
 	// It will get the index of the Pokemon that wants to be switched in 
-	public Battle (int index) {
+	public Battle (Trainer trainer, Player player, Pokemon otherMon, int index) {
+		this.player = player;
+		this.other = trainer;
+		this.otherMon = otherMon;
+		
 		playerMon = player.getPokemonList()[index];
-		trainerMonHp = playerMon.getHp() - playerMon.getDeltaHp();
-		trainerMonAttack = playerMon.getAttack();
-		trainerMonDef = playerMon.getDef();
-		trainerMonSpAtk = playerMon.getSpAtk();
-		trainerMonSpDef = playerMon.getSpDef();
-		trainerMonSpeed = playerMon.getSpeed();
+		playerMonHp = playerMon.getHp() - playerMon.getDeltaHp();
+		playerMonAttack = playerMon.getAttack();
+		playerMonDef = playerMon.getDef();
+		playerMonSpAtk = playerMon.getSpAtk();
+		playerMonSpDef = playerMon.getSpDef();
+		playerMonSpeed = playerMon.getSpeed();
+		
+		otherMonHp = otherMon.getHp() - otherMon.getDeltaHp();
+		otherMonAttack = otherMon.getAttack();
+		otherMonDef = otherMon.getDef();
+		otherMonSpAtk = otherMon.getSpAtk();
+		otherMonSpDef = otherMon.getSpDef();
+		otherMonSpeed = otherMon.getSpeed();
+		
 		updateStats();
 		battleStart(); 
 	}
@@ -111,12 +123,12 @@ public class Battle {
 		this.playerMon = playerMon; // Shouldn't affect anything...
 		otherMon = other.getPokemonList()[index];
 
-		trainerMonHp = playerMon.getHp() - playerMon.getDeltaHp();
-		trainerMonAttack = playerMon.getAttack();
-		trainerMonDef = playerMon.getDef();
-		trainerMonSpAtk = playerMon.getSpAtk();
-		trainerMonSpDef = playerMon.getSpDef();
-		trainerMonSpeed = playerMon.getSpeed();
+		playerMonHp = playerMon.getHp() - playerMon.getDeltaHp();
+		playerMonAttack = playerMon.getAttack();
+		playerMonDef = playerMon.getDef();
+		playerMonSpAtk = playerMon.getSpAtk();
+		playerMonSpDef = playerMon.getSpDef();
+		playerMonSpeed = playerMon.getSpeed();
 		
 		otherMonHp = otherMon.getHp() - otherMon.getDeltaHp();
 		otherMonAttack = otherMon.getAttack();
@@ -130,8 +142,7 @@ public class Battle {
 	}
 	
 	// BATTLE START
-	public void battleStart() {
-		// Determining who goes first 
+	public void battleStart() { 
 		while (battleContinue) {
 			coordinateBattle(); 
 		}
@@ -156,7 +167,6 @@ public class Battle {
 		while (index==0) {
 			index = Integer.parseInt(s.nextLine());
 		}
-		System.out.println(playerMon.getName() + " used " + playerMon.getMoves()[index-1].getName() + "!");
 		return playerMon.getMoves()[index-1];
 	}
 	
@@ -175,10 +185,10 @@ public class Battle {
 			}
 			catch (NullPointerException e) {
 				// System.out.println("other move failed");
+//				System.out.println("\nREROLL MOVES\n");
 				random--; 
 			}
 		}
-		System.out.println("\n" + otherMon.getName() + " used " + tempMove.getName() + "!");
 		return tempMove;
 	}
 	
@@ -188,12 +198,11 @@ public class Battle {
 	// It also returns nothing 
 	public void coordinateBattle() {
 		
-		System.out.println("\nYOU\t" +  playerMon.getName() + " HP: " + trainerMonHp + "\t Level: " + playerMon.getLevel());
+		System.out.println("\nYOU\t" +  playerMon.getName() + " HP: " + playerMonHp + "\t Level: " + playerMon.getLevel());
 		System.out.println("--------------------");
 		System.out.println("THEM\t" +  otherMon.getName() + " HP: " + otherMonHp + "\t Level: " + otherMon.getLevel());
 		System.out.println("\n");
-		
-		
+
 		applyStatus(); // Apply status first to determine if moves are going to be skipped 
 		
 		Move trainerMove = trainerChooseAttack();
@@ -201,9 +210,16 @@ public class Battle {
 		
 		// If both Pokemon choose to use quick attack, which is a priority move, then the one with the higher speed stat will go first
 		if (trainerMove.getName().equals("Quick Attack") && otherMove.getName().equals("Quick Attack")) {
-			if (trainerMonSpeed>=otherMonSpeed) {
+			System.out.println("went into 1");
+			if (playerMonSpeed>=otherMonSpeed) {
 				if (!trainerSkipTurn) {
+					// Checking stats to ensure that fainted Pokemon cannot go
 					attack(trainerMove, playerMon, otherMon);
+					if (!battleContinue) return;
+					else if (otherMonHp<=0) {
+						checkBattle();
+						return;
+					}
 				}
 				else {
 					if (playerMon.getStatus()==3) {
@@ -212,34 +228,13 @@ public class Battle {
 					else if (playerMon.getStatus()==4) {
 						System.out.println(playerMon.getName() + " is asleep!");
 					}
-					else if (playerMon.getStatus()==0) { // TRAINER POKEMON DIES
-						if (!battleContinue) {
-							return; 
-						}
-						else {
-							System.out.println("Choose your next Pokemon: ");
-							int tempCount = 1; 
-							int index = 0;
-							Scanner s = new Scanner (System.in);
-							for (int i = 0; i<player.getPokemonList().length; i++) {
-								try {
-									if (player.getPokemonList()[i].getFaint()==false) {
-										System.out.println(tempCount + ") " + player.getPokemonList()[i].getName());
-										tempCount++; 
-									}
-								}
-								catch (NullPointerException e) {
-									
-								}
-							}
-							while (index==0) {
-								index = Integer.parseInt(s.nextLine());
-							}
-						}
-					}
 				}
 				if (!otherSkipTurn) {
 					attack(otherMove, otherMon, playerMon);
+					if (!battleContinue) return;
+					else if (playerMonHp<=0) {
+						chooseNewPokemon();
+					}
 				}
 				else {
 					if (otherMon.getStatus()==3) {
@@ -258,6 +253,10 @@ public class Battle {
 			else {
 				if (!otherSkipTurn) {
 					attack(otherMove, otherMon, playerMon);
+					if (!battleContinue) return;
+					else if (playerMonHp<=0) {
+						chooseNewPokemon();
+					}
 				}
 				else {
 					if (otherMon.getStatus()==3) {
@@ -269,6 +268,11 @@ public class Battle {
 				}
 				if (!trainerSkipTurn) {
 					attack(trainerMove, playerMon, otherMon);
+					if (!battleContinue) return;
+					else if (otherMonHp<=0) {
+						checkBattle();
+						return;
+					}
 				}
 				else {
 					if (playerMon.getStatus()==3) {
@@ -284,6 +288,11 @@ public class Battle {
 		else if (trainerMove.getName().equals("Quick Attack")) {
 			if (!trainerSkipTurn) {
 				attack(trainerMove, playerMon, otherMon);
+				if (!battleContinue) return;
+				else if (otherMonHp<=0) {
+					checkBattle();
+					return;
+				}
 			}
 			else {
 				if (playerMon.getStatus()==3) {
@@ -295,6 +304,10 @@ public class Battle {
 			}
 			if (!otherSkipTurn) {
 				attack(otherMove, otherMon, playerMon);
+				if (!battleContinue) return;
+				else if (playerMonHp<=0) {
+					chooseNewPokemon();
+				}
 			}
 			else {
 				if (otherMon.getStatus()==3) {
@@ -309,6 +322,10 @@ public class Battle {
 		else if (otherMove.getName().equals("Quick Attack")) {
 			if (!otherSkipTurn) {
 				attack(otherMove, otherMon, playerMon);
+				if (!battleContinue) return;
+				else if (playerMonHp<=0) {
+					chooseNewPokemon();
+				}
 			}
 			else {
 				if (otherMon.getStatus()==3) {
@@ -320,6 +337,11 @@ public class Battle {
 			}
 			if (!trainerSkipTurn) {
 				attack(trainerMove, playerMon, otherMon);
+				if (!battleContinue) return;
+				else if (otherMonHp<=0) {
+					checkBattle();
+					return;
+				}
 			}
 			else {
 				if (playerMon.getStatus()==3) {
@@ -331,9 +353,14 @@ public class Battle {
 			}
 		}
 		else {
-			if (trainerMonSpeed>=otherMonSpeed) {
+			if (playerMonSpeed>=otherMonSpeed) {
 				if (!trainerSkipTurn) {
 					attack(trainerMove, playerMon, otherMon);
+					if (!battleContinue) return;
+					else if (otherMonHp<=0) {
+						checkBattle();
+						return;
+					}
 				}
 				else {
 					if (playerMon.getStatus()==3) {
@@ -345,6 +372,10 @@ public class Battle {
 				}
 				if (!otherSkipTurn) {
 					attack(otherMove, otherMon, playerMon);
+					if (!battleContinue) return;
+					else if (playerMonHp<=0) {
+						chooseNewPokemon();
+					}
 				}
 				else {
 					if (otherMon.getStatus()==3) {
@@ -358,6 +389,10 @@ public class Battle {
 			else {
 				if (!otherSkipTurn) {
 					attack(otherMove, otherMon, playerMon);
+					if (!battleContinue) return;
+					else if (playerMonHp<=0) {
+						chooseNewPokemon();
+					}
 				}
 				else {
 					if (otherMon.getStatus()==3) {
@@ -369,6 +404,11 @@ public class Battle {
 				}
 				if (!trainerSkipTurn) {
 					attack(trainerMove, playerMon, otherMon);
+					if (!battleContinue) return;
+					else if (otherMonHp<=0) {
+						checkBattle();
+						return;
+					}
 				}
 				else {
 					if (playerMon.getStatus()==3) {
@@ -389,8 +429,7 @@ public class Battle {
 	 public void attack (Move attack, Pokemon attackMon, Pokemon defendMon) {
 		boolean keepGoing = true;
 		// PP Counter!!
-		 
-		// TEMPORARY 
+		
 		double stab = 1; // STAB stands for 'Same Type Attack Bonus'. If the Pokemon attacks with a move that has the same type as itself, it gets this bonus
 		int random; // Used for the random status effects 
 		hit = false;
@@ -412,18 +451,20 @@ public class Battle {
 					if (attackMon.equals(playerMon)) {
 						int afterAttack = otherMon.getDeltaHp();
 						playerMon.setDeltaHp(playerMon.getDeltaHp() + (int)Math.round((afterAttack-beforeAttack)*0.25));
+						System.out.println("\n" + playerMon.getName() + " is damaged by recoil!");
 					}
 					else {
 						int afterAttack = playerMon.getDeltaHp();
 						otherMon.setDeltaHp(otherMon.getDeltaHp() + (int)Math.round((afterAttack-beforeAttack)*0.25));
+						System.out.println("\n" + otherMon.getName() + " is damaged by recoil!");
 					}
 					
 				}
 				hit = false;
 			}
-			else if (attack.getName().equals("Skull Bash")) {
-				
-			}
+//			else if (attack.getName().equals("Skull Bash")) {
+//				
+//			}
 			// These next moves are only possible by the opposing Pokemon, so there is no need to check if it is from the player 
 			else if (attack.getName().equals("Fire Punch")) {
 				applyOtherAttack (attack, stab);  
@@ -474,7 +515,7 @@ public class Battle {
 				hit = false;
 			}
 			// Will immediately make the opponent faint
-			else if (attack.getName().equals("Self Destruct")) {
+			else if (attack.getName().equals("Self-Destruct")) {
 				applyOtherAttack(attack, stab);
 				if (hit) {
 					otherMon.setDeltaHp(otherMon.getHp());
@@ -515,11 +556,11 @@ public class Battle {
 						}
 					}
 					else if (attackMon.equals(otherMon)) {
-						if (trainerMonDefCount>-6) {
+						if (playerMonDefCount>-6) {
 							random = (int) (Math.random()*(3)) + 1;
 							// 33% chance of lowering defense by 1 stage
 							if (random==1) {
-								trainerMonDefCount--;
+								playerMonDefCount--;
 								playerMon.setDeltaDef(playerMon.getDeltaDef() + (int) Math.floor(playerMon.getDeltaDef()/6));
 							}
 						}
@@ -571,13 +612,15 @@ public class Battle {
 						if (otherMonSpeedCount>-6 && random==1) {
 							otherMonSpeedCount--;
 							otherMon.setDeltaSpeed(otherMon.getDeltaSpeed() + (int) Math.floor(otherMon.getDeltaSpeed()/6));
+							System.out.println("\n" + otherMon.getName() + "'s speed fell!");
 						}
 					}
 					else {
 						random = (int) (Math.random() * (3)) + 1;
-						if (trainerMonSpeedCount>-6 && random==1) {
-							trainerMonSpeedCount--;
+						if (playerMonSpeedCount>-6 && random==1) {
+							playerMonSpeedCount--;
 							playerMon.setDeltaSpeed(playerMon.getDeltaSpeed() + (int) Math.floor(playerMon.getDeltaSpeed()/6));
+							System.out.println("\n" + playerMon.getName() + "'s speed fell!");
 						}
 					}
 					
@@ -593,10 +636,12 @@ public class Battle {
 					if (attackMon.equals(playerMon)) {
 						int afterAttack = otherMon.getDeltaHp();
 						playerMon.setDeltaHp(playerMon.getDeltaHp() - (int) (0.5*(afterAttack-beforeAttack)));
+						System.out.println("\n" + playerMon.getName() + " recovered some HP!");
 					}
 					else {
 						int afterAttack = playerMon.getDeltaHp();
 						otherMon.setDeltaHp(otherMon.getDeltaHp() - (int) (0.5*(afterAttack-beforeAttack)));
+						System.out.println("\n" + otherMon.getName() + " recovered some HP!");
 					}
 				}
 				hit = false;
@@ -609,12 +654,14 @@ public class Battle {
 						if (otherMonSpeedCount>-6) {
 							otherMonSpeedCount--;
 							otherMon.setDeltaSpeed(otherMon.getDeltaSpeed() + (int) Math.floor(otherMon.getDeltaSpeed()/6));
+							System.out.println("\n" + otherMon.getName() + "'s speed fell!");
 						}
 					}
 					else {
-						if (trainerMonSpeedCount>-6) {
-							trainerMonSpeedCount--;
+						if (playerMonSpeedCount>-6) {
+							playerMonSpeedCount--;
 							playerMon.setDeltaSpeed(playerMon.getDeltaSpeed() + (int) Math.floor(playerMon.getDeltaSpeed()/6));
+							System.out.println("\n" + playerMon.getName() + "'s speed fell!");
 						}
 					}
 				}
@@ -675,6 +722,8 @@ public class Battle {
 		else if (attack.getCategory().equals("Status")) {
 			// Swords dance will raise the attack stat by 2 stages. If the user is already at +5 stage, it will only add 1 extra one. 
 			if (attack.getName().equals("Swords Dance")) {
+				System.out.println(attackMon.getName() + " used Swords Dance!");
+				System.out.println(attackMon.getName() + "'s attack rose sharply!");
 				if (attackMon.equals(playerMon)) {
 					if (trainerMonAtkCount==5) {
 						trainerMonAtkCount++; 
@@ -700,6 +749,7 @@ public class Battle {
 			else if (attack.getName().equals("Tail Whip") || attack.getName().equals("Leer")) {
 				applyAttackChecker (attackMon, attack, stab);
 				if (hit) {
+					System.out.println(defendMon.getName() + "'s defense fell!");
 					if (attackMon.equals(playerMon)) {
 						if (otherMonDefCount>-6) {
 							otherMonDefCount--;
@@ -707,8 +757,8 @@ public class Battle {
 						}
 					}
 					else {
-						if (trainerMonDefCount>-6) {
-							trainerMonDefCount--;
+						if (playerMonDefCount>-6) {
+							playerMonDefCount--;
 							playerMon.setDeltaDef(playerMon.getDeltaDef() + (int) Math.floor(playerMon.getDeltaDef()/6));
 						}
 					}
@@ -719,6 +769,7 @@ public class Battle {
 			else if (attack.getName().equals("Growl")) {
 				applyAttackChecker(attackMon, attack, stab);
 				if (hit) {
+					System.out.println(defendMon.getName() + "'s attack fell!");
 					if (attackMon.equals(playerMon)) {
 						if (otherMonAtkCount>-6) {
 							otherMonAtkCount--;
@@ -736,9 +787,10 @@ public class Battle {
 				hit = false;
 			}
 			else if (attack.getName().equals("Growth")) {
+				System.out.println(attackMon.getName() + "'s special attack rose!");
 				if (attackMon.equals(playerMon)) {
-					if (trainerMonSpAtkCount<6) {
-						trainerMonSpAtkCount++; 
+					if (playerMonSpAtkCount<6) {
+						playerMonSpAtkCount++; 
 						playerMon.setDeltaSpAtk(playerMon.getDeltaSpAtk() + (int) Math.floor(playerMon.getSpAtk()/6));
 					}
 				}
@@ -839,6 +891,7 @@ public class Battle {
 					else {
 						if (hit) {
 							otherMon.setStatus(4); 
+							System.out.println(otherMon.getName() + " went to sleep!");
 						}
 					}
 				}
@@ -849,6 +902,7 @@ public class Battle {
 					else {
 						if (hit) {
 							playerMon.setStatus(4); 
+							System.out.println(playerMon.getName() + " went to sleep!");
 						}
 					}
 				}
@@ -935,13 +989,16 @@ public class Battle {
 				hit = false;
 			}
 			else if (attack.getName().equals("Withdraw")) {
+				System.out.println(attackMon.getName()+ " used Withdraw!");
+				System.out.println(attackMon.getName() +"'s defense rose!");
 				if (attackMon.equals(playerMon)) {
-					if (trainerMonDefCount<6) {
-						trainerMonDefCount++; 
+					if (playerMonDefCount<6) {
+						playerMonDefCount++; 
 						playerMon.setDeltaDef(playerMon.getDeltaDef() + (int) (playerMon.getDef()/6));
 					}
 				}
 				else {
+					System.out.println(otherMon.getName()+ " used Withdraw!");
 					if (otherMonDefCount<6) {
 						otherMonDefCount++; 
 						otherMon.setDeltaDef(otherMon.getDeltaDef() + (int) (otherMon.getDef()/6));
@@ -956,19 +1013,23 @@ public class Battle {
 	// It takes in no parameters
 	// It returns nothing 
 	public void updateStats() {
-		trainerMonHp = playerMon.getHp() - playerMon.getDeltaHp();
-		if (trainerMonHp<=0) {
+		playerMonHp = playerMon.getHp() - playerMon.getDeltaHp();
+		if (playerMonHp<=0) {
+			System.out.println("\n" + playerMon.getName() + " fainted!");
+			playerMonHp = 0;
 			playerMon.setStatus(0);
 			trainerSkipTurn = true; 
 		}
-		trainerMonAttack = playerMon.getAttack() - playerMon.getDeltaAttack();
-		trainerMonDef = playerMon.getDef() - playerMon.getDeltaDef();
-		trainerMonSpAtk = playerMon.getSpAtk() - playerMon.getSpAtk();
-		trainerMonSpDef = playerMon.getSpDef() - playerMon.getDeltaSpDef();
-		trainerMonSpeed = playerMon.getSpeed() - playerMon.getDeltaSpeed();
+		playerMonAttack = playerMon.getAttack() - playerMon.getDeltaAttack();
+		playerMonDef = playerMon.getDef() - playerMon.getDeltaDef();
+		playerMonSpAtk = playerMon.getSpAtk() - playerMon.getSpAtk();
+		playerMonSpDef = playerMon.getSpDef() - playerMon.getDeltaSpDef();
+		playerMonSpeed = playerMon.getSpeed() - playerMon.getDeltaSpeed();
 		
 		otherMonHp = otherMon.getHp() - otherMon.getDeltaHp();
 		if (otherMonHp<=0) {
+			System.out.println("\n" + otherMon.getName() + " fainted!");
+			otherMonHp = 0; 
 			otherMon.setStatus(0);
 			otherSkipTurn = true; 
 		}
@@ -990,42 +1051,34 @@ public class Battle {
 				if (other.getPokemonList()[i].getFaint()==false) {
 					System.out.println("NEXT POKEMON: " + other.getPokemonList()[i].getName());
 					new Battle(player, other, playerMon, i);
-					break;
+					battleContinue = false;
+					return;
 				}
 				else if (i==other.getPokemonList().length-1) {
+					System.out.println("You won!");
 					battleContinue = false;
+					return;
 				}
 			}
 		}
 		
-		if (trainerMonHp<=0) {
+		if (playerMonHp<=0) {
 			playerMon.setFaint(true);
 			for (int i = 0; i<player.getPokemonList().length; i++) {
 				if (player.getPokemonList()[i].getFaint()==false) {
 					battleContinue = true; 
-					break;
+					chooseNewPokemon();
+					battleContinue = false;
+					return;
 				}
 				else if (i==player.getPokemonList().length-1) {
+					System.out.println("You are out of usable Pokemon! You give out a badge...");
 					battleContinue = false;
+					return;
 				}
 			}
 		}
-//		
-//		guo lai 
-//		when a pokemon dies, change status to 0
-//		then, in the coordinateBattle method, check if pokemon faints? 
-//		if enemy dies, new constructor and essentially a "new" battle
-		
-		if (trainerMonHp<=0 || otherMonHp<=0) { // OR SWITCH POKEMON 
-			battleContinue = false;
-			// MUST CHOOSE POKEMON, AND CONSTRUCTOR WILL BE USED AGAIN 
-		}
-		if (!battleContinue) {
-			// ----------------------------------------------------------------------------------------------------
-			endBattle(); 
-		}
 	}
-	
 	// The endBattle method is used when the battle is over
 	// It is used to reset the delta variables to 0
 	// 
@@ -1062,6 +1115,7 @@ public class Battle {
 	
 	// Applies the users attack
 	public void applyTrainerAttack(Move attack, double stab) {
+		System.out.println(playerMon.getName() + " used " + attack.getName() + "!");
 		int newHp = 0;
 		double accuracy = Math.random();
 		// If the trainer's turn is skipped, nothing will happen 
@@ -1076,33 +1130,72 @@ public class Battle {
 			return;
 		}
 		hit = true;
+		// If the move does not damage, we can skip the rest
+		// However, this is checked after seeing if the move hit
+		if (attack.getAtkPower()==0) { 
+			return;
+		}
 		// If the other pokemon has 2 types
-		if (otherMon.getTypeList().size()==2) {
-			int type1 = otherMon.getType1().getTypeNum();
-			int type2 = otherMon.getType2().getTypeNum();
-			try {
-				newHp = (int) Math.round((2*(playerMon.getLevel()+2)*attack.getAtkPower()*(playerMon.getAttack()/otherMon.getDef())/50+2) * stab * PokeType.getTypeEffectiveness(attack.getType().getTypeNum(), type1, type2));
-			}
-			catch (IOException e) {
+		
+		// Physical attacks are for physical stats (aka attack and defence)
+		if (attack.getCategory().equals("Physical")) {
+			if (otherMon.getTypeList().size()==2) {
+				int type1 = otherMon.getType1().getTypeNum();
+				int type2 = otherMon.getType2().getTypeNum();
+				try {
+					newHp = (int) Math.round((2*(playerMon.getLevel()+2)*attack.getAtkPower()*(playerMon.getAttack()/otherMon.getDef())/50+2) * stab * PokeType.getTypeEffectiveness(attack.getType().getTypeNum(), type1, type2));
+				}
+				catch (IOException e) {
 
+				}
+				otherMon.setDeltaHp(otherMon.getDeltaHp() + newHp);
 			}
-			otherMon.setDeltaHp(otherMon.getDeltaHp() + newHp);
+			else {
+				int type1 = otherMon.getType1().getTypeNum();
+				try {
+					newHp = (int) Math.round((2*(playerMon.getLevel()+2)*attack.getAtkPower()*(playerMon.getAttack()/otherMon.getDef())/50+2) * stab * PokeType.getTypeEffectiveness(attack.getType().getTypeNum(), type1));
+				}
+				catch (IOException e) {
+					System.out.println("EXCEPTION");
+				}
+				otherMon.setDeltaHp(otherMon.getDeltaHp() + newHp);
+			}
 		}
-		else {
-			int type1 = otherMon.getType1().getTypeNum();
-			try {
-				newHp = (int) Math.round((2*(playerMon.getLevel()+2)*attack.getAtkPower()*(playerMon.getAttack()/otherMon.getDef())/50+2) * stab * PokeType.getTypeEffectiveness(attack.getType().getTypeNum(), type1));
+		
+		// Special attacks are for special stats (special attack and special defence) 
+		else if (attack.getCategory().equals("Special")) {
+			if (otherMon.getTypeList().size()==2) {
+				int type1 = otherMon.getType1().getTypeNum();
+				int type2 = otherMon.getType2().getTypeNum();
+				try {
+					newHp = (int) Math.round((2*(playerMon.getLevel()+2)*attack.getAtkPower()*(playerMon.getSpAtk()/otherMon.getSpDef())/50+2) * stab * PokeType.getTypeEffectiveness(attack.getType().getTypeNum(), type1, type2));
+				}
+				catch (IOException e) {
+
+				}
+				otherMon.setDeltaHp(otherMon.getDeltaHp() + newHp);
 			}
-			catch (IOException e) {
-				System.out.println("EXCEPTION");
+			else {
+				int type1 = otherMon.getType1().getTypeNum();
+				try {
+					newHp = (int) Math.round((2*(playerMon.getLevel()+2)*attack.getAtkPower()*(playerMon.getSpAtk()/otherMon.getSpDef())/50+2) * stab * PokeType.getTypeEffectiveness(attack.getType().getTypeNum(), type1));
+				}
+				catch (IOException e) {
+					System.out.println("EXCEPTION");
+				}
+				otherMon.setDeltaHp(otherMon.getDeltaHp() + newHp);
 			}
-			otherMon.setDeltaHp(otherMon.getDeltaHp() + newHp);
 		}
-		updateStats();
+		
+		
+		
+		
+//		updateStats();
 	}
 	
 	// Applies the opponents attack 
 	public void applyOtherAttack(Move attack, double stab) {
+		System.out.println(otherMon.getName() + " used " + attack.getName() + "!");
 		int newHp = 0;
 		double accuracy = Math.random();
 		if (otherSkipTurn) {
@@ -1116,6 +1209,9 @@ public class Battle {
 			return;
 		}
 		hit = true;
+		if (attack.getAtkPower()==0) {
+			return;
+		}
 		// If the other pokemon has 2 types
 		if (playerMon.getTypeList().size()==2) {
 			int type1 = playerMon.getType1().getTypeNum();
@@ -1138,8 +1234,38 @@ public class Battle {
 			}
 			playerMon.setDeltaHp(playerMon.getDeltaHp() + newHp);
 		}
-		updateStats();
 	}
+	
+	// The chooseNewPokemon() method is used to select a new Pokemon, either if the current one dies or if you choose to do so.
+	// It takes in no parameters
+	// It returns nothing - instead, a new battle is started 
+	public void chooseNewPokemon() {
+		int index = 0; 
+		boolean valid = false;
+		Scanner s = new Scanner (System.in);
+		System.out.println("Choose your Pokemon: ");
+		if (playerMonHp==0) {
+			for (int i = 0; i<player.getPokemonList().length; i++) {
+				if (player.getPokemonList()[i].getFaint()==false) {
+					System.out.println(i + ") " + player.getPokemonList()[i].getName());
+					valid = true;
+				}
+				else if (i==2 && !valid) {
+					System.out.println("You are out of usable Pokemon! You give out a badge...");
+					battleContinue = false;
+					return;
+				}
+			}
+			while (index==0) {
+				index = Integer.parseInt(s.nextLine());
+			}
+			new Battle(other, player, otherMon, index);
+		}
+		
+	}
+	
+	
+	
 	// Statuses are applied at the end of every turn 
 	public void applyStatus() {
 		// Trainer Pokemon Status
@@ -1153,7 +1279,7 @@ public class Battle {
 		// Burn - Takes away 1/16th of HP every turn and HALVES the current attack stat.
 		else if (playerMon.getStatus()==2) {
 			playerMon.setDeltaHp(playerMon.getDeltaHp() + (playerMon.getHp()/16));
-			playerMon.setDeltaAttack(trainerMonAttack/2);
+			playerMon.setDeltaAttack(playerMonAttack/2);
 		}
 		// Paralyze
 		// This will cut the Pokemon's speed to 25% 
@@ -1163,6 +1289,9 @@ public class Battle {
 			int random = (int) (Math.random()*4) + 1;
 			if (random==1) {
 				trainerSkipTurn = true;
+			}
+			else {
+				trainerSkipTurn = false;
 			}
 		}
 		// Sleep
@@ -1217,6 +1346,9 @@ public class Battle {
 			int random = (int) (Math.random()*4) + 1;
 			if (random==1) {
 				otherSkipTurn = true;
+			}
+			else {
+				otherSkipTurn = false;
 			}
 		}
 		// Sleep
