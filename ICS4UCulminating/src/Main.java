@@ -39,7 +39,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	long lastActionTime = 0;
 	char lastKeyPressed = ' ';
 	char lastKeyReleased = ' ';
-	Queue movesQ = new LinkedList();
 
 	public static Wall[][] allWalls = new Wall[tileMapHeight][tileMapWidth];
 	public static boolean collisionUp = false;
@@ -105,13 +104,13 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			}
 			Animations.walk();
 			Animations.resetWalk();
-			
-			if (movesQ.size() > 1) {
-				bgAdjust();
-			} else {
-				bgShift();
-			}
-			//System.out.println(collisionUp + " " + collisionDown + " " + collisionLeft + " " + collisionRight);
+
+			// bgAdjust();
+			bgShift();
+			// System.out.println(collisionUp + " " + collisionDown + " " + collisionLeft +
+			// " " + collisionRight);
+		} else if (gameState == 3) {
+			currentBG = Images.battleBackground;
 		}
 	}
 
@@ -130,6 +129,13 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 						g.fillRect(allWalls[i][j].x, allWalls[i][j].y, 64, 64);
 					}
 				}
+			}
+		}
+		if (gameState == 3) {
+			g.drawImage(Images.battleMenu[4], 0, 0, null);
+			g.drawImage(Images.battleMenu[5], 0, 200, null);
+			for (int i = 0; i < 28; i++) {
+				g.drawImage(Images.battleFont[i], 10 + i*6, 210, null);
 			}
 		}
 	}
@@ -195,10 +201,14 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			gameState = 2;
 			bgX = saveBGX;
 			bgY = saveBGY;
-		} else {
-			gameState = 0;
+		} else if (gameState == 2) {
+			gameState++;
 			saveBGX = bgX;
 			saveBGY = bgY;
+			bgX = 0;
+			bgY = 0;
+		} else if (gameState == 3) {
+			gameState = 0;
 			bgX = 0;
 			bgY = 0;
 		}
@@ -286,6 +296,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			collisionRight = false;
 		}
 	}
+
 	public void bgShiftUp(double bgShiftPixels) {
 		if (bgY + bgShiftPixels > 0) {
 			bgY = 0;
@@ -309,6 +320,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			collisionRight = false;
 		}
 	}
+
 	public void bgShiftDown(double bgShiftPixels) {
 		if (bgY - bgShiftPixels < -tileMapHeight * tileSize + screenHeight)
 			bgY = -tileMapHeight * tileSize + screenHeight;
@@ -334,6 +346,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			}
 		}
 	}
+
 	public void bgShiftLeft(double bgShiftPixels) {
 		if (Player.getDirection() == 3 && !collisionLeft) {
 			if (bgX + bgShiftPixels > 0)
@@ -347,7 +360,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			}
 		}
 	}
-	
+
 	public void bgShiftRight(int bgShiftPixels) {
 		if (Player.getDirection() == 4 && !collisionRight) {
 			if (bgX - bgShiftPixels < -tileMapWidth * tileSize + screenWidth)
@@ -361,6 +374,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			}
 		}
 	}
+
 	public void bgShiftRight(double bgShiftPixels) {
 		if (Player.getDirection() == 4 && !collisionRight) {
 			if (bgX - bgShiftPixels < -tileMapWidth * tileSize + screenWidth)
@@ -423,7 +437,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			double top2 = wall.getY();
 			double bottom2 = wall.getY() + wall.getHeight();
 
-			
 			if (right1 > left2 && left1 < left2 && right1 - left2 < bottom1 - top2 && right1 - left2 < bottom2 - top1) {
 				// Player.hitbox collides from left side of the wall
 				collisionRight = true;
