@@ -47,7 +47,9 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	public static boolean collisionRight = false;
 
 	
-	int spriteTest = 0;
+	BufferedImage[] spriteTest = new BufferedImage[2];
+	int spriteIdx = 0;
+	
 	public Main() {
 		// sets up JPanel
 		setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -67,8 +69,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		}
 		while (true) {
 			// main game loop
-			this.repaint();
 			update();
+			this.repaint();
 			try {
 				Thread.sleep(1000 / FPS);
 			} catch (Exception e) {
@@ -134,6 +136,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			}
 		}
 		if (gameState == 3) {
+			g.drawImage(spriteTest[0], 580, 24, null);
+			g.drawImage(spriteTest[1], 130, 196, null);
 			g.drawImage(Images.battleMenu[5], 0, 640-Images.battleMenu[5].getHeight(), null);
 			g.drawImage(Images.battleMenu[2], 960-Images.battleMenu[2].getWidth(), 640-Images.battleMenu[2].getHeight(), null);
 			g.drawImage(Images.battleMenu[0], 48, 64, null);
@@ -142,12 +146,12 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 //				g.drawImage(Images.battleFont[i], 200 + (i)*30, 200, null);
 //				System.out.println(Images.battleFont[i].getWidth());
 //			}
-//			displayText(g, Images.battleFontIdx, Images.battleFont, "Elephant", 200, 300);
+			displayText(g, Images.battleFontIdx, Images.battleFont, Pokemon.pokeList.get(spriteIdx).getName().toUpperCase(), 80, 89);
+			displayText(g, Images.battleFontIdx, Images.battleFont, Pokemon.pokeList.get(spriteIdx).getName().toUpperCase(), 556, 313);
 //			displayText(g, Images.battleFontIdx, Images.battleFont, "abcdefghijklmnopqrstuvwxyz", 200, 250);
 //			displayText(g, Images.battleFontIdx, Images.battleFont, "0123456789.,!?/-", 200, 300);
 //			displaySymbol(g, Images.battleFontIdx, Images.battleFont, "boy", 200, 350);
-			g.drawImage(Images.battleSprites[spriteTest][0], 580, 24, null);
-			g.drawImage(Images.battleSprites[spriteTest][1], 130, 196, null);
+			
 			//Images.battleSpritesIdx.get("squirtle")
 			
 		}
@@ -221,7 +225,11 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			bgX = 0;
 			bgY = 0;
 		} else if (gameState == 3) {
-			spriteTest++;
+			spriteIdx++;
+			System.out.println(Pokemon.pokeList.get(spriteIdx).getName().toLowerCase() + " " + Images.battleSpritesIdx.get(Pokemon.pokeList.get(spriteIdx).getName().toLowerCase()));
+			spriteTest = Images.battleSprites[Images.battleSpritesIdx.get(Pokemon.pokeList.get(spriteIdx).getName().toLowerCase())];
+			System.out.println(spriteTest);
+			
 			
 //			gameState = 0;
 //			bgX = 0;
@@ -486,7 +494,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		for (int i = 0; i < text.length(); i++) {
 			int idx = map.get(""+text.charAt(i));
 			g.drawImage(images[idx], xPos, y, null);
-			xPos += images[idx].getWidth()-4;
+			xPos += images[idx].getWidth()-6;
 
 		}
 

@@ -50,15 +50,8 @@ public class GameFunctions {
 					p = new Pokemon(name, type1, type2, hp, attack, def, spAtk, spDef, speed, Move.moveSets[i]);
 				}
 				Pokemon.pokeList.add(p);
-				try {
-					System.out.println(p.getName() + " " + p.getMoves()[0].getName() + " " + p.getMoves()[1].getName()
-							+ " " + p.getMoves()[2].getName() + " " + p.getMoves()[3].getName());
-				} catch (NullPointerException e) {
-					System.out.println("BAD");
-				}
 				i++;
 			}
-			System.out.println(Pokemon.pokeList.size());
 		} catch (IOException e) {
 			System.out.println("BAD");
 		}
