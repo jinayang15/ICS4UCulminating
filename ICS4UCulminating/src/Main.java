@@ -134,14 +134,18 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		if (gameState == 3) {
 			g.drawImage(Images.battleMenu[5], 0, 640-Images.battleMenu[5].getHeight(), null);
 			g.drawImage(Images.battleMenu[2], 960-Images.battleMenu[2].getWidth(), 640-Images.battleMenu[2].getHeight(), null);
+			g.drawImage(Images.battleMenu[0], 48, 64, null);
+			g.drawImage(Images.battleMenu[1], 484, 284,null);
 //			for (int i = 0; i < 26; i++) {
 //				g.drawImage(Images.battleFont[i], 200 + (i)*30, 200, null);
 //				System.out.println(Images.battleFont[i].getWidth());
 //			}
-			displayText(g, Images.battleFontIdx, Images.battleFont, "Elephant", 200, 300);
+//			displayText(g, Images.battleFontIdx, Images.battleFont, "Elephant", 200, 300);
 //			displayText(g, Images.battleFontIdx, Images.battleFont, "abcdefghijklmnopqrstuvwxyz", 200, 250);
 //			displayText(g, Images.battleFontIdx, Images.battleFont, "0123456789.,!?/-", 200, 300);
 //			displaySymbol(g, Images.battleFontIdx, Images.battleFont, "boy", 200, 350);
+			g.drawImage(Images.battleSprites[Images.battleSpritesIdx.get("bulbasaur")][0], 580, 96, null);
+			g.drawImage(Images.battleSprites[Images.battleSpritesIdx.get("bulbasaur")][1], 128, 256, null);
 			
 		}
 	}

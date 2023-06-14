@@ -19,6 +19,8 @@ public class Images {
 	public static BufferedImage[] battleMenu = new BufferedImage[10];
 	static HashMap<String, Integer> battleFontIdx = new HashMap<String, Integer>();
 	public static BufferedImage[] battleFont = new BufferedImage[78];
+	static HashMap<String, Integer> battleSpritesIdx = new HashMap<String, Integer>();
+	public static BufferedImage[][] battleSprites = new BufferedImage[150][2]; // attack - 0, defense - 1
 	public static BufferedImage fireRedPressStart;
 	public static BufferedImage battleBackground;
 
@@ -28,6 +30,7 @@ public class Images {
 		importTrainer();
 		importBattleBackground();
 		importBattleMenu();
+		importBattleSprites();
 	}
 
 	public static void importMisc() throws IOException {
@@ -67,8 +70,8 @@ public class Images {
 
 	public static void importBattleBackground() throws IOException {
 		BufferedImage battleBackgroundSheet = ImageIO.read(new File("BattleBackgrounds.png"));
-		battleBackground = battleBackgroundSheet.getSubimage(6, 235, 240, 112);
-		battleBackground = resizeImage(battleBackground, 960, 640);
+		battleBackground = battleBackgroundSheet.getSubimage(6, 234, 240, 112);
+		battleBackground = resizeImage(battleBackground, 960, 448);
 	}
 
 	// subImage is exclusive corner coordinate
@@ -76,7 +79,7 @@ public class Images {
 		BufferedImage battleMenuSheet = ImageIO.read(new File("InBattleMenu.png"));
 		battleMenu[0] = battleMenuSheet.getSubimage(0, 0, 112, 32); // enemy hp and lvl
 		battleMenu[1] = battleMenuSheet.getSubimage(0, 40, 112, 44); // our hp and lvl
-		battleMenu[2] = battleMenuSheet.getSubimage(146, 3,120, 48); // options
+		battleMenu[2] = battleMenuSheet.getSubimage(146, 3, 120, 48); // options
 		battleMenu[3] = battleMenuSheet.getSubimage(268, 3, 7, 17); // arrow
 		battleMenu[4] = battleMenuSheet.getSubimage(297, 3, 240, 48); // attacks
 		battleMenu[5] = battleMenuSheet.getSubimage(297, 55, 240, 48); // text box
@@ -88,7 +91,7 @@ public class Images {
 		}
 		int xPos = 170;
 		for (int i = 0; i < 28; i++) {
-			if (i == 24 || i == 19  || i ==  8) {
+			if (i == 24 || i == 19 || i == 8) {
 				battleFont[i] = battleMenuSheet.getSubimage(xPos, 122, 6, 12);
 				battleFont[i] = resizeImage(battleFont[i], battleFont[i].getWidth() * 4, battleFont[i].getHeight() * 4);
 				xPos += 6;
@@ -171,6 +174,84 @@ public class Images {
 			battleFontIdx.put("boy", 76);
 			battleFontIdx.put("girl", 77);
 		}
+	}
+
+	public static void importBattleSprites() throws IOException {
+		BufferedImage battleSpritesSheet = ImageIO.read(new File("BattleSprites.png"));
+		int xPos = 11;
+		int yPos = -19;
+		for (int i = 0; i < 150; i++) {
+			if (i % 15 == 0) {
+				xPos = 11;
+				yPos += 64;
+			}
+			battleSprites[i][0] = battleSpritesSheet.getSubimage(xPos, yPos, 64, 64);
+			battleSprites[i][0] = resizeImage(battleSprites[i][0], battleSprites[i][0].getWidth() * 4,
+					battleSprites[i][0].getHeight() * 4);
+			battleSprites[i][1] = battleSpritesSheet.getSubimage(xPos, yPos + 65, 64, 64);
+			battleSprites[i][1] = resizeImage(battleSprites[i][1], battleSprites[i][1].getWidth() * 4,
+					battleSprites[i][1].getHeight() * 4);
+			xPos += 128;
+		}
+		battleSpritesIdx.put("bulbasaur", 0);
+		battleSpritesIdx.put("ivysaur", 1);
+		battleSpritesIdx.put("venusaur", 2);
+		battleSpritesIdx.put("charmander", 3);
+		battleSpritesIdx.put("charmeleon", 4);
+		battleSpritesIdx.put("squirtle", 6);
+		battleSpritesIdx.put("wartortle", 7);
+		battleSpritesIdx.put("blastoise", 8);
+		battleSpritesIdx.put("pidgey", 15);
+		battleSpritesIdx.put("pidgeotto", 16);
+		battleSpritesIdx.put("pidgeot", 17);
+		battleSpritesIdx.put("rattata", 18);
+		battleSpritesIdx.put("raticate", 19);
+		battleSpritesIdx.put("ekans", 22);
+		battleSpritesIdx.put("arkbok", 23);
+		battleSpritesIdx.put("pikachu", 24);
+		battleSpritesIdx.put("raichu", 25);
+		battleSpritesIdx.put("sandshrew", 26);
+		battleSpritesIdx.put("sandslash", 27);
+		battleSpritesIdx.put("nidoran", 28);
+		battleSpritesIdx.put("nidorina", 29);
+		battleSpritesIdx.put("nidoqueen", 30);
+		battleSpritesIdx.put("nidoran", 31);
+		battleSpritesIdx.put("nidorino", 32);
+		battleSpritesIdx.put("nidoking", 33);
+		battleSpritesIdx.put("vulpix", 36);
+		battleSpritesIdx.put("ninetails", 37);
+		battleSpritesIdx.put("zubat", 40);
+		battleSpritesIdx.put("golbat", 41);
+		battleSpritesIdx.put("oddish", 42);
+		battleSpritesIdx.put("gloom", 43);
+		battleSpritesIdx.put("vileplume", 44);
+		battleSpritesIdx.put("diglett", 49);
+		battleSpritesIdx.put("dugtrio", 50);
+		battleSpritesIdx.put("meowth", 51);
+		battleSpritesIdx.put("perisan", 52);
+		battleSpritesIdx.put("psyduck", 53);
+		battleSpritesIdx.put("golduck", 54);
+		battleSpritesIdx.put("growlithe", 57);
+		battleSpritesIdx.put("arcanine", 58);
+		battleSpritesIdx.put("poliwag", 59);
+		battleSpritesIdx.put("poliwhirl", 60);
+		battleSpritesIdx.put("poliwrath", 61);
+		battleSpritesIdx.put("tentacool", 71);
+		battleSpritesIdx.put("tentracruel", 72);
+		battleSpritesIdx.put("grimer", 87);
+		battleSpritesIdx.put("muk", 88);
+		battleSpritesIdx.put("voltorb", 99);
+		battleSpritesIdx.put("electrode", 100);
+		battleSpritesIdx.put("cubone", 103);
+		battleSpritesIdx.put("marowak", 104);
+		battleSpritesIdx.put("koffing", 108);
+		battleSpritesIdx.put("weezing", 109);
+		battleSpritesIdx.put("tangela", 113);
+		battleSpritesIdx.put("electabuzz", 124);
+		battleSpritesIdx.put("magmar", 125);
+		battleSpritesIdx.put("magikarp", 128);
+		battleSpritesIdx.put("gyarados", 129);
+
 	}
 
 	public static BufferedImage resizeImage(BufferedImage img, int newW, int newH) {
