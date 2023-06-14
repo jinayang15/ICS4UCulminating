@@ -46,6 +46,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	public static boolean collisionLeft = false;
 	public static boolean collisionRight = false;
 
+	
+	int spriteTest = 0;
 	public Main() {
 		// sets up JPanel
 		setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -144,8 +146,9 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 //			displayText(g, Images.battleFontIdx, Images.battleFont, "abcdefghijklmnopqrstuvwxyz", 200, 250);
 //			displayText(g, Images.battleFontIdx, Images.battleFont, "0123456789.,!?/-", 200, 300);
 //			displaySymbol(g, Images.battleFontIdx, Images.battleFont, "boy", 200, 350);
-			g.drawImage(Images.battleSprites[Images.battleSpritesIdx.get("bulbasaur")][0], 580, 96, null);
-			g.drawImage(Images.battleSprites[Images.battleSpritesIdx.get("bulbasaur")][1], 128, 256, null);
+			g.drawImage(Images.battleSprites[spriteTest][0], 580, 24, null);
+			g.drawImage(Images.battleSprites[spriteTest][1], 130, 196, null);
+			//Images.battleSpritesIdx.get("squirtle")
 			
 		}
 	}
@@ -218,9 +221,11 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			bgX = 0;
 			bgY = 0;
 		} else if (gameState == 3) {
-			gameState = 0;
-			bgX = 0;
-			bgY = 0;
+			spriteTest++;
+			
+//			gameState = 0;
+//			bgX = 0;
+//			bgY = 0;
 		}
 	}
 

@@ -179,11 +179,11 @@ public class Images {
 	public static void importBattleSprites() throws IOException {
 		BufferedImage battleSpritesSheet = ImageIO.read(new File("BattleSprites.png"));
 		int xPos = 11;
-		int yPos = -19;
+		int yPos = -119;
 		for (int i = 0; i < 150; i++) {
 			if (i % 15 == 0) {
 				xPos = 11;
-				yPos += 64;
+				yPos += 164;
 			}
 			battleSprites[i][0] = battleSpritesSheet.getSubimage(xPos, yPos, 64, 64);
 			battleSprites[i][0] = resizeImage(battleSprites[i][0], battleSprites[i][0].getWidth() * 4,
@@ -191,7 +191,7 @@ public class Images {
 			battleSprites[i][1] = battleSpritesSheet.getSubimage(xPos, yPos + 65, 64, 64);
 			battleSprites[i][1] = resizeImage(battleSprites[i][1], battleSprites[i][1].getWidth() * 4,
 					battleSprites[i][1].getHeight() * 4);
-			xPos += 128;
+			xPos += 130;
 		}
 		battleSpritesIdx.put("bulbasaur", 0);
 		battleSpritesIdx.put("ivysaur", 1);
