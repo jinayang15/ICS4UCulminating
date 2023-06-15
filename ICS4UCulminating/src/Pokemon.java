@@ -244,4 +244,7 @@ public class Pokemon {
 	public void levelUp() {
 		
 	}
+
+
+	
 }

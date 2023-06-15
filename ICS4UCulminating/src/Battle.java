@@ -4,6 +4,7 @@
 // We cannot simply choose who goes first based on speed, because there are some moves that have priority - more specifically, quick attack,
 // which ALWAYS goes first. As a result, we will first get what the user wants to do, then get what the computer wants, and THEN apply it. 
 
+import java.awt.Graphics;
 import java.io.*; 
 import java.util.*;
 public class Battle {
@@ -65,7 +66,6 @@ public class Battle {
 	
 	// Constructor
 	public Battle (Player player, Trainer other) {
-		
 		this.player = player;
 		this.other = other;
 		
@@ -145,9 +145,9 @@ public class Battle {
 	
 	// BATTLE START
 	public void battleStart() { 
-		while (battleContinue) {
-			coordinateBattle(); 
-		}
+//		while (battleContinue) {
+//			coordinateBattle(); 
+//		}
 	}
 	
 	// The trainerChooseAttack method is used to determine what attack the user chooses
@@ -171,6 +171,9 @@ public class Battle {
 		System.out.println((tempCount+1) + ") Change Pokemon");
 		while (index==0) {
 			index = Integer.parseInt(s.nextLine());
+			if (playerMon.getMoves()[index-1].getPP()==0) {
+				index = 0;
+			}
 		}
 		if (index==(tempCount+1)) {
 			chooseNewPokemon();
@@ -178,6 +181,7 @@ public class Battle {
 			return null;
 		}
 		else {
+			playerMon.getMoves()[index-1].setPP(playerMon.getMoves()[index-1].getPP()-1);
 			return playerMon.getMoves()[index-1];
 		}
 	}
@@ -1092,6 +1096,7 @@ public class Battle {
 				else if (i==other.getPokemonList().length-1) {
 					System.out.println("You won!");
 					battleContinue = false;
+					endBattle();
 					return;
 				}
 			}
@@ -1108,6 +1113,7 @@ public class Battle {
 				}
 				else if (i==player.getPokemonList().length-1) {
 					System.out.println("You are out of usable Pokemon! You give out a badge...");
+					endBattle();
 					battleContinue = false;
 					return;
 				}
