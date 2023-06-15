@@ -15,6 +15,12 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	 * - PokeMart
 	 */
 	public static int gameState = 0;
+	// 0 - not in battle
+	// 1 - options
+	// 2 - moves
+	// 3 - attacking/stuff happening
+	public static int battleState = 0;
+	
 	public static Player player;
 	// self explanatory variables
 	int FPS = 60;
@@ -68,8 +74,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		}
 		while (true) {
 			// main game loop
-			update();
 			this.repaint();
+			update();
 			try {
 				Thread.sleep(1000 / FPS);
 			} catch (Exception e) {
@@ -121,7 +127,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		super.paintComponent(g);
 		g.drawImage(currentBG, bgX, bgY, null);
 		if (gameState == 2) {
-
 			g.drawImage(Player.getCurrentPlayerImage(), Player.getPlayerX(), Player.getPlayerY(), null);
 			g.drawRect(Player.hitbox.x, Player.hitbox.y, Player.hitbox.width, Player.hitbox.height);
 //			System.out.println(Player.getPlayerX() + " " + Player.getPlayerY());
@@ -135,19 +140,30 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			}
 		}
 		if (gameState == 3) {
-			Player ray = new Player ("Fire");
+			Player ray = new Player("Fire");
 			Trainer ash = new Trainer();
+
 			Battle battle = new Battle(ray, ash);
-			baseBattleGraphics(g, battle);
+			baseBattleGraphics(g);
+			displayBattleSprites(g, battle);
+			displayOptionsMenuAndArrow(g, battle);
+			displayPokemonStats(g, battle);
+			displayText(g, Images.whiteFontIdx, Images.whiteFont, "What will~" + battle.getPlayerMon().getName().toUpperCase() + " do?", 32,
+					640 - Images.battleMenu[4].getHeight() + 40);
+
+//			while (battle.getBattleContinue()) {
+//			}
 			// Sprites and Pop-ups
-//			g.drawImage(Images.battleSprites[Images.battleSpritesIdx.get(Pokemon.pokeList.get(spriteIdx).getName().toLowerCase())][0], 576, 32, null);
-//			g.drawImage(Images.battleSprites[Images.battleSpritesIdx.get(Pokemon.pokeList.get(spriteIdx).getName().toLowerCase())][1], 128, 196, null);
-//			g.drawImage(Images.battleMenu[4], 0, 640 - Images.battleMenu[5].getHeight(), null);
-// 			g.drawImage(Images.battleMenu[5], 0, 640 - Images.battleMenu[2].getHeight(), null);
+//			g.drawImage(Images.battleSprites[Images.battleSpritesIdx
+//					.get(Pokemon.pokeList.get(spriteIdx).getName().toLowerCase())][0], 576, 32, null);
+//			g.drawImage(Images.battleSprites[Images.battleSpritesIdx
+//					.get(Pokemon.pokeList.get(spriteIdx).getName().toLowerCase())][1], 128, 196, null);
+//			g.drawImage(Images.battleMenu[4], 0, 640 - Images.battleMenu[4].getHeight(), null);
+// 			g.drawImage(Images.battleMenu[5], 0, 640 - Images.battleMenu[5].getHeight(), null);
 // 			g.drawImage(Images.battleMenu[2], 960 - Images.battleMenu[2].getWidth(), 640 - Images.battleMenu[2].getHeight(), null);
 //			g.drawImage(Images.battleMenu[0], 48, 64, null);
 //			g.drawImage(Images.battleMenu[1], 484, 284, null);
-			
+
 //			for (int i = 0; i < 26; i++) {
 //				g.drawImage(Images.battleFont[i], 200 + (i)*30, 200, null);
 //				System.out.println(Images.battleFont[i].getWidth());
@@ -156,35 +172,39 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 //			g.drawImage(Images.battleMenu[3], 512, 560, null);
 //			g.drawImage(Images.battleMenu[3], 736, 496, null);
 //			g.drawImage(Images.battleMenu[3], 736, 560, null);
-			
-			// Pokemon Names 
+
+			// Pokemon Names
 //			displayText(g, Images.battleFontIdx, Images.battleFont,
 //					Pokemon.pokeList.get(spriteIdx).getName().toUpperCase(), 80, 88);
 //			displayText(g, Images.battleFontIdx, Images.battleFont,
 //					Pokemon.pokeList.get(spriteIdx).getName().toUpperCase(), 556, 313);
 //			displayText(g, Images.battleFontIdx, Images.battleFont, "99", 379, 88);
 //			displayText(g, Images.battleFontIdx, Images.battleFont, "99", 850, 312);
-			
+
 			// Attack Display
 //			g.drawImage(Images.battleMenu[3], 36, 490, null);
 //			g.drawImage(Images.battleMenu[3], 332, 490, null);
 //			g.drawImage(Images.battleMenu[3], 36, 554, null);
 //			g.drawImage(Images.battleMenu[3], 332, 554, null);
-//			if (Pokemon.pokeList.get(spriteIdx).getMoves()[0] != null) {
-//				displayText(g, Images.attackFontIdx, Images.attackFont,
-//						Pokemon.pokeList.get(spriteIdx).getMoves()[0].getName(), 64, 490);
-//			}
-//			if (Pokemon.pokeList.get(spriteIdx).getMoves()[1] != null) {
-//				displayText(g, Images.attackFontIdx, Images.attackFont,
-//						Pokemon.pokeList.get(spriteIdx).getMoves()[1].getName(), 360, 490);
-//			}
-//			if (Pokemon.pokeList.get(spriteIdx).getMoves()[2] != null) {
-//				displayText(g, Images.attackFontIdx, Images.attackFont,
-//						Pokemon.pokeList.get(spriteIdx).getMoves()[2].getName(), 64, 554);
-//			}
-//			if (Pokemon.pokeList.get(spriteIdx).getMoves()[3] != null) {
-//				displayText(g, Images.attackFontIdx, Images.attackFont,
-//						Pokemon.pokeList.get(spriteIdx).getMoves()[3].getName(), 360, 554);
+//			try {
+//				if (Pokemon.pokeList.get(spriteIdx).getMoves()[0] != null) {
+//					displayText(g, Images.attackFontIdx, Images.attackFont,
+//							Pokemon.pokeList.get(spriteIdx).getMoves()[0].getName(), 64, 490);
+//				}
+//				if (Pokemon.pokeList.get(spriteIdx).getMoves()[1] != null) {
+//					displayText(g, Images.attackFontIdx, Images.attackFont,
+//							Pokemon.pokeList.get(spriteIdx).getMoves()[1].getName(), 360, 490);
+//				}
+//				if (Pokemon.pokeList.get(spriteIdx).getMoves()[2] != null) {
+//					displayText(g, Images.attackFontIdx, Images.attackFont,
+//							Pokemon.pokeList.get(spriteIdx).getMoves()[2].getName(), 64, 554);
+//				}
+//				if (Pokemon.pokeList.get(spriteIdx).getMoves()[3] != null) {
+//					displayText(g, Images.attackFontIdx, Images.attackFont,
+//							Pokemon.pokeList.get(spriteIdx).getMoves()[3].getName(), 360, 554);
+//				}
+//			} catch (InterruptedException e) {
+//
 //			}
 		}
 	}
@@ -264,9 +284,9 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 //					.get(Pokemon.pokeList.get(spriteIdx).getName().toLowerCase())];
 //			System.out.println(spriteTest);
 
-			gameState = 0;
-			bgX = 0;
-			bgY = 0;
+//			gameState = 0;
+//			bgX = 0;
+//			bgY = 0;
 		}
 	}
 
@@ -521,13 +541,18 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	public static void displayText(Graphics g, HashMap<String, Integer> map, BufferedImage[] images, String text, int x,
 			int y) {
 		int xPos = x;
+		int yPos = y;
 		for (int i = 0; i < text.length(); i++) {
 			if (text.charAt(i) == ' ') {
 				xPos += 14;
-			} else {
+			} else if(text.charAt(i) == '~'){ //newline
+				xPos = x;
+				yPos += 64;
+				
+			}else {
 				int idx = map.get("" + text.charAt(i));
-				g.drawImage(images[idx], xPos, y, null);
-				xPos += images[idx].getWidth() - images[idx].getWidth()/4-1;
+				g.drawImage(images[idx], xPos, yPos, null);
+				xPos += images[idx].getWidth() - images[idx].getWidth() / 4 - 1;
 			}
 
 		}
@@ -539,12 +564,31 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		int idx = map.get(sym);
 		g.drawImage(images[idx], x, y, null);
 
-	} 
-	public void baseBattleGraphics(Graphics g, Battle battle) {
-		g.drawImage(Images.battleSprites[Images.battleSpritesIdx.get(battle.playerMon.getName().toLowerCase())][0], 576, 32, null);
-		g.drawImage(Images.battleSprites[Images.battleSpritesIdx.get(battle.otherMon.getName().toLowerCase())][1], 128, 196, null);
-		g.drawImage(Images.battleMenu[5], 0, 640 - Images.battleMenu[2].getHeight(), null);
+	}
+
+	public static void baseBattleGraphics(Graphics g) {
+		g.drawImage(Images.battleMenu[5], 0, 640 - Images.battleMenu[5].getHeight(), null);
 		g.drawImage(Images.battleMenu[0], 48, 64, null);
 		g.drawImage(Images.battleMenu[1], 484, 284, null);
+	}
+
+	public static void displayBattleSprites(Graphics g, Battle b) {
+		g.drawImage(b.getOtherMonSprite(), 576, 32, null);
+		g.drawImage(b.getPlayerMonSprite(), 128, 196, null);
+	}
+
+	public static void displayOptionsMenuAndArrow(Graphics g, Battle b) {
+		g.drawImage(Images.battleMenu[2], 960 - Images.battleMenu[2].getWidth(), 640 - Images.battleMenu[2].getHeight(),
+				null);
+		g.drawImage(Images.battleMenu[3], b.getOptionsArrowX(), b.getOptionsArrowY(), null);
+	}
+
+	public static void displayPokemonStats(Graphics g, Battle b) {
+		g.drawImage(Images.battleMenu[0], 48, 64, null);
+		g.drawImage(Images.battleMenu[1], 484, 284, null);
+		displayText(g, Images.battleFontIdx, Images.battleFont, b.getPlayerMon().getName().toUpperCase(), 80, 88);
+		displayText(g, Images.battleFontIdx, Images.battleFont, b.getOtherMon().getName().toUpperCase(), 556, 313);
+		displayText(g, Images.battleFontIdx, Images.battleFont, b.getPlayerMon().getLevel() + "", 379, 88);
+		displayText(g, Images.battleFontIdx, Images.battleFont, b.getOtherMon().getLevel() + "", 850, 312);
 	}
 }

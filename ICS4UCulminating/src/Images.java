@@ -20,12 +20,14 @@ public class Images {
 	static HashMap<String, Integer> battleFontIdx = new HashMap<String, Integer>();
 	public static BufferedImage[] battleFont = new BufferedImage[78];
 	static HashMap<String, Integer> battleSpritesIdx = new HashMap<String, Integer>();
-	public static BufferedImage[][] battleSprites = new BufferedImage[150][2]; // attack - 0, defense - 1
+	public static BufferedImage[][] battleSprites = new BufferedImage[150][2]; // other - 0, player - 1
 	static HashMap<String, Integer> attackFontIdx = new HashMap<String, Integer>();
 	public static BufferedImage[] attackFont = new BufferedImage[78];
+	static HashMap<String, Integer> whiteFontIdx = new HashMap<String, Integer>();
+	public static BufferedImage[] whiteFont = new BufferedImage[78];
 	public static BufferedImage fireRedPressStart;
 	public static BufferedImage battleBackground;
-
+	
 	public static void importAllImages() throws IOException {
 		importMisc();
 		importPewterCity();
@@ -34,6 +36,7 @@ public class Images {
 		importBattleMenu();
 		importBattleSprites();
 		importAttackFont();
+		importWhiteFont();
 	}
 
 	public static void importMisc() throws IOException {
@@ -342,6 +345,94 @@ public class Images {
 			attackFontIdx.put("\'b", 75);
 			attackFontIdx.put("boy", 76);
 			attackFontIdx.put("girl", 77);
+		}
+	}
+	public static void importWhiteFont() throws IOException {
+		BufferedImage whiteFontSheet = ImageIO.read(new File("WhiteFont.png"));
+		int xPos = 0;
+		for (int i = 0; i < 28; i++) {
+			if (i == 24 || i == 19 || i == 8) {
+				whiteFont[i] = whiteFontSheet.getSubimage(xPos, 0, 6, 12);
+				whiteFont[i] = resizeImage(whiteFont[i], whiteFont[i].getWidth() * 4, whiteFont[i].getHeight() * 4);
+				xPos += 6;
+			} else {
+				whiteFont[i] = whiteFontSheet.getSubimage(xPos, 0, 7, 12);
+				whiteFont[i] = resizeImage(whiteFont[i], whiteFont[i].getWidth() * 4, whiteFont[i].getHeight() * 4);
+				xPos += 7;
+			}
+			if (i < 26) {
+				whiteFontIdx.put("" + (char) ('A' + i), i);
+			}
+		}
+		whiteFontIdx.put(".", 26);
+		whiteFontIdx.put(",", 27);
+		xPos = 0;
+		for (int i = 0; i < 26; i++) {
+			if (i == 8) {
+				whiteFont[i + 28] = whiteFontSheet.getSubimage(xPos, 16, 4, 12);
+				whiteFont[i + 28] = resizeImage(whiteFont[i + 28], whiteFont[i + 28].getWidth() * 4,
+						whiteFont[i + 28].getHeight() * 4);
+				xPos += 4;
+			} else if (i == 11) {
+				whiteFont[i + 28] = whiteFontSheet.getSubimage(xPos, 16, 5, 12);
+				whiteFont[i + 28] = resizeImage(whiteFont[i + 28], whiteFont[i + 28].getWidth() * 4,
+						whiteFont[i + 28].getHeight() * 4);
+				xPos += 5;
+			} else if (i == 9 || i == 15) {
+				whiteFont[i + 28] = whiteFontSheet.getSubimage(xPos, 16, 6, 12);
+				whiteFont[i + 28] = resizeImage(whiteFont[i + 28], whiteFont[i + 28].getWidth() * 4,
+						whiteFont[i + 28].getHeight() * 4);
+				xPos += 6;
+			} else {
+				whiteFont[i + 28] = whiteFontSheet.getSubimage(xPos, 16, 7, 12);
+				whiteFont[i + 28] = resizeImage(whiteFont[i + 28], whiteFont[i + 28].getWidth() * 4,
+						whiteFont[i + 28].getHeight() * 4);
+				xPos += 7;
+			}
+			whiteFontIdx.put("" + (char) ('a' + i), i + 28);
+		}
+		xPos = 0;
+		for (int i = 0; i < 10; i++) {
+			if (i == 1) {
+				whiteFont[i + 54] = whiteFontSheet.getSubimage(xPos, 32, 6, 12);
+				whiteFont[i + 54] = resizeImage(attackFont[i + 54], whiteFont[i + 54].getWidth() * 4,
+						whiteFont[i + 54].getHeight() * 4);
+				xPos += 6;
+			} else {
+				whiteFont[i + 54] = whiteFontSheet.getSubimage(xPos, 32, 7, 12);
+				whiteFont[i + 54] = resizeImage(attackFont[i + 54], whiteFont[i + 54].getWidth() * 4,
+						whiteFont[i + 54].getHeight() * 4);
+				xPos += 7;
+			}
+			whiteFontIdx.put("" + (char) ('0' + i), i + 54);
+
+		}
+		xPos = 0;
+		for (int i = 0; i < 13; i++) {
+			if (i == 0) {
+				whiteFont[i + 65] = whiteFontSheet.getSubimage(xPos, 48, 4, 12);
+				whiteFont[i + 65] = resizeImage(whiteFont[i + 65], whiteFont[i + 65].getWidth() * 4,
+						whiteFont[i + 65].getHeight() * 4);
+				xPos += 4;
+			} else {
+				whiteFont[i + 65] = whiteFontSheet.getSubimage(xPos, 48, 7, 12);
+				whiteFont[i + 65] = resizeImage(whiteFont[i + 65], whiteFont[i + 65].getWidth() * 4,
+						whiteFont[i + 65].getHeight() * 4);
+				xPos += 7;
+			}
+			whiteFontIdx.put("!", 65);
+			whiteFontIdx.put("?", 66);
+			whiteFontIdx.put("boyB", 67);
+			whiteFontIdx.put("girlB", 68);
+			whiteFontIdx.put("/", 69);
+			whiteFontIdx.put("-", 70);
+			whiteFontIdx.put("..", 71);
+			whiteFontIdx.put("\"f", 72);
+			whiteFontIdx.put("\"b", 73);
+			whiteFontIdx.put("\'f", 74);
+			whiteFontIdx.put("\'b", 75);
+			whiteFontIdx.put("boy", 76);
+			whiteFontIdx.put("girl", 77);
 		}
 	}
 

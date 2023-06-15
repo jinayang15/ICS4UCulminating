@@ -5,16 +5,21 @@
 // which ALWAYS goes first. As a result, we will first get what the user wants to do, then get what the computer wants, and THEN apply it. 
 
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.io.*; 
 import java.util.*;
 public class Battle {
 
 	// Variables 
-	Player player;
-	Trainer other;
+	private Player player;
+	private Trainer other;
 	
-	Pokemon playerMon;
-	Pokemon otherMon;
+	private Pokemon playerMon;
+	private Pokemon otherMon;
+	private BufferedImage playerMonSprite;
+	private BufferedImage otherMonSprite;
+	
+	private int battleState = 0;
 	private boolean attack = false; 
 	private boolean switchPokemon = false; // Boolean that sees if the user is switching Pokemon
 	private boolean battleContinue = true; // Boolean to see if the battle is going to continue 
@@ -64,13 +69,26 @@ public class Battle {
 	private int otherSleepCounter = 0;
 	private int otherToxicCounter = 1;
 	
+	//Arrow position
+	private int[][] optionsArrowPositions = {{512, 496}, {512, 560}, {736, 496}, {736, 560}};
+	private int optionsArrowX = 512;
+	private int optionsArrowY = 496;
+	private int optionsArrowIdx = 0;
+
+	private int[][] attackArrowPositions = {{36, 490}, {332, 490}, {36, 554}, {332, 554}};
+	private int attackArrowX = 36;
+	private int attackArrowY = 490;
+	private int attackArrowIdx = 0;
+	
 	// Constructor
 	public Battle (Player player, Trainer other) {
 		this.player = player;
 		this.other = other;
 		
 		playerMon = player.getPokemonList()[0];
+		playerMonSprite = Images.battleSprites[Images.battleSpritesIdx.get(playerMon.getName().toLowerCase())][1];
 		otherMon = other.getPokemonList()[0];
+		otherMonSprite = Images.battleSprites[Images.battleSpritesIdx.get(otherMon.getName().toLowerCase())][0];
 
 		playerMonHp = playerMon.getHp() - playerMon.getDeltaHp();
 		playerMonAttack = playerMon.getAttack();
@@ -87,7 +105,7 @@ public class Battle {
 		otherMonSpeed = otherMon.getSpeed();
 	
 		updateStats();
-		battleStart();
+//		battleStart();
 	}
 	
 	// Overloaded constructor for switching in Pokemon 
@@ -113,7 +131,7 @@ public class Battle {
 		otherMonSpeed = otherMon.getSpeed();
 		
 		updateStats();
-		battleStart(); 
+//		battleStart(); 
 	}
 	
 	// Overloaded constructor for switching the enemy Pokemon 
@@ -138,14 +156,14 @@ public class Battle {
 		otherMonSpeed = otherMon.getSpeed();
 	
 		updateStats();
-		battleStart();
+//		battleStart();
 	}
 	
 	// BATTLE START
 	public void battleStart() { 
-//		while (battleContinue) {
-//			coordinateBattle(); 
-//		}
+		while (battleContinue) {
+			coordinateBattle(); 
+		}
 	}
 	
 	// The trainerChooseAttack method is used to determine what attack the user chooses
@@ -1422,4 +1440,110 @@ public class Battle {
 			}
 		}
 	}
+	public boolean getBattleContinue() {
+		return battleContinue;
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+
+	public Trainer getOther() {
+		return other;
+	}
+
+	public void setOther(Trainer other) {
+		this.other = other;
+	}
+
+	public Pokemon getPlayerMon() {
+		return playerMon;
+	}
+
+	public void setPlayerMon(Pokemon playerMon) {
+		this.playerMon = playerMon;
+	}
+
+	public Pokemon getOtherMon() {
+		return otherMon;
+	}
+
+	public void setOtherMon(Pokemon otherMon) {
+		this.otherMon = otherMon;
+	}
+	public BufferedImage getPlayerMonSprite() {
+		return playerMonSprite;
+	}
+
+	public BufferedImage getOtherMonSprite() {
+		return otherMonSprite;
+	}
+	
+	public int[][] getOptionsArrowPositions() {
+		return optionsArrowPositions;
+	}
+
+	public void setOptionsArrowPositions(int[][] optionsArrowPositions) {
+		this.optionsArrowPositions = optionsArrowPositions;
+	}
+
+	public int getOptionsArrowX() {
+		return optionsArrowX;
+	}
+
+	public void setOptionsArrowX(int optionsArrowX) {
+		this.optionsArrowX = optionsArrowX;
+	}
+
+	public int getOptionsArrowY() {
+		return optionsArrowY;
+	}
+
+	public void setOptionsArrowY(int optionsArrowY) {
+		this.optionsArrowY = optionsArrowY;
+	}
+
+	public int[][] getAttackArrowPositions() {
+		return attackArrowPositions;
+	}
+
+	public void setAttackArrowPositions(int[][] attackArrowPositions) {
+		this.attackArrowPositions = attackArrowPositions;
+	}
+
+	public int getAttackArrowX() {
+		return attackArrowX;
+	}
+
+	public void setAttackArrowX(int attackArrowX) {
+		this.attackArrowX = attackArrowX;
+	}
+
+	public int getAttackArrowY() {
+		return attackArrowY;
+	}
+
+	public void setAttackArrowY(int attackArrowY) {
+		this.attackArrowY = attackArrowY;
+	}
+	public int getOptionsArrowIdx() {
+		return optionsArrowIdx;
+	}
+
+	public void setOptionsArrowIdx(int optionsArrowIdx) {
+		this.optionsArrowIdx = optionsArrowIdx;
+	}
+
+	public int getAttackArrowIdx() {
+		return attackArrowIdx;
+	}
+
+	public void setAttackArrowIdx(int attackArrowIdx) {
+		this.attackArrowIdx = attackArrowIdx;
+	}
+	
 }
