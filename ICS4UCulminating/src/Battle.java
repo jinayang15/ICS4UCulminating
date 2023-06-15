@@ -189,7 +189,7 @@ public class Battle {
 		System.out.println((tempCount+1) + ") Change Pokemon");
 		while (index==0) {
 			index = Integer.parseInt(s.nextLine());
-			if (playerMon.getMoves()[index-1].getPP()==0) {
+			if (playerMon.getMoves()[index-1].getCurrentPP()==0) {
 				index = 0;
 			}
 		}
@@ -199,7 +199,7 @@ public class Battle {
 			return null;
 		}
 		else {
-			playerMon.getMoves()[index-1].setPP(playerMon.getMoves()[index-1].getPP()-1);
+			playerMon.getMoves()[index-1].setPP(playerMon.getMoves()[index-1].getCurrentPP()-1);
 			return playerMon.getMoves()[index-1];
 		}
 	}
