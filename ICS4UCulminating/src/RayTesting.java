@@ -7,7 +7,7 @@ public class RayTesting {
 		Main.initialize();
 		Player ray = new Player ("Fire");
 		Trainer ash = new Trainer();
-		//Battle battle = new Battle(ray, ash);
+//		Battle battle = new Battle(ray, ash);
 	}
 
 }

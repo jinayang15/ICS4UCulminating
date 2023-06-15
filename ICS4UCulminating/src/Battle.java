@@ -166,7 +166,11 @@ public class Battle {
 		}
 		while (index==0) {
 			index = Integer.parseInt(s.nextLine());
+			if (playerMon.getMoves()[index-1].getPP()==0) {
+				index = 0;
+			}
 		}
+		playerMon.getMoves()[index-1].setPP(playerMon.getMoves()[index-1].getPP()-1);
 		return playerMon.getMoves()[index-1];
 	}
 	
