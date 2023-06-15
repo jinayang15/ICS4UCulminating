@@ -14,14 +14,16 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	 * 0 - initial menu 1 - Options Menu 2 - Pewter City 3 - Battle 4 - PokeCenter 5
 	 * - PokeMart
 	 */
-	public static int gameState = 0;
+	static int gameState = 0;
 	// 0 - not in battle
 	// 1 - options
 	// 2 - moves
 	// 3 - attacking/stuff happening
-	public static int battleState = 0;
+	static int battleState = 0;
+	static Battle battle = null;
 
 	public static Player player;
+	public static Trainer trainer;
 	// self explanatory variables
 	int FPS = 60;
 	Thread thread;
@@ -54,6 +56,17 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 
 	BufferedImage[] spriteTest = new BufferedImage[2];
 	int spriteIdx = 0;
+
+	// Arrow position
+	private static int[][] optionsArrowPositions = { { 512, 496 }, { 736, 496 }, { 512, 560 }, { 736, 560 } };
+	private static int optionsArrowX = 512;
+	private static int optionsArrowY = 496;
+	private static int optionsArrowIdx = 0;
+
+	private static int[][] attackArrowPositions = { { 36, 490 }, { 332, 490 }, { 36, 554 }, { 332, 554 } };
+	private static int attackArrowX = 36;
+	private static int attackArrowY = 490;
+	private static int attackArrowIdx = 0;
 
 	public Main() {
 		// sets up JPanel
@@ -140,18 +153,21 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			}
 		}
 		if (gameState == 3) {
-			Player ray = new Player("Fire");
-			Trainer ash = new Trainer();
 
-			Battle battle = new Battle(ray, ash);
+			battle = new Battle(player, trainer);
 			baseBattleGraphics(g);
-			displayBattleSprites(g, battle);
-			displayOptionsMenuAndArrow(g, battle);
-			displayPokemonStats(g, battle);
-			displayText(g, Images.whiteFontIdx, Images.whiteFont,
-					"What will~" + battle.getPlayerMon().getName().toUpperCase() + " do?", 32,
-					640 - Images.battleMenu[4].getHeight() + 40);
-
+			displayBattleSprites(g);
+			displayPokemonStats(g);
+			displayStatus(g);
+			if (battleState == 1) {
+				displayOptionsMenuAndArrow(g);
+				displayText(g, Images.whiteFontIdx, Images.whiteFont,
+						"What will~" + battle.getPlayerMon().getName().toUpperCase() + " do?", 40,
+						640 - Images.battleMenu[4].getHeight() + 40);
+			} else if (battleState == 2) {
+				displayAttackMenuAndArrow(g);
+				displayAttacks(g);
+			}
 //			while (battle.getBattleContinue()) {
 //			}
 			// Sprites and Pop-ups
@@ -249,14 +265,57 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			}
 		} else if (gameState == 3 && battleState == 1) {
 			if (x == 'w') {
-				moveOptionsArrowUp();
+				if (optionsArrowIdx == 2 || optionsArrowIdx == 3) {
+					optionsArrowIdx -= 2;
+				}
+			} else if (x == 's') {
+				if (optionsArrowIdx == 0 || optionsArrowIdx == 1) {
+					optionsArrowIdx += 2;
+
+				}
+			} else if (x == 'a') {
+				if (optionsArrowIdx == 1 || optionsArrowIdx == 3) {
+					optionsArrowIdx--;
+				}
+			} else if (x == 'd') {
+				if (optionsArrowIdx == 0 || optionsArrowIdx == 2) {
+					optionsArrowIdx++;
+				}
+
 			}
-			else if (x == 'd') {
-				moveOptionsArrowDown();
-			}else if (x == 'd') {
-				
+			optionsArrowX = optionsArrowPositions[optionsArrowIdx][0];
+			optionsArrowY = optionsArrowPositions[optionsArrowIdx][1];
+		} else if (gameState == 3 && battleState == 2) {
+			if (x == 'w') {
+				if (attackArrowIdx == 2 || attackArrowIdx == 3) {
+					if (battle.getPlayerMon().getMoves()[attackArrowIdx - 2] != null) {
+						attackArrowIdx -= 2;
+					}
+				}
+			} else if (x == 's') {
+				if (attackArrowIdx == 0 || attackArrowIdx == 1) {
+					if (battle.getPlayerMon().getMoves()[attackArrowIdx + 2] != null) {
+						attackArrowIdx += 2;
+					}
+				}
+			} else if (x == 'a') {
+				if (attackArrowIdx == 1 || attackArrowIdx == 3) {
+					if (battle.getPlayerMon().getMoves()[attackArrowIdx - 1] != null) {
+						attackArrowIdx--;
+					}
+				}
+			} else if (x == 'd') {
+				if (attackArrowIdx == 0 || attackArrowIdx == 2) {
+					if (battle.getPlayerMon().getMoves()[attackArrowIdx + 1] != null) {
+						attackArrowIdx++;
+					}
+				}
+
 			}
+			attackArrowX = attackArrowPositions[attackArrowIdx][0];
+			attackArrowY = attackArrowPositions[attackArrowIdx][1];
 		}
+
 	}
 
 	@Override
@@ -288,7 +347,10 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			saveBGY = bgY;
 			bgX = 0;
 			bgY = 0;
+			battleState = 1;
+			trainer = new Trainer();
 		} else if (gameState == 3) {
+			battleState++;
 //			spriteIdx++;
 //			System.out.println(Pokemon.pokeList.get(spriteIdx).getName().toLowerCase() + " "
 //					+ Images.battleSpritesIdx.get(Pokemon.pokeList.get(spriteIdx).getName().toLowerCase()));
@@ -352,10 +414,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		// self explanatory. You don't want to resize your window because
 		// it might mess up your graphics and collisions
 		frame.setResizable(false);
-		initialize();
-		Player player = new Player("Fire");
-		System.out.println();
-		System.out.println(new Trainer());
+		player = new Player("Fire");
 	}
 
 	// background shifts with the player
@@ -584,23 +643,60 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		g.drawImage(Images.battleMenu[1], 484, 284, null);
 	}
 
-	public static void displayBattleSprites(Graphics g, Battle b) {
-		g.drawImage(b.getOtherMonSprite(), 576, 32, null);
-		g.drawImage(b.getPlayerMonSprite(), 128, 196, null);
-	}
-
-	public static void displayOptionsMenuAndArrow(Graphics g, Battle b) {
-		g.drawImage(Images.battleMenu[2], 960 - Images.battleMenu[2].getWidth(), 640 - Images.battleMenu[2].getHeight(),
-				null);
-		g.drawImage(Images.battleMenu[3], b.getOptionsArrowX(), b.getOptionsArrowY(), null);
-	}
-
-	public static void displayPokemonStats(Graphics g, Battle b) {
+	public static void displayPokemonStats(Graphics g) {
 		g.drawImage(Images.battleMenu[0], 48, 64, null);
 		g.drawImage(Images.battleMenu[1], 484, 284, null);
-		displayText(g, Images.battleFontIdx, Images.battleFont, b.getPlayerMon().getName().toUpperCase(), 80, 88);
-		displayText(g, Images.battleFontIdx, Images.battleFont, b.getOtherMon().getName().toUpperCase(), 556, 313);
-		displayText(g, Images.battleFontIdx, Images.battleFont, b.getPlayerMon().getLevel() + "", 379, 88);
-		displayText(g, Images.battleFontIdx, Images.battleFont, b.getOtherMon().getLevel() + "", 850, 312);
+		displayText(g, Images.battleFontIdx, Images.battleFont, battle.getOtherMon().getName().toUpperCase(), 80, 88);
+		displayText(g, Images.battleFontIdx, Images.battleFont, battle.getPlayerMon().getName().toUpperCase(), 556,
+				313);
+		displayText(g, Images.battleFontIdx, Images.battleFont, battle.getOtherMon().getLevel() + "", 379, 88);
+		displayText(g, Images.battleFontIdx, Images.battleFont, battle.getPlayerMon().getLevel() + "", 850, 312);
+	}
+
+	public static void displayBattleSprites(Graphics g) {
+		g.drawImage(battle.getOtherMonSprite(), 576, 32, null);
+		g.drawImage(battle.getPlayerMonSprite(), 128, 196, null);
+	}
+
+	public static void displayOptionsMenuAndArrow(Graphics g) {
+		g.drawImage(Images.battleMenu[2], 960 - Images.battleMenu[2].getWidth(), 640 - Images.battleMenu[2].getHeight(),
+				null);
+		g.drawImage(Images.battleMenu[3], optionsArrowX, optionsArrowY, null);
+	}
+
+	public static void displayAttackMenuAndArrow(Graphics g) {
+		g.drawImage(Images.battleMenu[4], 960 - Images.battleMenu[4].getWidth(), 640 - Images.battleMenu[4].getHeight(),
+				null);
+		g.drawImage(Images.battleMenu[3], attackArrowX, attackArrowY, null);
+	}
+
+	public static void displayAttacks(Graphics g) {
+		if (battle.getPlayerMon().getMoves()[0] != null) {
+			displayText(g, Images.moveFontIdx, Images.moveFont, battle.getPlayerMon().getMoves()[0].getName(), 64, 490);
+		}
+		if (battle.getPlayerMon().getMoves()[1] != null) {
+			displayText(g, Images.moveFontIdx, Images.moveFont, battle.getPlayerMon().getMoves()[1].getName(), 360,
+					490);
+		}
+		if (battle.getPlayerMon().getMoves()[2] != null) {
+			displayText(g, Images.moveFontIdx, Images.moveFont, battle.getPlayerMon().getMoves()[2].getName(), 64, 554);
+		}
+		if (battle.getPlayerMon().getMoves()[3] != null) {
+			displayText(g, Images.moveFontIdx, Images.moveFont, battle.getPlayerMon().getMoves()[3].getName(), 360,
+					554);
+		}
+		displayText(g, Images.moveFontIdx, Images.moveFont,
+				battle.getPlayerMon().getMoves()[attackArrowIdx].getCurrentPP() + "", 790, 496);
+		displayText(g, Images.moveFontIdx, Images.moveFont,
+				battle.getPlayerMon().getMoves()[attackArrowIdx].getMaxPP() + "", 880, 496);
+		displayText(g, Images.moveFontIdx, Images.moveFont,
+				battle.getPlayerMon().getMoves()[attackArrowIdx].getType() + "", 764, 560);
+	}
+	public static void displayStatus(Graphics g) {
+		if (battle.getPlayerMon().getStatus() != 0) {
+		g.drawImage(Images.statusIcons[battle.getPlayerMon().getStatus()-1], 544, 356, null); }
+		if (battle.getOtherMon().getStatus() != 0) {
+			g.drawImage(Images.statusIcons[battle.getOtherMon().getStatus()-1], 72, 128, null); }
+		
 	}
 }

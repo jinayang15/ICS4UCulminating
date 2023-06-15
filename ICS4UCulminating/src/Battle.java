@@ -43,12 +43,12 @@ public class Battle {
 	private int otherMonSpeed;
 	
 	// Poison - 1
-	// Burn - 2
-	// Paralyzed - 3
-	// Sleep - 4
+	// Paralyzed - 2
+	// Sleep - 3
+	// Burn - 4
 	// Toxic Poison - 5
 	
-	// These playerMon / otherMon stat counters are used to coordinate the number of stat raising/lowering.
+	// These playerMon / otherMon stat counters are used to  the number of stat raising/lowering.
 	// The maximum number of times a stat can be raised is 6 stages, and there are moves that can raise your stats
 	// 1 to 2 stages. These are used to ensure that the number of stat stage raising/lowering does not exceed 6 or -6. 
 	private int trainerMonAtkCount = 0; 
@@ -162,7 +162,7 @@ public class Battle {
 	// BATTLE START
 	public void battleStart() { 
 		while (battleContinue) {
-			coordinateBattle(); 
+			Battle(); 
 		}
 	}
 	
@@ -210,11 +210,11 @@ public class Battle {
 		return tempMove;
 	}
 	
-	// The coordinateBattle method is used to coordinate the battle. It will check for speed, priority moves, etc. 
+	// The Battle method is used to  the battle. It will check for speed, priority moves, etc. 
 	// This is why it is important to know what both Pokemon will do first, and then finalizing the order 
 	// This method takes in no parameters
 	// It also returns nothing 
-	public void coordinateBattle() {
+	public void Battle() {
 		
 		System.out.println("\nYOU\t" +  playerMon.getName() + " HP: " + playerMonHp + "\t Level: " + playerMon.getLevel());
 		System.out.println("--------------------");
@@ -240,10 +240,10 @@ public class Battle {
 					}
 				}
 				else {
-					if (playerMon.getStatus()==3) {
+					if (playerMon.getStatus()==2) {
 						System.out.println(playerMon.getName() + " was fully paralyzed!");
 					}
-					else if (playerMon.getStatus()==4) {
+					else if (playerMon.getStatus()==3) {
 						System.out.println(playerMon.getName() + " is asleep!");
 					}
 				}
@@ -255,10 +255,10 @@ public class Battle {
 					}
 				}
 				else {
-					if (otherMon.getStatus()==3) {
+					if (otherMon.getStatus()==2) {
 						System.out.println(otherMon.getName() + " was fully paralyzed!");
 					}
-					else if (otherMon.getStatus()==4) {
+					else if (otherMon.getStatus()==3) {
 						System.out.println(otherMon.getName() + " is asleep!");
 					}
 					else if (otherMon.getStatus()==0) {
@@ -277,10 +277,10 @@ public class Battle {
 					}
 				}
 				else {
-					if (otherMon.getStatus()==3) {
+					if (otherMon.getStatus()==2) {
 						System.out.println(otherMon.getName() + " was fully paralyzed!");
 					}
-					else if (otherMon.getStatus()==4) {
+					else if (otherMon.getStatus()==3) {
 						System.out.println(otherMon.getName() + " is asleep!");
 					}
 				}
@@ -293,10 +293,10 @@ public class Battle {
 					}
 				}
 				else {
-					if (playerMon.getStatus()==3) {
+					if (playerMon.getStatus()==2) {
 						System.out.println(playerMon.getName() + " was fully paralyzed!");
 					}
-					else if (playerMon.getStatus()==4) {
+					else if (playerMon.getStatus()==3) {
 						System.out.println(playerMon.getName() + " is asleep!");
 					}
 				}
@@ -313,10 +313,10 @@ public class Battle {
 				}
 			}
 			else {
-				if (playerMon.getStatus()==3) {
+				if (playerMon.getStatus()==2) {
 					System.out.println(playerMon.getName() + " was fully paralyzed!");
 				}
-				else if (playerMon.getStatus()==4) {
+				else if (playerMon.getStatus()==3) {
 					System.out.println(playerMon.getName() + " is asleep!");
 				}
 			}
@@ -328,10 +328,10 @@ public class Battle {
 				}
 			}
 			else {
-				if (otherMon.getStatus()==3) {
+				if (otherMon.getStatus()==2) {
 					System.out.println(otherMon.getName() + " was fully paralyzed!");
 				}
-				else if (otherMon.getStatus()==4) {
+				else if (otherMon.getStatus()==3) {
 					System.out.println(otherMon.getName() + " is asleep!");
 				}
 			}
@@ -346,10 +346,10 @@ public class Battle {
 				}
 			}
 			else {
-				if (otherMon.getStatus()==3) {
+				if (otherMon.getStatus()==2) {
 					System.out.println(otherMon.getName() + " was fully paralyzed!");
 				}
-				else if (otherMon.getStatus()==4) {
+				else if (otherMon.getStatus()==3) {
 					System.out.println(otherMon.getName() + " is asleep!");
 				}
 			}
@@ -362,10 +362,10 @@ public class Battle {
 				}
 			}
 			else {
-				if (playerMon.getStatus()==3) {
+				if (playerMon.getStatus()==2) {
 					System.out.println(playerMon.getName() + " was fully paralyzed!");
 				}
-				else if (playerMon.getStatus()==4) {
+				else if (playerMon.getStatus()==3) {
 					System.out.println(playerMon.getName() + " is asleep!");
 				}
 			}
@@ -381,10 +381,10 @@ public class Battle {
 					}
 				}
 				else {
-					if (playerMon.getStatus()==3) {
+					if (playerMon.getStatus()==2) {
 						System.out.println(playerMon.getName() + " was fully paralyzed!");
 					}
-					else if (playerMon.getStatus()==4) {
+					else if (playerMon.getStatus()==3) {
 						System.out.println(playerMon.getName() + " is asleep!");
 					}
 				}
@@ -396,10 +396,10 @@ public class Battle {
 					}
 				}
 				else {
-					if (otherMon.getStatus()==3) {
+					if (otherMon.getStatus()==2) {
 						System.out.println(otherMon.getName() + " was fully paralyzed!");
 					}
-					else if (otherMon.getStatus()==4) {
+					else if (otherMon.getStatus()==3) {
 						System.out.println(otherMon.getName() + " is asleep!");
 					}
 				}
@@ -413,10 +413,10 @@ public class Battle {
 					}
 				}
 				else {
-					if (otherMon.getStatus()==3) {
+					if (otherMon.getStatus()==2) {
 						System.out.println(otherMon.getName() + " was fully paralyzed!");
 					}
-					else if (otherMon.getStatus()==4) {
+					else if (otherMon.getStatus()==3) {
 						System.out.println(otherMon.getName() + " is asleep!");
 					}
 				}
@@ -429,10 +429,10 @@ public class Battle {
 					}
 				}
 				else {
-					if (playerMon.getStatus()==3) {
+					if (playerMon.getStatus()==2) {
 						System.out.println(playerMon.getName() + " was fully paralyzed!");
 					}
-					else if (playerMon.getStatus()==4) {
+					else if (playerMon.getStatus()==3) {
 						System.out.println(playerMon.getName() + " is asleep!");
 					}
 				}
@@ -493,7 +493,7 @@ public class Battle {
 					if (keepGoing) {
 						random = (int) (Math.random()*10) + 1;
 						if (random==1) {
-							playerMon.setStatus(2);
+							playerMon.setStatus(4);
 						}
 					}
 				}
@@ -508,7 +508,7 @@ public class Battle {
 					if (keepGoing) {
 						random = (int) (Math.random()*10) + 1;
 						if (random==1) {
-							playerMon.setStatus(3);
+							playerMon.setStatus(2);
 							System.out.println(playerMon.getName() + " was paralyzed!");
 						}
 					}
@@ -597,7 +597,7 @@ public class Battle {
 							// 10% chance to burn the enemy, and fire Pokemon cannot get burned
 							random = (int) (Math.random()* (10)) + 1;
 							if (random==1) {
-								otherMon.setStatus(2);
+								otherMon.setStatus(4);
 								System.out.println("The opposing " + otherMon.getName() + " was burned!");
 							}
 						}
@@ -612,7 +612,7 @@ public class Battle {
 							// 10% chance to burn the enemy, and fire Pokemon cannot get burned
 							random = (int) (Math.random()* (10)) + 1;
 							if (random==1) {
-								playerMon.setStatus(2);
+								playerMon.setStatus(4);
 								System.out.println(playerMon.getName() + " was burned!");
 							}
 						}
@@ -700,7 +700,7 @@ public class Battle {
 						// 10% chance of paralysis
 						random = (int) (Math.random()*(10)) + 1;
 						if (playerMon.getStatus()==0 && random==1) {
-							playerMon.setStatus(3);
+							playerMon.setStatus(2);
 							System.out.println(playerMon.getName() + " was paralyzed!");
 						}
 					}
@@ -871,7 +871,7 @@ public class Battle {
 								if (otherMon.getTypeList().get(i).equals(new PokeType ("Electric"))) keepGoing = false;
 							}
 							if (keepGoing) {
-								otherMon.setStatus(3);
+								otherMon.setStatus(2);
 								System.out.println("The opposing " + otherMon.getName() + " was paralyzed! It may be unable to move!");
 							}
 							else {
@@ -888,7 +888,7 @@ public class Battle {
 								if (playerMon.getTypeList().get(i).equals(new PokeType ("Electric"))) keepGoing = false;
 							}
 							if (keepGoing) {
-								playerMon.setStatus(3);
+								playerMon.setStatus(2);
 								System.out.println(playerMon.getName() + " was paralyzed! It may be unable to move!");
 							}
 							else {
@@ -908,7 +908,7 @@ public class Battle {
 					}
 					else {
 						if (hit) {
-							otherMon.setStatus(4); 
+							otherMon.setStatus(3); 
 							System.out.println(otherMon.getName() + " went to sleep!");
 						}
 					}
@@ -919,7 +919,7 @@ public class Battle {
 					}
 					else {
 						if (hit) {
-							playerMon.setStatus(4); 
+							playerMon.setStatus(3); 
 							System.out.println(playerMon.getName() + " went to sleep!");
 						}
 					}
@@ -938,7 +938,7 @@ public class Battle {
 								if (otherMon.getTypeList().get(i).equals(new PokeType ("Electric"))) keepGoing = false;
 							}
 							if (keepGoing) {
-								otherMon.setStatus(3);
+								otherMon.setStatus(2);
 								System.out.println("The opposing " + otherMon.getName() + " was paralyzed! It may be unable to move!");
 							}
 							else {
@@ -955,7 +955,7 @@ public class Battle {
 								if (playerMon.getTypeList().get(i).equals(new PokeType ("Electric"))) keepGoing = false;
 							}
 							if (keepGoing) {
-								playerMon.setStatus(3);
+								playerMon.setStatus(2);
 								System.out.println(playerMon.getName() + " was paralyzed! It may be unable to move!");
 							}
 							else {
@@ -1295,14 +1295,14 @@ public class Battle {
 			playerMon.setDeltaHp(playerMon.getDeltaHp() + playerMon.getHp()/8);
 		}
 		// Burn - Takes away 1/16th of HP every turn and HALVES the current attack stat.
-		else if (playerMon.getStatus()==2) {
+		else if (playerMon.getStatus()==4) {
 			playerMon.setDeltaHp(playerMon.getDeltaHp() + (playerMon.getHp()/16));
 			playerMon.setDeltaAttack(playerMonAttack/2);
 		}
 		// Paralyze
 		// This will cut the Pokemon's speed to 25% 
 		// There is also a 25% chance for the Pokemon to be fully paralyzed, rendering it unable to move for a turn
-		else if (playerMon.getStatus()==3) {
+		else if (playerMon.getStatus()==2) {
 			playerMon.setDeltaSpeed(playerMon.getDeltaSpeed()/4);
 			int random = (int) (Math.random()*4) + 1;
 			if (random==1) {
@@ -1313,7 +1313,7 @@ public class Battle {
 			}
 		}
 		// Sleep
-		else if (playerMon.getStatus()==4) {
+		else if (playerMon.getStatus()==3) {
 			// Guaranteed turn of sleep 
 			if (trainerSleepCounter==0) {
 				trainerSkipTurn = true;
@@ -1354,12 +1354,12 @@ public class Battle {
 			otherMon.setDeltaHp(otherMon.getDeltaHp() + otherMon.getHp()/8);
 		}
 		// Burn - Takes away 1/16th of HP every turn and HALVES the current attack stat.
-		else if (otherMon.getStatus()==2) {
+		else if (otherMon.getStatus()==4) {
 			otherMon.setDeltaHp(otherMon.getDeltaHp() + (otherMon.getHp()/16));
 			otherMon.setDeltaAttack(otherMonAttack/2);
 		}
 		// Paralyze
-		else if (otherMon.getStatus()==3) {
+		else if (otherMon.getStatus()==2) {
 			otherMon.setDeltaSpeed(otherMon.getDeltaSpeed()/4);
 			int random = (int) (Math.random()*4) + 1;
 			if (random==1) {
@@ -1370,7 +1370,7 @@ public class Battle {
 			}
 		}
 		// Sleep
-		else if (otherMon.getStatus()==4) {
+		else if (otherMon.getStatus()==3) {
 			// Guaranteed turn of sleep 
 			if (otherSleepCounter==0) {
 				otherSkipTurn = true;

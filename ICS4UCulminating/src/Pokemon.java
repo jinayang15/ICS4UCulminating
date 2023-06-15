@@ -33,9 +33,10 @@ public class Pokemon {
 	private int status;
 	private boolean faint = false;
 	// Poison - 1
-	// Burn - 2
-	// Paralyzed - 3
-	// Sleep - 4
+	// Paralyzed - 2
+	// Sleep - 3
+	// Burn - 4
+	
 	
 	// Overloaded constructors, which initializes the base stats and adds the moves to an array of moves. 
 	public Pokemon (String name, PokeType type1, int hp, int attack, int def, int spAtk, int spDef, int speed, ArrayList<Move> moveSet) {

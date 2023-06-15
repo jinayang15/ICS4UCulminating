@@ -10,6 +10,7 @@ public class Move {
 	private PokeType type;
 	private String category; // physical, status, or special 
 	private int pp;
+	private int deltaPP = 0;
 	private int atkPower;
 	private double accuracy;
 	private String effect;
@@ -27,17 +28,21 @@ public class Move {
 		return name;
 	}
 	
-	public int getPP() {
+	public int getMaxPP() {
 		return pp;
 	}
 	
+	public int getCurrentPP() {
+		return pp + deltaPP;
+	}
+	
+	public void setPP(int x) {
+		pp = x;
+	}
 	public PokeType getType() {
 		return type;
 	}
 
-	public void setPP(int pp) {
-		this.pp = pp;
-	}
 
 	public int getAtkPower() {
 		return atkPower;
