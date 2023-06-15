@@ -162,7 +162,7 @@ public class Battle {
 	// BATTLE START
 	public void battleStart() { 
 		while (battleContinue) {
-			Battle(); 
+			coordinateBattle(); 
 		}
 	}
 	
@@ -214,7 +214,7 @@ public class Battle {
 	// This is why it is important to know what both Pokemon will do first, and then finalizing the order 
 	// This method takes in no parameters
 	// It also returns nothing 
-	public void Battle() {
+	public void coordinateBattle() {
 		
 		System.out.println("\nYOU\t" +  playerMon.getName() + " HP: " + playerMonHp + "\t Level: " + playerMon.getLevel());
 		System.out.println("--------------------");

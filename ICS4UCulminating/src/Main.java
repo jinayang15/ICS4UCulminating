@@ -692,11 +692,14 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		displayText(g, Images.moveFontIdx, Images.moveFont,
 				battle.getPlayerMon().getMoves()[attackArrowIdx].getType() + "", 764, 560);
 	}
+
 	public static void displayStatus(Graphics g) {
 		if (battle.getPlayerMon().getStatus() != 0) {
-		g.drawImage(Images.statusIcons[battle.getPlayerMon().getStatus()-1], 544, 356, null); }
+			g.drawImage(Images.statusIcons[battle.getPlayerMon().getStatus() - 1], 544, 356, null);
+		}
 		if (battle.getOtherMon().getStatus() != 0) {
-			g.drawImage(Images.statusIcons[battle.getOtherMon().getStatus()-1], 72, 128, null); }
-		
+			g.drawImage(Images.statusIcons[battle.getOtherMon().getStatus() - 1], 72, 128, null);
+		}
+
 	}
 }
