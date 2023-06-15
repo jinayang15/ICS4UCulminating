@@ -20,7 +20,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	// 2 - moves
 	// 3 - attacking/stuff happening
 	public static int battleState = 0;
-	
+
 	public static Player player;
 	// self explanatory variables
 	int FPS = 60;
@@ -148,7 +148,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			displayBattleSprites(g, battle);
 			displayOptionsMenuAndArrow(g, battle);
 			displayPokemonStats(g, battle);
-			displayText(g, Images.whiteFontIdx, Images.whiteFont, "What will~" + battle.getPlayerMon().getName().toUpperCase() + " do?", 32,
+			displayText(g, Images.whiteFontIdx, Images.whiteFont,
+					"What will~" + battle.getPlayerMon().getName().toUpperCase() + " do?", 32,
 					640 - Images.battleMenu[4].getHeight() + 40);
 
 //			while (battle.getBattleContinue()) {
@@ -219,31 +220,42 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	// changes direction depending on key pressed and sets moving to true !
 	public void keyPressed(KeyEvent e) {
 		char x = e.getKeyChar();
-		if (!Player.getMoving() || x != lastKeyPressed) {
+		if (gameState == 2) {
+			if (!Player.getMoving() || x != lastKeyPressed) {
 //			if (x != lastKeyPressed) {
 //				movesQ.add(e.getKeyChar());
 //			} 
 //			if (checkTile()) {
 //				x = (char) movesQ.remove();
-			if (x == 'w') {
-				Player.setDirection(1);
-				Player.setMoving(true);
-				if (bgX == -448 && bgY == -768) {
+				if (x == 'w') {
+					Player.setDirection(1);
+					Player.setMoving(true);
+					if (bgX == -448 && bgY == -768) {
 //						Battle b = new Battle(player, new Trainer());
+					}
+				} else if (x == 's') {
+					Player.setDirection(2);
+					Player.setMoving(true);
+				} else if (x == 'a') {
+					Player.setDirection(3);
+					Player.setMoving(true);
+				} else if (x == 'd') {
+					Player.setDirection(4);
+					Player.setMoving(true);
 				}
-			} else if (x == 's') {
-				Player.setDirection(2);
-				Player.setMoving(true);
-			} else if (x == 'a') {
-				Player.setDirection(3);
-				Player.setMoving(true);
-			} else if (x == 'd') {
-				Player.setDirection(4);
-				Player.setMoving(true);
-			}
-			lastKeyPressed = e.getKeyChar();
+				lastKeyPressed = e.getKeyChar();
 //			}
 //			System.out.println(checkTile());
+			}
+		} else if (gameState == 3 && battleState == 1) {
+			if (x == 'w') {
+				moveOptionsArrowUp();
+			}
+			else if (x == 'd') {
+				moveOptionsArrowDown();
+			}else if (x == 'd') {
+				
+			}
 		}
 	}
 
@@ -545,11 +557,11 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		for (int i = 0; i < text.length(); i++) {
 			if (text.charAt(i) == ' ') {
 				xPos += 14;
-			} else if(text.charAt(i) == '~'){ //newline
+			} else if (text.charAt(i) == '~') { // newline
 				xPos = x;
 				yPos += 64;
-				
-			}else {
+
+			} else {
 				int idx = map.get("" + text.charAt(i));
 				g.drawImage(images[idx], xPos, yPos, null);
 				xPos += images[idx].getWidth() - images[idx].getWidth() / 4 - 1;
