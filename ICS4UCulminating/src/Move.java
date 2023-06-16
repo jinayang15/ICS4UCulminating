@@ -10,6 +10,7 @@ public class Move {
 	private PokeType type;
 	private String category; // physical, status, or special 
 	private int pp;
+	private int tempPP;
 	private int atkPower;
 	private double accuracy;
 	private String effect;
@@ -19,6 +20,7 @@ public class Move {
 		this.type = type;
 		this.category = category;
 		this.pp = pp;
+		tempPP = pp;
 		this.atkPower = atkPower;
 		this.accuracy = accuracy;
 		this.effect = effect;
@@ -35,8 +37,16 @@ public class Move {
 		return type;
 	}
 
-	public void setPP(int pp) {
-		this.pp = pp;
+	public void updateTempPP() {
+		tempPP--;
+	}
+	
+	public int getTempPP() {
+		return tempPP;
+	}
+	
+	public void resetTempPP() {
+		tempPP = pp;
 	}
 
 	public int getAtkPower() {

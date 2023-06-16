@@ -84,6 +84,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			GameFunctions.importEverything();
 			Images.importAllImages();
 			PokeType.addToChart();
+			Music.initializeMusic();
 		} catch (FileNotFoundException e) {
 		}
 
@@ -91,6 +92,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 
 	public void update() {
 		// update stuff
+		Music.playMusic();
 		if (gameState == 0) {
 			currentBG = Images.fireRedPressStart;
 		} else if (gameState == 1) {
