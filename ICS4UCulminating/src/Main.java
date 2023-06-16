@@ -224,6 +224,15 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			bgY = saveBGY;
 			gameState = 2;
 		}
+		else if (gameState==2 && x=='e') {
+			if (bgY==-772 && bgX>=-544 && bgX<=-500) {
+				gameState++;
+				saveBGX = bgX;
+				saveBGY = bgY;
+				bgX = 0;
+				bgY = 0;
+			}
+		}
 		else if (gameState==2 && (!Player.getMoving() || x != lastKeyPressed)) {
 //			if (x != lastKeyPressed) {
 //				movesQ.add(e.getKeyChar());
