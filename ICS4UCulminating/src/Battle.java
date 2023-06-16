@@ -144,9 +144,9 @@ public class Battle {
 	
 	// BATTLE START
 	public void battleStart() { 
-		while (battleContinue) {
-			coordinateBattle(); 
-		}
+//		while (battleContinue) {
+//			coordinateBattle(); 
+//		}
 	}
 	
 	// The trainerChooseAttack method is used to determine what attack the user chooses
