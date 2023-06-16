@@ -144,9 +144,9 @@ public class Battle {
 	
 	// BATTLE START
 	public void battleStart() { 
-//		while (battleContinue) {
-//			coordinateBattle(); 
-//		}
+		while (battleContinue) {
+			coordinateBattle(); 
+		}
 	}
 	
 	// The trainerChooseAttack method is used to determine what attack the user chooses
@@ -170,9 +170,6 @@ public class Battle {
 		System.out.println((tempCount+1) + ") Change Pokemon");
 		while (index==0) {
 			index = Integer.parseInt(s.nextLine());
-			if (playerMon.getMoves()[index-1].getTempPP()==0) {
-				index = 0;
-			}
 		}
 		if (index==(tempCount+1)) {
 			chooseNewPokemon();
