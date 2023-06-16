@@ -113,7 +113,6 @@ public class Battle {
 		otherMonSpDef = otherMon.getSpDef();
 		otherMonSpeed = otherMon.getSpeed();
 		
-		System.out.println("NEW POKEMON HP: " + playerMon.getHp());
 		updateStats();
 		battleStart(); 
 	}
@@ -171,7 +170,7 @@ public class Battle {
 		System.out.println((tempCount+1) + ") Change Pokemon");
 		while (index==0) {
 			index = Integer.parseInt(s.nextLine());
-			if (playerMon.getMoves()[index-1].getPP()==0) {
+			if (playerMon.getMoves()[index-1].getTempPP()==0) {
 				index = 0;
 			}
 		}
@@ -181,7 +180,7 @@ public class Battle {
 			return null;
 		}
 		else {
-			playerMon.getMoves()[index-1].setPP(playerMon.getMoves()[index-1].getPP()-1);
+			playerMon.getMoves()[index-1].updateTempPP();
 			return playerMon.getMoves()[index-1];
 		}
 	}
@@ -200,8 +199,6 @@ public class Battle {
 				valid = true;
 			}
 			catch (NullPointerException e) {
-				// System.out.println("other move failed");
-//				System.out.println("\nREROLL MOVES\n");
 				random--; 
 			}
 		}
@@ -221,10 +218,6 @@ public class Battle {
 			double stab = calculateStab (otherMon, otherMove);
 			attack(otherMove, otherMon, playerMon);
 			updateStats();
-			System.out.println("\nYOU\t" +  playerMon.getName() + " HP: " + playerMonHp + "\t Level: " + playerMon.getLevel());
-			System.out.println("--------------------");
-			System.out.println("THEM\t" +  otherMon.getName() + " HP: " + otherMonHp + "\t Level: " + otherMon.getLevel());
-			System.out.println("\n");
 		}
 		
 		else {
@@ -463,12 +456,8 @@ public class Battle {
 
 		
 	// The attack method is used to determine the attacks of both the player and opponent 
-	// WAS PREVIOUSLY trainerAttack method (so if this does not work, go back)
-	// attack = playerMon.getMoves()[index]
 	 public void attack (Move attack, Pokemon attackMon, Pokemon defendMon) {
 		boolean keepGoing = true;
-		// PP Counter!!
-		
 		double stab = 1; // STAB stands for 'Same Type Attack Bonus'. If the Pokemon attacks with a move that has the same type as itself, it gets this bonus
 		int random; // Used for the random status effects 
 		hit = false;
@@ -501,9 +490,6 @@ public class Battle {
 				}
 				hit = false;
 			}
-//			else if (attack.getName().equals("Skull Bash")) {
-//				
-//			}
 			// These next moves are only possible by the opposing Pokemon, so there is no need to check if it is from the player 
 			else if (attack.getName().equals("Fire Punch")) {
 				applyOtherAttack (attack, stab);  
@@ -709,8 +695,6 @@ public class Battle {
 			
 			// Only moves that the opposing Pokemon can have
 			
-			// HYPER BEAM
-			
 			else if (attack.getName().equals("Thunder Shock") || attack.getName().equals("Thunderbolt")) {
 				applyOtherAttack(attack, stab); 
 				if (hit) { 
@@ -745,12 +729,6 @@ public class Battle {
 				}
 				hit = false;
 			}
-//			else if (attack.getName().equals("Mud-Slap")) {
-//				applyOtherAttack(attack, stab);
-//				if (hit) {
-//					// LOWER ACCURACY SOMEHOW 
-//				}
-//			}
 			else {
 				applyAttackChecker (attackMon, attack, stab);
 				hit = false;
@@ -758,6 +736,7 @@ public class Battle {
 			updateStats();
 		}
 		// If the user chooses status moves 
+		// More hard coding, everything is pretty self explanatory if you read. 
 		else if (attack.getCategory().equals("Status")) {
 			// Swords dance will raise the attack stat by 2 stages. If the user is already at +5 stage, it will only add 1 extra one. 
 			if (attack.getName().equals("Swords Dance")) {
@@ -1086,6 +1065,7 @@ public class Battle {
 	public void checkBattle() {
 		if (otherMonHp<=0) {
 			otherMon.setFaint(true);
+			// Checking if the opponent still has Pokemon that can keep fighting
 			for (int i = 0; i<other.getPokemonList().length; i++) {
 				if (other.getPokemonList()[i].getFaint()==false) {
 					System.out.println("NEXT POKEMON: " + other.getPokemonList()[i].getName());
@@ -1104,6 +1084,7 @@ public class Battle {
 		
 		if (playerMonHp<=0) {
 			playerMon.setFaint(true);
+			// Checking if the player still has Pokemon to fight 
 			for (int i = 0; i<player.getPokemonList().length; i++) {
 				if (player.getPokemonList()[i].getFaint()==false) {
 					battleContinue = true; 
@@ -1121,15 +1102,24 @@ public class Battle {
 		}
 	}
 	// The endBattle method is used when the battle is over
-	// It is used to reset the delta variables to 0
-	// 
+	// It is used to reset the delta variables and other variables back to their initial value
+	// It takes in no parameters
+	// It returns nothing 
 	public void endBattle() {
 		playerMon.setDeltaAttack(0);
 		playerMon.setDeltaDef(0);
 		playerMon.setDeltaSpAtk(0);
 		playerMon.setDeltaSpDef(0);
 		playerMon.setDeltaSpeed(0);
-		
+		// Resetting the PP of all moves. 
+		for (int i = 0; i<playerMon.getMoves().length; i++) {
+			try {
+				playerMon.getMoves()[i].resetTempPP();
+			}
+			catch (NullPointerException e) {
+				
+			}
+		}
 		otherMon.setDeltaHp(0);
 		otherMon.setDeltaAttack(0);
 		otherMon.setDeltaDef(0);
@@ -1138,23 +1128,18 @@ public class Battle {
 		otherMon.setDeltaSpeed(0);
 	}
 	
-	
-	// DAMAGE FORMULA: -----------------------------------------------------------
-	// For 2 defender types:
-	// newHp = (int) Math.round((2*(playerMon.getLevel()+2)*attack.getAtkPower()*(playerMon.getAttack()/otherMon.getDef())/50+2) * stab * PokeType.getTypeEffectiveness(attack.getType().getTypeNum(), type1, type2))
-	// For 1 defender type:
-	// newHp = (int) Math.round((2*(playerMon.getLevel()+2)*attack.getAtkPower()*(playerMon.getAttack()/otherMon.getDef())/50+2) * stab * PokeType.getTypeEffectiveness(attack.getType().getTypeNum(), type1));
-	
-	
 	// The applyAttackChecker method is used to see which Pokemon is attacking - either the player or the opponent
 	// It takes in the parameters of the attacking Pokemon, the move, and the STAB value. 
+	// It returns nothing - instead, it will call applyTrainerAttack or applyOtherAttack depending on who the attacker is 
 	public void applyAttackChecker (Pokemon attackMon, Move attack, double stab) {
 		if (attackMon.equals(playerMon)) applyTrainerAttack(attack, stab);
 		else if (attackMon.equals(otherMon)) applyOtherAttack(attack, stab);
 	}
 	
 	
-	// Applies the users attack
+	// The applyTrainerAttack method applies the attack of the player's Pokemon
+	// It takes in the paramters of the attack and the value of STAB
+	// It returns nothing, simply updating the stats of the opponent Pokemon
 	public void applyTrainerAttack(Move attack, double stab) {
 		System.out.println(playerMon.getName() + " used " + attack.getName() + "!");
 		int newHp = 0;
@@ -1172,14 +1157,15 @@ public class Battle {
 		}
 		hit = true;
 		// If the move does not damage, we can skip the rest
-		// However, this is checked after seeing if the move hit
+		
+		// Checking the attack power, because some moves are STATUS that do no damage - however, they still need to hit to apply the status!
 		if (attack.getAtkPower()==0) { 
 			return;
 		}
-		// If the other pokemon has 2 types
 		
 		// Physical attacks are for physical stats (aka attack and defence)
 		if (attack.getCategory().equals("Physical")) {
+			// If the Pokemon has 2 types
 			if (otherMon.getTypeList().size()==2) {
 				int type1 = otherMon.getType1().getTypeNum();
 				int type2 = otherMon.getType2().getTypeNum();
@@ -1227,11 +1213,6 @@ public class Battle {
 				otherMon.setDeltaHp(otherMon.getDeltaHp() + newHp);
 			}
 		}
-		
-		
-		
-		
-//		updateStats();
 	}
 	
 	// Applies the opponents attack 
@@ -1253,27 +1234,54 @@ public class Battle {
 		if (attack.getAtkPower()==0) {
 			return;
 		}
-		// If the other pokemon has 2 types
-		if (playerMon.getTypeList().size()==2) {
-			int type1 = playerMon.getType1().getTypeNum();
-			int type2 = playerMon.getType2().getTypeNum();
-			try {
-				newHp = (int) Math.round((2*(otherMon.getLevel()+2)*attack.getAtkPower()*(otherMon.getAttack()/playerMon.getDef())/50+2) * stab * PokeType.getTypeEffectiveness(attack.getType().getTypeNum(), type1, type2));
+		if (attack.getCategory().equals("Physical")) {
+			// If the Pokemon has 2 types
+			if (playerMon.getTypeList().size()==2) {
+				int type1 = playerMon.getType1().getTypeNum();
+				int type2 = playerMon.getType2().getTypeNum();
+				try {
+					newHp = (int) Math.round((2*(otherMon.getLevel()+2)*attack.getAtkPower()*(otherMon.getAttack()/playerMon.getDef())/50+2) * stab * PokeType.getTypeEffectiveness(attack.getType().getTypeNum(), type1, type2));
+				}
+				catch (IOException e) {
+
+				}
+				playerMon.setDeltaHp(playerMon.getDeltaHp() + newHp);
 			}
-			catch (IOException e) {
-				
+			else {
+				int type1 = playerMon.getType1().getTypeNum();
+				try {
+					newHp = (int) Math.round((2*(otherMon.getLevel()+2)*attack.getAtkPower()*(otherMon.getAttack()/playerMon.getDef())/50+2) * stab * PokeType.getTypeEffectiveness(attack.getType().getTypeNum(), type1));
+				}
+				catch (IOException e) {
+					System.out.println("EXCEPTION");
+				}
+				playerMon.setDeltaHp(playerMon.getDeltaHp() + newHp);
 			}
-			playerMon.setDeltaHp(playerMon.getDeltaHp() + newHp);
 		}
-		else {
-			int type1 = playerMon.getType1().getTypeNum();
-			try {
-				newHp = (int) Math.round((2*(otherMon.getLevel()+2)*attack.getAtkPower()*(otherMon.getAttack()/playerMon.getDef())/50+2) * stab * PokeType.getTypeEffectiveness(attack.getType().getTypeNum(), type1));
+		
+		// Special attacks are for special stats (special attack and special defence) 
+		else if (attack.getCategory().equals("Special")) {
+			if (playerMon.getTypeList().size()==2) {
+				int type1 = playerMon.getType1().getTypeNum();
+				int type2 = playerMon.getType2().getTypeNum();
+				try {
+					newHp = (int) Math.round((2*(otherMon.getLevel()+2)*attack.getAtkPower()*(otherMon.getSpAtk()/playerMon.getSpDef())/50+2) * stab * PokeType.getTypeEffectiveness(attack.getType().getTypeNum(), type1, type2));
+				}
+				catch (IOException e) {
+
+				}
+				playerMon.setDeltaHp(playerMon.getDeltaHp() + newHp);
 			}
-			catch (IOException e) {
-				
+			else {
+				int type1 = playerMon.getType1().getTypeNum();
+				try {
+					newHp = (int) Math.round((2*(otherMon.getLevel()+2)*attack.getAtkPower()*(otherMon.getSpAtk()/playerMon.getSpDef())/50+2) * stab * PokeType.getTypeEffectiveness(attack.getType().getTypeNum(), type1));
+				}
+				catch (IOException e) {
+					System.out.println("EXCEPTION");
+				}
+				playerMon.setDeltaHp(playerMon.getDeltaHp() + newHp);
 			}
-			playerMon.setDeltaHp(playerMon.getDeltaHp() + newHp);
 		}
 	}
 	
@@ -1310,7 +1318,6 @@ public class Battle {
 					System.out.println(i + ") " + player.getPokemonList()[i].getName());
 					valid = true;
 				}
-				// hmmm... 
 				else if (i==2 && !valid) {
 					System.out.println("This is your only Pokemon left!"); 
 					new Battle(other, player, otherMon, index, trainerSkipTurn);
