@@ -25,6 +25,8 @@ public class Images {
 	public static BufferedImage[] attackFont = new BufferedImage[78];
 	public static BufferedImage fireRedPressStart;
 	public static BufferedImage battleBackground;
+	public static BufferedImage aboutUs;
+	public static BufferedImage instructions;
 
 	public static void importAllImages() throws IOException {
 		importMisc();
@@ -37,8 +39,10 @@ public class Images {
 	}
 
 	public static void importMisc() throws IOException {
-		fireRedPressStart = ImageIO.read(new File("FireRedPressStart.png"));
+		fireRedPressStart = ImageIO.read(new File("FireRedPressStart2.png"));
 		fireRedPressStart = resizeImage(fireRedPressStart, 960, 640);
+		aboutUs = ImageIO.read(new File ("aboutUs.png"));
+		instructions = ImageIO.read(new File ("instructions.png"));
 	}
 
 	public static void importPewterCity() throws IOException {

@@ -11,7 +11,7 @@ import javax.swing.*;
 @SuppressWarnings("serial") // funky warning, just suppress it. It's not gonna do anything.
 public class Main extends JPanel implements Runnable, KeyListener, MouseListener {
 	/*
-	 * 0 - initial menu 1 - Options Menu 2 - Pewter City 3 - Battle 4 - PokeCenter 5
+	 * 0: initial menu   1: Instructions   2: Pewter City   3: Battle   4: about us  5
 	 * - PokeMart
 	 */
 	public static int gameState = 0;
@@ -96,7 +96,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		if (gameState == 0) {
 			currentBG = Images.fireRedPressStart;
 		} else if (gameState == 1) {
-
+			currentBG = Images.instructions;
 		} else if (gameState == 2) {
 			currentBG = Images.pewterCity[0];
 			adjustWalls();
@@ -117,11 +117,15 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		} else if (gameState == 3) {
 			currentBG = Images.battleBackground;
 		}
+		else if (gameState==4) {
+			currentBG = Images.aboutUs;
+		}
 	}
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.drawImage(currentBG, bgX, bgY, null);
+		
 		if (gameState == 2) {
 
 			g.drawImage(Player.getCurrentPlayerImage(), Player.getPlayerX(), Player.getPlayerY(), null);
@@ -201,7 +205,26 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	// changes direction depending on key pressed and sets moving to true !
 	public void keyPressed(KeyEvent e) {
 		char x = e.getKeyChar();
-		if (!Player.getMoving() || x != lastKeyPressed) {
+		if (gameState==0 && x=='i') {
+			gameState = 1;
+			bgX = 0;
+			bgY = 0;
+		}
+		else if (gameState==1 && x=='i') {
+			gameState = 0;
+		}
+		else if (gameState==0 && x=='a') {
+			gameState=4;
+		}
+		else if (gameState==4 && x=='a') {
+			gameState=0;
+		}
+		else if (gameState==0 && x=='e') {
+			bgX = saveBGX;
+			bgY = saveBGY;
+			gameState = 2;
+		}
+		else if (gameState==2 && (!Player.getMoving() || x != lastKeyPressed)) {
 //			if (x != lastKeyPressed) {
 //				movesQ.add(e.getKeyChar());
 //			} 

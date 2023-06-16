@@ -30,9 +30,9 @@ public class Music {
 	}
 	
 	public static void playMusic() {
-		if (Main.gameState==0) {
-			gym.stop();
-			gym.setFramePosition(0);
+		if (Main.gameState==0 || Main.gameState==1 || Main.gameState==4) {
+//			gym.stop();
+//			gym.setFramePosition(0);
 			opening.loop(Clip.LOOP_CONTINUOUSLY);
 		}
 		else if (Main.gameState==2) {
