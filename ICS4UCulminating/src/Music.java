@@ -5,7 +5,7 @@ import java.io.File;
 import javax.sound.sampled.*;
 
 public class Music {
-	public static Clip opening, pewter, gym;
+	public static Clip opening, lab, pewter, gym, pokeCenter;
 	
 	public static void initializeMusic() {
 		AudioInputStream sound;
@@ -15,6 +15,10 @@ public class Music {
 			opening = AudioSystem.getClip();
 			opening.open(sound);
 			
+			sound = AudioSystem.getAudioInputStream(new File ("lab.wav"));
+			lab = AudioSystem.getClip();
+			lab.open(sound);
+			
 			sound = AudioSystem.getAudioInputStream(new File ("pewter.wav"));
 			pewter = AudioSystem.getClip();
 			pewter.open(sound);
@@ -22,11 +26,14 @@ public class Music {
 			sound = AudioSystem.getAudioInputStream(new File ("gym.wav"));
 			gym = AudioSystem.getClip();
 			gym.open(sound);
+			
+			sound = AudioSystem.getAudioInputStream(new File ("pokeCenter.wav"));
+			pokeCenter = AudioSystem.getClip();
+			pokeCenter.open(sound);
 		}
 		catch (Exception e) {
 			
 		}
-		playMusic();
 	}
 	
 	public static void playMusic() {
@@ -36,14 +43,24 @@ public class Music {
 			opening.loop(Clip.LOOP_CONTINUOUSLY);
 		}
 		else if (Main.gameState==2) {
-			opening.stop();
-			opening.setFramePosition(0);
+			lab.stop();
+			lab.setFramePosition(0);
 			pewter.loop(Clip.LOOP_CONTINUOUSLY);
 		}
 		else if (Main.gameState==3) {
 			pewter.stop();
 			pewter.setFramePosition(0);
 			gym.loop(Clip.LOOP_CONTINUOUSLY);
+		}
+		else if (Main.gameState==6 || Main.gameState==7) {
+			opening.stop();
+			opening.setFramePosition(0);
+			lab.loop(Clip.LOOP_CONTINUOUSLY);
+		}
+		else if (Main.gameState==8) {
+			pewter.stop();
+			pewter.setFramePosition(0);
+			pokeCenter.loop(Clip.LOOP_CONTINUOUSLY);
 		}
 	}
 }

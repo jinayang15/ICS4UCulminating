@@ -28,10 +28,14 @@ public class Images {
 	public static BufferedImage aboutUs;
 	public static BufferedImage instructions;
 	public static BufferedImage instructions2;
+	public static BufferedImage start1;
+	public static BufferedImage start2;
+	public static BufferedImage pokemonCenter;
 
 	public static void importAllImages() throws IOException {
 		importMisc();
 		importPewterCity();
+		importPokemonCenter();
 		importTrainer();
 		importBattleBackground();
 		importBattleMenu();
@@ -45,6 +49,8 @@ public class Images {
 		aboutUs = ImageIO.read(new File ("aboutUs.png"));
 		instructions = ImageIO.read(new File ("instructions.png"));
 		instructions2=ImageIO.read(new File ("instructions2.png"));
+		start1 = ImageIO.read(new File ("start1.png"));
+		start2 = ImageIO.read(new File ("start2.png"));
 	}
 
 	public static void importPewterCity() throws IOException {
@@ -52,6 +58,11 @@ public class Images {
 		pewterCity[0] = pewterCitySheet.getSubimage(0, 0, 768, 640);
 		pewterCity[0] = resizeImage(pewterCity[0], Main.tileSize * Main.tileMapWidth,
 				Main.tileSize * Main.tileMapHeight);
+	}
+	
+	public static void importPokemonCenter() throws IOException {
+		pokemonCenter = ImageIO.read(new File ("test.png"));
+		pokemonCenter = resizeImage(pokemonCenter, 3072, 2560);
 	}
 
 	public static void importTrainer() throws IOException {

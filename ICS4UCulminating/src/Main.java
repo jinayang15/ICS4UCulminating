@@ -10,9 +10,9 @@ import javax.swing.*;
 
 @SuppressWarnings("serial") // funky warning, just suppress it. It's not gonna do anything.
 public class Main extends JPanel implements Runnable, KeyListener, MouseListener {
-	/*
-	 * 0: initial menu   1: Instructions   2: Pewter City   3: Battle   4: about us  5: instructions2
-	 * - PokeMart
+	/* Kinda not in order BUT THATS OKAY 
+	 * 0: initial menu   1: Instructions   2: Pewter City   3: Battle   4: about us  5: instructions2   6: Intro to types    7: Pick type
+	 * 8 - PokeCenter
 	 */
 	public static int gameState = 0;
 	public static Player player;
@@ -49,6 +49,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	BufferedImage[] spriteTest = new BufferedImage[2];
 	int spriteIdx = 0;
 
+	public Player ray;
+	
 	public Main() {
 		// sets up JPanel
 		setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -123,14 +125,31 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		else if (gameState==5) {
 			currentBG = Images.instructions2;
 		}
+		else if (gameState==6) {
+			currentBG = Images.start1;
+		}
+		else if (gameState==7) {
+			currentBG = Images.start2;
+		}
+		// IM CURRENTLY TRYNA GET POKEMON CENTER TO WORK 
+		else if (gameState==8) {
+			currentBG = Images.pokemonCenter;
+			Animations.walk();
+			Animations.resetWalk();
+			bgShift();
+		}
 	}
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.drawImage(currentBG, bgX, bgY, null);
 		
+		if (gameState==8) {
+			g.drawImage(Player.getCurrentPlayerImage(), Player.getPlayerX(), Player.getPlayerY(), null);
+			g.drawRect(Player.hitbox.x, Player.hitbox.y, Player.hitbox.width, Player.hitbox.height);
+		}
+		
 		if (gameState == 2) {
-
 			g.drawImage(Player.getCurrentPlayerImage(), Player.getPlayerX(), Player.getPlayerY(), null);
 			g.drawRect(Player.hitbox.x, Player.hitbox.y, Player.hitbox.width, Player.hitbox.height);
 //			System.out.println(Player.getPlayerX() + " " + Player.getPlayerY());
@@ -144,7 +163,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			}
 		}
 		if (gameState == 3) {
-			Player ray = new Player ("Fire");
 			Trainer ash = new Trainer();
 			Battle battle = new Battle(ray, ash);
 			baseBattleGraphics(g, battle);
@@ -195,6 +213,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 //				displayText(g, Images.attackFontIdx, Images.attackFont,
 //						Pokemon.pokeList.get(spriteIdx).getMoves()[3].getName(), 360, 554);
 //			}
+			
 		}
 	}
 
@@ -208,6 +227,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	// changes direction depending on key pressed and sets moving to true !
 	public void keyPressed(KeyEvent e) {
 		char x = e.getKeyChar();
+		
+		// Shuffling through the intro and menu screens
 		if (gameState==0 && x=='i') {
 			gameState = 1;
 			bgX = 0;
@@ -226,9 +247,32 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			gameState=0;
 		}
 		else if (gameState==0 && x=='e') {
-			bgX = saveBGX;
-			bgY = saveBGY;
-			gameState = 2;
+			gameState = 6;
+		}
+		else if (gameState==6 && x=='e') {
+			gameState = 7;
+		}
+		
+		else if (gameState == 7) {
+			if (x=='1') {
+				ray = new Player ("Grass");
+				bgX = saveBGX;
+				bgY = saveBGY;
+				gameState = 2;
+			}
+			else if (x=='2') {
+				ray = new Player ("Fire");
+				bgX = saveBGX;
+				bgY = saveBGY;
+				gameState = 2;
+			}
+			else if (x=='3') {
+				ray = new Player ("Water");
+				bgX = saveBGX;
+				bgY = saveBGY;
+				gameState = 2;
+			}
+			
 		}
 		else if (gameState==2 && x=='e') {
 			if (bgY==-772 && bgX>=-544 && bgX<=-500) {
@@ -238,6 +282,11 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 				bgX = 0;
 				bgY = 0;
 			}
+//			else if (bgY==-1348 && bgX>=-676 && bgX<=-632) {
+//				bgX = 0;
+//				bgY = 0;
+//				gameState = 8;
+//			}
 		}
 		else if (gameState==2 && (!Player.getMoving() || x != lastKeyPressed)) {
 //			if (x != lastKeyPressed) {
@@ -360,7 +409,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		// self explanatory. You don't want to resize your window because
 		// it might mess up your graphics and collisions
 		frame.setResizable(false);
-		initialize();
 		Player player = new Player("Fire");
 		System.out.println();
 		System.out.println(new Trainer());
