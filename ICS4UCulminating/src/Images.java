@@ -27,9 +27,12 @@ public class Images {
 	static HashMap<String, Integer> whiteFontIdx = new HashMap<String, Integer>();
 	public static BufferedImage[] whiteFont = new BufferedImage[78];
 	public static BufferedImage[] statusIcons = new BufferedImage[4];
+	public static BufferedImage[] pkmnMenuIcons = new BufferedImage[6];
+	
 
 	public static BufferedImage fireRedPressStart;
 	public static BufferedImage battleBackground;
+	public static BufferedImage pkmnMenuBG;
 
 	public static void importAllImages() throws IOException {
 		importMisc();
@@ -41,6 +44,7 @@ public class Images {
 		importAttackFont();
 		importWhiteFont();
 		importStatusIcons();
+		importPokemonMenu();
 	}
 
 	public static void importMisc() throws IOException {
@@ -412,12 +416,12 @@ public class Images {
 		for (int i = 0; i < 10; i++) {
 			if (i == 1) {
 				whiteFont[i + 54] = whiteFontSheet.getSubimage(xPos, 32, 6, 12);
-				whiteFont[i + 54] = resizeImage(moveFont[i + 54], whiteFont[i + 54].getWidth() * 4,
+				whiteFont[i + 54] = resizeImage(whiteFont[i + 54], whiteFont[i + 54].getWidth() * 4,
 						whiteFont[i + 54].getHeight() * 4);
 				xPos += 6;
 			} else {
 				whiteFont[i + 54] = whiteFontSheet.getSubimage(xPos, 32, 7, 12);
-				whiteFont[i + 54] = resizeImage(moveFont[i + 54], whiteFont[i + 54].getWidth() * 4,
+				whiteFont[i + 54] = resizeImage(whiteFont[i + 54], whiteFont[i + 54].getWidth() * 4,
 						whiteFont[i + 54].getHeight() * 4);
 				xPos += 7;
 			}
@@ -458,6 +462,22 @@ public class Images {
 		for (int i = 0; i < 4; i++) {
 			statusIcons[i] = statusIconSheet.getSubimage(6 + i * 32, 80, 20, 8);
 			statusIcons[i] = resizeImage(statusIcons[i], statusIcons[i].getWidth() * 4, statusIcons[i].getHeight() * 4);
+		}
+	}
+	
+	public static void importPokemonMenu() throws IOException {
+		BufferedImage pokemonMenuSheet = ImageIO.read(new File("PokemonMenu.png"));
+		pkmnMenuBG = pokemonMenuSheet.getSubimage(250, 5, 240, 160);
+		pkmnMenuBG = resizeImage(pkmnMenuBG, 960, 640);
+		
+		pkmnMenuIcons[0] = pokemonMenuSheet.getSubimage(317, 170, 84, 57);
+		pkmnMenuIcons[1] = pokemonMenuSheet.getSubimage(406, 170, 84, 57);
+		pkmnMenuIcons[2] = pokemonMenuSheet.getSubimage(162, 178, 150, 24);
+		pkmnMenuIcons[3] = pokemonMenuSheet.getSubimage(162, 203, 150, 24);
+		pkmnMenuIcons[4] = pokemonMenuSheet.getSubimage(6, 251, 54, 24);
+		pkmnMenuIcons[5] = pokemonMenuSheet.getSubimage(65, 251, 54, 24);
+		for (int i = 0; i < 6; i++) {
+			pkmnMenuIcons[i] = resizeImage(pkmnMenuIcons[i], pkmnMenuIcons[i].getWidth() * 4, pkmnMenuIcons[i].getHeight() * 4);
 		}
 	}
 

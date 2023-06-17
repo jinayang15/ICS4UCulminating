@@ -1526,4 +1526,13 @@ public class Battle {
 		this.otherAttacking = otherAttacking;
 	}
 
+	public boolean isSwitchPokemon() {
+		return switchPokemon;
+	}
+
+	public void setSwitchPokemon(boolean switchPokemon) {
+		this.switchPokemon = switchPokemon;
+	}
+	
+
 }

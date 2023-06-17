@@ -10,10 +10,11 @@ import javax.swing.*;
 
 @SuppressWarnings("serial") // funky warning, just suppress it. It's not gonna do anything.
 public class Main extends JPanel implements Runnable, KeyListener, MouseListener {
-	/*
-	 * 0 - initial menu 1 - Options Menu 2 - Pewter City 3 - Battle 4 - PokeCenter 5
-	 * - PokeMart
-	 */
+	// 0 - start menu
+	// 1 -
+	// 2 - Pewter City
+	// 3 - Battle
+	// 4 - Misc
 	static int gameState = 0;
 	// 0 - not in battle
 	// 1 - options
@@ -23,6 +24,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	// 5 - enemy turn
 	// 6 - player effect
 	// 7 - enemy effect
+	// 8 - pokemon menu
 	static int battleState = 0;
 	static Battle battle = null;
 
@@ -62,15 +64,20 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	int spriteIdx = 0;
 
 	// Arrow position
-	private static int[][] optionsArrowPositions = { { 512, 496 }, { 736, 496 }, { 512, 560 }, { 736, 560 } };
-	private static int optionsArrowX = 512;
-	private static int optionsArrowY = 496;
-	private static int optionsArrowIdx = 0;
+	static int[][] optionsArrowPositions = { { 512, 496 }, { 736, 496 }, { 512, 560 }, { 736, 560 } };
+	static int optionsArrowX = 512;
+	static int optionsArrowY = 496;
+	static int optionsArrowIdx = 0;
 
-	private static int[][] attackArrowPositions = { { 36, 490 }, { 332, 490 }, { 36, 554 }, { 332, 554 } };
-	private static int attackArrowX = 36;
-	private static int attackArrowY = 490;
-	private static int attackArrowIdx = 0;
+	static int[][] attackArrowPositions = { { 36, 490 }, { 332, 490 }, { 36, 554 }, { 332, 554 } };
+	static int attackArrowX = 36;
+	static int attackArrowY = 490;
+	static int attackArrowIdx = 0;
+
+	// Pokemon Menu Select Position
+	private static int[] pkmnListIdx = new int[3]; // stores the pokeList idx of the pokemon on the pokemon menu
+	private static int pkmnMenuSelectIdx = 0;
+	private static int pkmnMenuIdx = 0;
 
 	public Main() {
 		// sets up JPanel
@@ -140,7 +147,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			currentBG = Images.battleBackground;
 		}
 		if (battleState == 3) {
-			System.out.println("hi");
 			battle.setPlayerCurrentMove(battle.getPlayerMon().getMoves()[attackArrowIdx]);
 			battle.setOtherCurrentMove(battle.opponentChooseAttack());
 			battle.setRoundEnd(false);
@@ -172,6 +178,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 					battle.setOtherMon(battle.otherChooseNewPokemon());
 				}
 			}
+		} else if (battleState == 8) {
+			currentBG = Images.pkmnMenuBG;
 		}
 	}
 
@@ -192,11 +200,13 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			}
 		}
 		if (gameState == 3) {
-			baseBattleGraphics(g);
-			displayBattleSprites(g);
-			displayPokemonStats(g);
-			displayStatus(g);
-			displayHealth(g);
+			if (battleState < 8) {
+				baseBattleGraphics(g);
+				displayBattleSprites(g);
+				displayPokemonStats(g);
+				displayStatus(g);
+				displayHealth(g);
+			}
 			if (battleState == 1) {
 				// reset moves after attack round and pause to show attacks
 				if (battle.isPlayerAttacking()) {
@@ -238,7 +248,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 						displayText(g, Images.whiteFontIdx, Images.whiteFont,
 								battle.getPlayerMon().getName().toUpperCase() + " is paralyzed.", 40, 488);
 					}
-					System.out.println("Our attack");
 					displayText(g, Images.whiteFontIdx, Images.whiteFont, battle.getPlayerMon().getName().toUpperCase()
 							+ " used~" + battle.getPlayerCurrentMove().getName().toUpperCase() + "!", 40, 488);
 				}
@@ -269,7 +278,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 						displayText(g, Images.whiteFontIdx, Images.whiteFont,
 								battle.getOtherMon().getName().toUpperCase() + " is paralyzed.", 40, 488);
 					}
-					System.out.println("enemy attack");
 					displayText(g, Images.whiteFontIdx, Images.whiteFont,
 							"Enemy " + battle.getOtherMon().getName().toUpperCase() + " used~"
 									+ battle.getOtherCurrentMove().getName().toUpperCase() + "!",
@@ -281,61 +289,67 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 				} else {
 					battleState = 1;
 				}
+			} else if (battleState == 8) {
+				// first pokemon
+				if (pkmnMenuSelectIdx == 0) {
+					g.drawImage(Images.pkmnMenuIcons[1], 8, 72, null);
+				} else {
+					g.drawImage(Images.pkmnMenuIcons[0], 8, 72, null);
+				}
+				displayText(g, Images.whiteFontIdx, Images.whiteFont, battle.getPlayerMon().getName().toUpperCase(), 72,
+						148); // first name
+				displayText(g, Images.whiteFontIdx, Images.whiteFont, battle.getPlayerMon().getLevel() + "", 192, 184); // first
+																														// lvl
+				displayText(g, Images.whiteFontIdx, Images.whiteFont, battle.getPlayerMon().getCurrentHp() + "", 196, 248); // first
+																															// health
+				displayText(g, Images.whiteFontIdx, Images.whiteFont, battle.getPlayerMon().getBaseHp() + "", 280, 248);
+
+				// other pokemon
+				for (int i = 0; i < 3; i++) {
+					if (battle.getPlayer().getPokemonList()[i] != battle.getPlayerMon()) {
+						if (pkmnMenuSelectIdx == pkmnMenuIdx + 1) {
+							g.drawImage(Images.pkmnMenuIcons[3], 352, 36 + 96 * pkmnMenuIdx, null);
+						} else {
+							g.drawImage(Images.pkmnMenuIcons[2], 352, 36 + 96 * pkmnMenuIdx, null);
+						}
+
+						displayText(g, Images.whiteFontIdx, Images.whiteFont,
+								battle.getPlayer().getPokemonList()[i].getName().toUpperCase(), 432, 52 + 96 * pkmnMenuIdx); // other
+																																// name
+						displayText(g, Images.whiteFontIdx, Images.whiteFont,
+								battle.getPlayer().getPokemonList()[i].getLevel() + "", 544, 88 + 96 * pkmnMenuIdx); // other
+																														// level
+						displayText(g, Images.whiteFontIdx, Images.whiteFont,
+								battle.getPlayer().getPokemonList()[i].getCurrentHp() + "", 800, 88 + 96 * pkmnMenuIdx); // other
+																															// current
+																															// hp
+						displayText(g, Images.whiteFontIdx, Images.whiteFont,
+								battle.getPlayer().getPokemonList()[i].getBaseHp() + "", 884, 88 + 96 * pkmnMenuIdx); // other
+																														// base
+																														// hp
+						pkmnMenuIdx++;
+						pkmnListIdx[pkmnMenuIdx] = i;
+					} else {
+						pkmnListIdx[0] = i;
+					}
+				}
+				// cancel button
+				if (pkmnMenuSelectIdx == 3) {
+					g.drawImage(Images.pkmnMenuIcons[5], 736, 528, null);
+				} else {
+					g.drawImage(Images.pkmnMenuIcons[4], 736, 528, null);
+				}
+
+				for (int i = 0; i < pkmnListIdx.length; i++) {
+					System.out.print(pkmnListIdx[i] + " ");
+				}
+				System.out.println();
+				pkmnMenuIdx = 0;
+				displayHealth(g); // all health
+				displayText(g, Images.moveFontIdx, Images.moveFont, "Select a pokemon to switch to.", 40, 536);
+
 			}
-			// Sprites and Pop-ups
-//			g.drawImage(Images.battleSprites[Images.battleSpritesIdx
-//					.get(Pokemon.pokeList.get(spriteIdx).getName().toLowerCase())][0], 576, 32, null);
-//			g.drawImage(Images.battleSprites[Images.battleSpritesIdx
-//					.get(Pokemon.pokeList.get(spriteIdx).getName().toLowerCase())][1], 128, 196, null);
-//			g.drawImage(Images.battleMenu[4], 0, 640 - Images.battleMenu[4].getHeight(), null);
-// 			g.drawImage(Images.battleMenu[5], 0, 640 - Images.battleMenu[5].getHeight(), null);
-// 			g.drawImage(Images.battleMenu[2], 960 - Images.battleMenu[2].getWidth(), 640 - Images.battleMenu[2].getHeight(), null);
-//			g.drawImage(Images.battleMenu[0], 48, 64, null);
-//			g.drawImage(Images.battleMenu[1], 484, 284, null);
-
-//			for (int i = 0; i < 26; i++) {
-//				g.drawImage(Images.battleFont[i], 200 + (i)*30, 200, null);
-//				System.out.println(Images.battleFont[i].getWidth());
-//			}
-//			g.drawImage(Images.battleMenu[3], 512, 496, null);
-//			g.drawImage(Images.battleMenu[3], 512, 560, null);
-//			g.drawImage(Images.battleMenu[3], 736, 496, null);
-//			g.drawImage(Images.battleMenu[3], 736, 560, null);
-
-			// Pokemon Names
-//			displayText(g, Images.battleFontIdx, Images.battleFont,
-//					Pokemon.pokeList.get(spriteIdx).getName().toUpperCase(), 80, 88);
-//			displayText(g, Images.battleFontIdx, Images.battleFont,
-//					Pokemon.pokeList.get(spriteIdx).getName().toUpperCase(), 556, 313);
-//			displayText(g, Images.battleFontIdx, Images.battleFont, "99", 379, 88);
-//			displayText(g, Images.battleFontIdx, Images.battleFont, "99", 850, 312);
-
-			// Attack Display
-//			g.drawImage(Images.battleMenu[3], 36, 490, null);
-//			g.drawImage(Images.battleMenu[3], 332, 490, null);
-//			g.drawImage(Images.battleMenu[3], 36, 554, null);
-//			g.drawImage(Images.battleMenu[3], 332, 554, null);
-//			try {
-//				if (Pokemon.pokeList.get(spriteIdx).getMoves()[0] != null) {
-//					displayText(g, Images.attackFontIdx, Images.attackFont,
-//							Pokemon.pokeList.get(spriteIdx).getMoves()[0].getName(), 64, 490);
-//				}
-//				if (Pokemon.pokeList.get(spriteIdx).getMoves()[1] != null) {
-//					displayText(g, Images.attackFontIdx, Images.attackFont,
-//							Pokemon.pokeList.get(spriteIdx).getMoves()[1].getName(), 360, 490);
-//				}
-//				if (Pokemon.pokeList.get(spriteIdx).getMoves()[2] != null) {
-//					displayText(g, Images.attackFontIdx, Images.attackFont,
-//							Pokemon.pokeList.get(spriteIdx).getMoves()[2].getName(), 64, 554);
-//				}
-//				if (Pokemon.pokeList.get(spriteIdx).getMoves()[3] != null) {
-//					displayText(g, Images.attackFontIdx, Images.attackFont,
-//							Pokemon.pokeList.get(spriteIdx).getMoves()[3].getName(), 360, 554);
-//				}
-//			} catch (InterruptedException e) {
-//
-//			}
-		}
+		}  
 	}
 
 	@Override
@@ -394,9 +408,18 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 					optionsArrowIdx++;
 				}
 
-			} else if (x == 'e' && optionsArrowIdx == 0) {
-				battleState = 2;
-			}
+			} else if (x == 'e')
+				if (optionsArrowIdx == 0) {
+					battleState = 2;
+				} else if (optionsArrowIdx == 1) {
+
+				} else if (optionsArrowIdx == 2) {
+					battleState = 8;
+					pkmnMenuIdx = 0;
+					pkmnMenuSelectIdx = 0;
+				} else if (optionsArrowIdx == 3) {
+
+				}
 			optionsArrowX = optionsArrowPositions[optionsArrowIdx][0];
 			optionsArrowY = optionsArrowPositions[optionsArrowIdx][1];
 		} else if (gameState == 3 && battleState == 2) {
@@ -427,9 +450,39 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 
 			} else if (x == 'e') {
 				battleState = 3;
+			} else if (x == 'q') {
+			battleState = 1;
 			}
 			attackArrowX = attackArrowPositions[attackArrowIdx][0];
 			attackArrowY = attackArrowPositions[attackArrowIdx][1];
+		} else if (battleState == 8) {
+			if (x == 'w') {
+				if (pkmnMenuSelectIdx == 2 || pkmnMenuSelectIdx == 3) {
+					pkmnMenuSelectIdx--;
+				}
+			} else if (x == 's') {
+				if (pkmnMenuSelectIdx == 1 || pkmnMenuSelectIdx == 2) {
+					pkmnMenuSelectIdx++;
+				}
+			} else if (x == 'a') {
+				if (pkmnMenuSelectIdx >= 1 && pkmnMenuSelectIdx <= 2) {
+					pkmnMenuSelectIdx = 0;
+				}
+			} else if (x == 'd') {
+				if (pkmnMenuSelectIdx == 0) {
+					pkmnMenuSelectIdx = 2;
+				}
+
+			} else if (x == 'e') {
+				if (pkmnMenuSelectIdx == 3) {
+					battleState = 1;
+				} else if (pkmnMenuSelectIdx != 0) {
+					battle.setSwitchPokemon(true);
+					battle.setPlayerMon(battle.getPlayer().getPokemonList()[pkmnListIdx[pkmnMenuSelectIdx]]);
+				}
+			} else if (x == 'q') {
+				battleState = 1;
+			}
 		}
 
 	}
@@ -467,14 +520,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			trainer = new Trainer();
 			battle = new Battle(player, trainer);
 		} else if (gameState == 3) {
-			battleState++;
-//			spriteIdx++;
-//			System.out.println(Pokemon.pokeList.get(spriteIdx).getName().toLowerCase() + " "
-//					+ Images.battleSpritesIdx.get(Pokemon.pokeList.get(spriteIdx).getName().toLowerCase()));
-//			spriteTest = Images.battleSprites[Images.battleSpritesIdx
-//					.get(Pokemon.pokeList.get(spriteIdx).getName().toLowerCase())];
-//			System.out.println(spriteTest);
-
 //			gameState = 0;
 //			bgX = 0;
 //			bgY = 0;
@@ -822,37 +867,68 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	}
 
 	public static void displayHealth(Graphics g) {
-		double percentHp = battle.getOtherMon().getCurrentHp() / (battle.getOtherMon().getBaseHp() * 1.0);
-		int pixelsHealth = (int) Math.round(48 * percentHp);
-		BufferedImage barColor;
-		if (pixelsHealth >= 48 * 0.75) {
-			barColor = Images.healthBars[0];
-		} else if (pixelsHealth > 48 * 0.25) {
-			barColor = Images.healthBars[1];
-		} else {
-			barColor = Images.healthBars[2];
-		}
-		for (int i = 0; i < pixelsHealth; i++) {
-			g.drawImage(barColor, 216 + i * 4, 140, null);
-		}
+		if (battleState < 8) {
+			double percentHp = battle.getOtherMon().getCurrentHp() / (battle.getOtherMon().getBaseHp() * 1.0);
+			int pixelsHealth = (int) Math.round(48 * percentHp);
+			BufferedImage barColor;
+			if (pixelsHealth >= 48 * 0.75) {
+				barColor = Images.healthBars[0];
+			} else if (pixelsHealth > 48 * 0.25) {
+				barColor = Images.healthBars[1];
+			} else {
+				barColor = Images.healthBars[2];
+			}
+			for (int i = 0; i < pixelsHealth; i++) {
+				g.drawImage(barColor, 216 + i * 4, 140, null);
+			}
 
-		percentHp = battle.getPlayerMon().getCurrentHp() / (battle.getPlayerMon().getBaseHp() * 1.0);
-		pixelsHealth = (int) Math.round(48 * percentHp);
-		if (pixelsHealth >= 48 * 0.75) {
-			barColor = Images.healthBars[0];
-		} else if (pixelsHealth > 48 * 0.25) {
-			barColor = Images.healthBars[1];
-		} else {
-			barColor = Images.healthBars[2];
-		}
-		for (int i = 0; i < pixelsHealth; i++) {
-			g.drawImage(barColor, 688 + i * 4, 364, null);
+			percentHp = battle.getPlayerMon().getCurrentHp() / (battle.getPlayerMon().getBaseHp() * 1.0);
+			pixelsHealth = (int) Math.round(48 * percentHp);
+			if (pixelsHealth >= 48 * 0.75) {
+				barColor = Images.healthBars[0];
+			} else if (pixelsHealth > 48 * 0.25) {
+				barColor = Images.healthBars[1];
+			} else {
+				barColor = Images.healthBars[2];
+			}
+			for (int i = 0; i < pixelsHealth; i++) {
+				g.drawImage(barColor, 688 + i * 4, 364, null);
+			}
+		} else if (battleState == 8) {
+			double percentHp = battle.getPlayerMon().getCurrentHp() / (battle.getPlayerMon().getBaseHp() * 1.0);
+			int pixelsHealth = (int) Math.round(48 * percentHp);
+			BufferedImage barColor;
+			if (pixelsHealth >= 48 * 0.75) {
+				barColor = Images.healthBars[0];
+			} else if (pixelsHealth > 48 * 0.25) {
+				barColor = Images.healthBars[1];
+			} else {
+				barColor = Images.healthBars[2];
+			}
+			for (int i = 0; i < pixelsHealth; i++) {
+				g.drawImage(barColor, 128 + i * 4, 236, null);
+			}
+			for (int i = 1; i < 3; i++) {
+				percentHp = battle.getPlayer().getPokemonList()[pkmnListIdx[i]].getCurrentHp()
+						/ (battle.getPlayer().getPokemonList()[pkmnListIdx[i]].getBaseHp() * 1.0);
+				pixelsHealth = (int) Math.round(48 * percentHp);
+				if (pixelsHealth >= 48 * 0.75) {
+					barColor = Images.healthBars[0];
+				} else if (pixelsHealth > 48 * 0.25) {
+					barColor = Images.healthBars[1];
+				} else {
+					barColor = Images.healthBars[2];
+				}
+				for (int j = 0; j < pixelsHealth; j++) {
+					g.drawImage(barColor, 736 + j * 4, 72 + 96 * (i - 1), null);
+				}
+			}
+
 		}
 
 	}
 
 	public static void displayEffects(Graphics g) {
-
 		displayText(g, Images.whiteFontIdx, Images.whiteFont,
 				battle.getPlayerMon().getName().toUpperCase() + " is fast asleep.", 40, 488);
 	}
