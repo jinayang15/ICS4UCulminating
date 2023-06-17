@@ -11,7 +11,7 @@ import javax.swing.*;
 @SuppressWarnings("serial") // funky warning, just suppress it. It's not gonna do anything.
 public class Main extends JPanel implements Runnable, KeyListener, MouseListener {
 	/*
-	 * 0: initial menu   1: Instructions   2: Pewter City   3: Battle   4: about us  5
+	 * 0: initial menu   1: Instructions   2: Pewter City   3: Battle   4: about us  5: instructions2
 	 * - PokeMart
 	 */
 	public static int gameState = 0;
@@ -120,6 +120,9 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		else if (gameState==4) {
 			currentBG = Images.aboutUs;
 		}
+		else if (gameState==5) {
+			currentBG = Images.instructions2;
+		}
 	}
 
 	public void paintComponent(Graphics g) {
@@ -211,6 +214,9 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			bgY = 0;
 		}
 		else if (gameState==1 && x=='i') {
+			gameState = 5;
+		}
+		else if (gameState==5 && x=='i') {
 			gameState = 0;
 		}
 		else if (gameState==0 && x=='a') {

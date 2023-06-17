@@ -27,6 +27,7 @@ public class Images {
 	public static BufferedImage battleBackground;
 	public static BufferedImage aboutUs;
 	public static BufferedImage instructions;
+	public static BufferedImage instructions2;
 
 	public static void importAllImages() throws IOException {
 		importMisc();
@@ -43,6 +44,7 @@ public class Images {
 		fireRedPressStart = resizeImage(fireRedPressStart, 960, 640);
 		aboutUs = ImageIO.read(new File ("aboutUs.png"));
 		instructions = ImageIO.read(new File ("instructions.png"));
+		instructions2=ImageIO.read(new File ("instructions2.png"));
 	}
 
 	public static void importPewterCity() throws IOException {
