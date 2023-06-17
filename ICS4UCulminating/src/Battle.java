@@ -17,8 +17,6 @@ public class Battle {
 
 	private Pokemon playerMon;
 	private Pokemon otherMon;
-	private BufferedImage playerMonSprite;
-	private BufferedImage otherMonSprite;
 
 	private boolean attack = false;
 	private boolean switchPokemon = false; // Boolean that sees if the user is switching Pokemon
@@ -26,11 +24,11 @@ public class Battle {
 	private boolean quickAttack = false;
 	private boolean hit = false; // To check if the attack hit the other pokemon
 	private boolean roundEnd = true; // Checks if the attack round has ended
-	
+
 	private boolean playerAttacking = false;
 	private Move playerCurrentMove = null;
 	private boolean playerSkipTurn = false; // Boolean to determine if the trainers turn is skipped
-	
+
 	private boolean otherAttacking = false;
 	private Move otherCurrentMove = null;
 	private boolean otherSkipTurn = false; // Same as last one, except its for opponent
@@ -40,7 +38,7 @@ public class Battle {
 	// Sleep - 3
 	// Burn - 4
 	// Toxic Poison - 5
-	
+
 	// These playerMon / otherMon stat counters are used to the number of stat
 	// raising/lowering.
 	// The maximum number of times a stat can be raised is 6 stages, and there are
@@ -71,9 +69,7 @@ public class Battle {
 		this.other = other;
 
 		playerMon = player.getPokemonList()[0];
-		playerMonSprite = Images.battleSprites[Images.battleSpritesIdx.get(playerMon.getName().toLowerCase())][1];
 		otherMon = other.getPokemonList()[0];
-		otherMonSprite = Images.battleSprites[Images.battleSpritesIdx.get(otherMon.getName().toLowerCase())][0];
 
 		updateStats();
 //		battleStart();
@@ -186,11 +182,11 @@ public class Battle {
 		}
 
 		else {
-			System.out.println(
-					"\nYOU\t" + playerMon.getName() + " HP: " +  playerMon.getCurrentHp() + "\t Level: " + playerMon.getLevel());
+			System.out.println("\nYOU\t" + playerMon.getName() + " HP: " + playerMon.getCurrentHp() + "\t Level: "
+					+ playerMon.getLevel());
 			System.out.println("--------------------");
-			System.out
-					.println("THEM\t" + otherMon.getName() + " HP: " + otherMon.getCurrentHp() + "\t Level: " + otherMon.getLevel());
+			System.out.println("THEM\t" + otherMon.getName() + " HP: " + otherMon.getCurrentHp() + "\t Level: "
+					+ otherMon.getLevel());
 			System.out.println("\n");
 			applyStatus(); // Apply status first to determine if moves are going to be skipped
 
@@ -229,8 +225,8 @@ public class Battle {
 		// If the only the opponent uses quick attack, they are guaranteed to go first
 		else if (otherCurrentMove.getName().equals("Quick Attack")) {
 			return false;
-		
-		// Speed Check
+
+			// Speed Check
 		} else {
 			if (playerMon.getCurrentSpeed() >= otherMon.getCurrentSpeed()) {
 				return true;
@@ -264,7 +260,7 @@ public class Battle {
 					attack(otherMove, otherMon, playerMon);
 					if (!battleContinue)
 						return;
-					else if ( playerMon.getCurrentHp() <= 0) {
+					else if (playerMon.getCurrentHp() <= 0) {
 						chooseNewPokemon();
 					}
 				} else {
@@ -283,7 +279,7 @@ public class Battle {
 					attack(otherMove, otherMon, playerMon);
 					if (!battleContinue)
 						return;
-					else if ( playerMon.getCurrentHp() <= 0) {
+					else if (playerMon.getCurrentHp() <= 0) {
 						chooseNewPokemon();
 					}
 				} else {
@@ -331,7 +327,7 @@ public class Battle {
 				attack(otherMove, otherMon, playerMon);
 				if (!battleContinue)
 					return;
-				else if ( playerMon.getCurrentHp() <= 0) {
+				else if (playerMon.getCurrentHp() <= 0) {
 					chooseNewPokemon();
 				}
 			} else {
@@ -348,7 +344,7 @@ public class Battle {
 				attack(otherMove, otherMon, playerMon);
 				if (!battleContinue)
 					return;
-				else if ( playerMon.getCurrentHp() <= 0) {
+				else if (playerMon.getCurrentHp() <= 0) {
 					chooseNewPokemon();
 				}
 			} else {
@@ -394,7 +390,7 @@ public class Battle {
 					attack(otherMove, otherMon, playerMon);
 					if (!battleContinue)
 						return;
-					else if ( playerMon.getCurrentHp() <= 0) {
+					else if (playerMon.getCurrentHp() <= 0) {
 						chooseNewPokemon();
 					}
 				} else {
@@ -409,7 +405,7 @@ public class Battle {
 					attack(otherMove, otherMon, playerMon);
 					if (!battleContinue)
 						return;
-					else if ( playerMon.getCurrentHp() <= 0) {
+					else if (playerMon.getCurrentHp() <= 0) {
 						chooseNewPokemon();
 					}
 				} else {
@@ -763,7 +759,8 @@ public class Battle {
 				} else {
 					if (otherMonAtkCount == 5) {
 						otherMonAtkCount++;
-						otherMon.setDeltaAttack(otherMon.getDeltaAttack() + (int) Math.floor(otherMon.getBaseAttack() / 6));
+						otherMon.setDeltaAttack(
+								otherMon.getDeltaAttack() + (int) Math.floor(otherMon.getBaseAttack() / 6));
 					} else {
 						otherMonAtkCount += 2;
 						otherMon.setDeltaAttack(
@@ -815,12 +812,14 @@ public class Battle {
 				if (attackMon.equals(playerMon)) {
 					if (playerMonSpAtkCount < 6) {
 						playerMonSpAtkCount++;
-						playerMon.setDeltaSpAtk(playerMon.getDeltaSpAtk() + (int) Math.floor(playerMon.getBaseSpAtk() / 6));
+						playerMon.setDeltaSpAtk(
+								playerMon.getDeltaSpAtk() + (int) Math.floor(playerMon.getBaseSpAtk() / 6));
 					}
 				} else {
 					if (otherMonSpAtkCount < 6) {
 						otherMonSpAtkCount++;
-						otherMon.setDeltaSpAtk(otherMon.getDeltaSpAtk() + (int) Math.floor(otherMon.getBaseSpAtk() / 6));
+						otherMon.setDeltaSpAtk(
+								otherMon.getDeltaSpAtk() + (int) Math.floor(otherMon.getBaseSpAtk() / 6));
 					}
 				}
 			} else if (attack.getName().equals("Poison Powder")) {
@@ -1017,10 +1016,10 @@ public class Battle {
 	// It takes in no parameters
 	// It returns nothing
 	public void updateStats() {
-		 
-		//checkBattle();
+
+		// checkBattle();
 	}
-	
+
 	public void checkFaint(Pokemon mon) {
 		if (mon.getCurrentHp() <= 0) {
 			System.out.println("\n" + mon.getName() + " fainted!");
@@ -1034,14 +1033,15 @@ public class Battle {
 	// (i.e. same Pokemon)
 	// The battle will not continue if a Pokemon has fainted, or the user has
 	// switched out
-	// It will return TRUE if the battle is go to continue, FALSE if the battle must end.
+	// It will return TRUE if the battle is go to continue, FALSE if the battle must
+	// end.
 	public boolean checkBattle() {
 		if (otherMon.getFaint()) {
 			otherSkipTurn = true;
 			for (int i = 0; i < other.getPokemonList().length; i++) {
 				if (other.getPokemonList()[i].getFaint() == false) {
-					System.out.println("NEXT POKEMON: " + other.getPokemonList()[i].getName());
-					new Battle(player, other, playerMon, i);
+//					System.out.println("NEXT POKEMON: " + other.getPokemonList()[i].getName());
+//					new Battle(player, other, playerMon, i);
 					battleContinue = false;
 					return true;
 				} else if (i == other.getPokemonList().length - 1) {
@@ -1057,7 +1057,7 @@ public class Battle {
 			for (int i = 0; i < player.getPokemonList().length; i++) {
 				if (player.getPokemonList()[i].getFaint() == false) {
 					battleContinue = true;
-					chooseNewPokemon();
+//					chooseNewPokemon();
 					battleContinue = false;
 					return true;
 				} else if (i == player.getPokemonList().length - 1) {
@@ -1069,6 +1069,15 @@ public class Battle {
 			}
 		}
 		return true;
+	}
+
+	public Pokemon otherChooseNewPokemon() {
+		for (int i = 0; i < other.getPokemonList().length; i++) {
+			if (other.getPokemonList()[i].getFaint() == false) {
+				return other.getPokemonList()[i];
+			}
+		}
+		return null;
 	}
 
 	// The endBattle method is used when the battle is over
@@ -1245,7 +1254,7 @@ public class Battle {
 		boolean valid = false;
 		Scanner s = new Scanner(System.in);
 		System.out.println("Choose your Pokemon: ");
-		if ( playerMon.getCurrentHp() == 0) {
+		if (playerMon.getCurrentHp() == 0) {
 			for (int i = 0; i < player.getPokemonList().length; i++) {
 				if (player.getPokemonList()[i].getFaint() == false) {
 					System.out.println(i + ") " + player.getPokemonList()[i].getName());
@@ -1461,79 +1470,6 @@ public class Battle {
 	public void setOtherMon(Pokemon otherMon) {
 		this.otherMon = otherMon;
 	}
-
-	public BufferedImage getPlayerMonSprite() {
-		return playerMonSprite;
-	}
-
-	public BufferedImage getOtherMonSprite() {
-		return otherMonSprite;
-	}
-
-//	public int[][] getOptionsArrowPositions() {
-//		return optionsArrowPositions;
-//	}
-//
-//	public void setOptionsArrowPositions(int[][] optionsArrowPositions) {
-//		this.optionsArrowPositions = optionsArrowPositions;
-//	}
-//
-//	public int getOptionsArrowX() {
-//		return optionsArrowX;
-//	}
-//
-//	public void setOptionsArrowX(int optionsArrowX) {
-//		this.optionsArrowX = optionsArrowX;
-//	}
-//
-//	public int getOptionsArrowY() {
-//		return optionsArrowY;
-//	}
-//
-//	public void setOptionsArrowY(int optionsArrowY) {
-//		this.optionsArrowY = optionsArrowY;
-//	}
-//
-//	public int[][] getAttackArrowPositions() {
-//		return attackArrowPositions;
-//	}
-//
-//	public void setAttackArrowPositions(int[][] attackArrowPositions) {
-//		this.attackArrowPositions = attackArrowPositions;
-//	}
-//
-//	public int getAttackArrowX() {
-//		return attackArrowX;
-//	}
-//
-//	public void setAttackArrowX(int attackArrowX) {
-//		this.attackArrowX = attackArrowX;
-//	}
-//
-//	public int getAttackArrowY() {
-//		return attackArrowY;
-//	}
-//
-//	public void setAttackArrowY(int attackArrowY) {
-//		this.attackArrowY = attackArrowY;
-//	}
-//
-//	public int getOptionsArrowIdx() {
-//		return optionsArrowIdx;
-//	}
-//
-//	public void setOptionsArrowIdx(int optionsArrowIdx) {
-//		this.optionsArrowIdx = optionsArrowIdx;
-//	}
-//
-//	public int getAttackArrowIdx() {
-//		return attackArrowIdx;
-//	}
-//
-//	public void setAttackArrowIdx(int attackArrowIdx) {
-//		this.attackArrowIdx = attackArrowIdx;
-//	}
-
 	public Move getPlayerCurrentMove() {
 		return playerCurrentMove;
 	}
@@ -1558,7 +1494,6 @@ public class Battle {
 		this.roundEnd = roundEnd;
 	}
 
-	
 	public boolean getPlayerSkipTurn() {
 		return playerSkipTurn;
 	}
@@ -1566,6 +1501,7 @@ public class Battle {
 	public void setPlayerSkipTurn(boolean playerSkipTurn) {
 		this.playerSkipTurn = playerSkipTurn;
 	}
+
 	public boolean getOtherSkipTurn() {
 		return otherSkipTurn;
 	}
@@ -1589,6 +1525,5 @@ public class Battle {
 	public void setOtherAttacking(boolean otherAttacking) {
 		this.otherAttacking = otherAttacking;
 	}
-
 
 }

@@ -21,6 +21,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	// 3 - turn check
 	// 4 - player turn
 	// 5 - enemy turn
+	// 6 - player effect
+	// 7 - enemy effect
 	static int battleState = 0;
 	static Battle battle = null;
 
@@ -102,9 +104,10 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	public static void initialize() throws IOException {
 		// setups before the game starts running
 		try {
-			GameFunctions.importEverything();
 			Images.importAllImages();
+			GameFunctions.importEverything();
 			PokeType.addToChart();
+			player = new Player("Fire");
 		} catch (FileNotFoundException e) {
 		}
 
@@ -151,13 +154,10 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			battle.checkFaint(battle.getOtherMon());
 			if (battle.checkBattle()) {
 				if (!battle.getPlayerSkipTurn() && !battle.isPlayerAttacking()) {
-					 battle.attack(battle.getPlayerCurrentMove(), battle.getPlayerMon(),
-					 battle.getOtherMon());
-					 battle.setPlayerAttacking(true);
+					battle.attack(battle.getPlayerCurrentMove(), battle.getPlayerMon(), battle.getOtherMon());
+					battle.setPlayerAttacking(true);
+				} else if (battle.getPlayerMon().getFaint()) {
 
-//				 if (battle.checkBattle()) {
-//					 battle.setRoundEnd(true);
-//				 }
 				}
 			}
 
@@ -166,14 +166,12 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			battle.checkFaint(battle.getOtherMon());
 			if (battle.checkBattle()) {
 				if (!battle.getPlayerSkipTurn() && !battle.isOtherAttacking()) {
-					 battle.attack(battle.getOtherCurrentMove(),
-					 battle.getOtherMon(),battle.getPlayerMon());
-					 battle.setOtherAttacking(true);
+					battle.attack(battle.getOtherCurrentMove(), battle.getOtherMon(), battle.getPlayerMon());
+					battle.setOtherAttacking(true);
+				} else if (battle.getOtherMon().getFaint()) {
+					battle.setOtherMon(battle.otherChooseNewPokemon());
 				}
 			}
-//			 if (battle.checkBattle()) {
-//				 battle.setRoundEnd(true);
-//			 }
 		}
 	}
 
@@ -396,6 +394,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 					optionsArrowIdx++;
 				}
 
+			} else if (x == 'e' && optionsArrowIdx == 0) {
+				battleState = 2;
 			}
 			optionsArrowX = optionsArrowPositions[optionsArrowIdx][0];
 			optionsArrowY = optionsArrowPositions[optionsArrowIdx][1];
@@ -531,7 +531,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		// self explanatory. You don't want to resize your window because
 		// it might mess up your graphics and collisions
 		frame.setResizable(false);
-		player = new Player("Fire");
 	}
 
 	// background shifts with the player
@@ -771,8 +770,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	}
 
 	public static void displayBattleSprites(Graphics g) {
-		g.drawImage(battle.getOtherMonSprite(), 576, 32, null);
-		g.drawImage(battle.getPlayerMonSprite(), 128, 196, null);
+		g.drawImage(battle.getOtherMon().getOtherSprite(), 576, 32, null);
+		g.drawImage(battle.getPlayerMon().getPlayerSprite(), 128, 196, null);
 	}
 
 	public static void displayOptionsMenuAndArrow(Graphics g) {
@@ -813,42 +812,48 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	}
 
 	public static void displayStatus(Graphics g) {
-		if (battle.getPlayerMon().getStatus() != 0) {
+		if (battle.getPlayerMon().getStatus() > 0) {
 			g.drawImage(Images.statusIcons[battle.getPlayerMon().getStatus() - 1], 544, 356, null);
 		}
-		if (battle.getOtherMon().getStatus() != 0) {
+		if (battle.getOtherMon().getStatus() > 0) {
 			g.drawImage(Images.statusIcons[battle.getOtherMon().getStatus() - 1], 72, 128, null);
 		}
 
 	}
+
 	public static void displayHealth(Graphics g) {
-		double percentHp = battle.getOtherMon().getCurrentHp()/(battle.getOtherMon().getBaseHp()*1.0);
-		int pixelsHealth = (int) Math.round(48*percentHp);
+		double percentHp = battle.getOtherMon().getCurrentHp() / (battle.getOtherMon().getBaseHp() * 1.0);
+		int pixelsHealth = (int) Math.round(48 * percentHp);
 		BufferedImage barColor;
-		if (pixelsHealth >= 48*0.75) {
+		if (pixelsHealth >= 48 * 0.75) {
 			barColor = Images.healthBars[0];
-		} else if (pixelsHealth > 48*0.25){
+		} else if (pixelsHealth > 48 * 0.25) {
 			barColor = Images.healthBars[1];
-		}else {
+		} else {
 			barColor = Images.healthBars[2];
 		}
 		for (int i = 0; i < pixelsHealth; i++) {
-			g.drawImage(barColor, 216 + i*4, 140, null);
+			g.drawImage(barColor, 216 + i * 4, 140, null);
 		}
-		
-		
-		percentHp = battle.getPlayerMon().getCurrentHp()/(battle.getPlayerMon().getBaseHp()*1.0);
-		pixelsHealth = (int) Math.round(48*percentHp);
-		if (pixelsHealth >= 48*0.75) {
+
+		percentHp = battle.getPlayerMon().getCurrentHp() / (battle.getPlayerMon().getBaseHp() * 1.0);
+		pixelsHealth = (int) Math.round(48 * percentHp);
+		if (pixelsHealth >= 48 * 0.75) {
 			barColor = Images.healthBars[0];
-		} else if (pixelsHealth > 48*0.25){
+		} else if (pixelsHealth > 48 * 0.25) {
 			barColor = Images.healthBars[1];
-		}else {
+		} else {
 			barColor = Images.healthBars[2];
 		}
 		for (int i = 0; i < pixelsHealth; i++) {
-			g.drawImage(barColor, 688 + i*4, 364, null);
+			g.drawImage(barColor, 688 + i * 4, 364, null);
 		}
-		
+
+	}
+
+	public static void displayEffects(Graphics g) {
+
+		displayText(g, Images.whiteFontIdx, Images.whiteFont,
+				battle.getPlayerMon().getName().toUpperCase() + " is fast asleep.", 40, 488);
 	}
 }
