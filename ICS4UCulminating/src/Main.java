@@ -198,6 +198,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			displayBattleSprites(g);
 			displayPokemonStats(g);
 			displayStatus(g);
+			displayHealth(g);
 			if (battleState == 1) {
 				// reset moves after attack round and pause to show attacks
 				if (battle.isPlayerAttacking()) {
@@ -819,5 +820,35 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			g.drawImage(Images.statusIcons[battle.getOtherMon().getStatus() - 1], 72, 128, null);
 		}
 
+	}
+	public static void displayHealth(Graphics g) {
+		double percentHp = battle.getOtherMon().getCurrentHp()/(battle.getOtherMon().getBaseHp()*1.0);
+		int pixelsHealth = (int) Math.round(48*percentHp);
+		BufferedImage barColor;
+		if (pixelsHealth >= 48*0.75) {
+			barColor = Images.healthBars[0];
+		} else if (pixelsHealth > 48*0.25){
+			barColor = Images.healthBars[1];
+		}else {
+			barColor = Images.healthBars[2];
+		}
+		for (int i = 0; i < pixelsHealth; i++) {
+			g.drawImage(barColor, 216 + i*4, 140, null);
+		}
+		
+		
+		percentHp = battle.getPlayerMon().getCurrentHp()/(battle.getPlayerMon().getBaseHp()*1.0);
+		pixelsHealth = (int) Math.round(48*percentHp);
+		if (pixelsHealth >= 48*0.75) {
+			barColor = Images.healthBars[0];
+		} else if (pixelsHealth > 48*0.25){
+			barColor = Images.healthBars[1];
+		}else {
+			barColor = Images.healthBars[2];
+		}
+		for (int i = 0; i < pixelsHealth; i++) {
+			g.drawImage(barColor, 688 + i*4, 364, null);
+		}
+		
 	}
 }

@@ -17,6 +17,7 @@ public class Images {
 	public static BufferedImage[] trainerLeft = new BufferedImage[3];
 	public static BufferedImage[] trainerRight = new BufferedImage[3];
 	public static BufferedImage[] battleMenu = new BufferedImage[6];
+	public static BufferedImage[] healthBars = new BufferedImage[3];
 	static HashMap<String, Integer> battleFontIdx = new HashMap<String, Integer>();
 	public static BufferedImage[] battleFont = new BufferedImage[78];
 	static HashMap<String, Integer> battleSpritesIdx = new HashMap<String, Integer>();
@@ -86,12 +87,22 @@ public class Images {
 	// subImage is exclusive corner coordinate
 	public static void importBattleMenu() throws IOException {
 		BufferedImage battleMenuSheet = ImageIO.read(new File("InBattleMenu.png"));
+		healthBars[0] = battleMenuSheet.getSubimage(117, 8, 1, 3); // green bar
+		healthBars[1] = battleMenuSheet.getSubimage(117, 12, 1, 3); // yellow bar
+		healthBars[2] = battleMenuSheet.getSubimage(117, 16, 1, 3); // red bar
 		battleMenu[0] = battleMenuSheet.getSubimage(0, 0, 112, 32); // enemy hp and lvl
 		battleMenu[1] = battleMenuSheet.getSubimage(0, 40, 112, 44); // our hp and lvl
 		battleMenu[2] = battleMenuSheet.getSubimage(146, 3, 120, 48); // options
 		battleMenu[3] = battleMenuSheet.getSubimage(268, 3, 7, 17); // arrow
 		battleMenu[4] = battleMenuSheet.getSubimage(297, 3, 240, 48); // attacks
 		battleMenu[5] = battleMenuSheet.getSubimage(297, 55, 240, 48); // text box
+		for (int i = 0; i < healthBars.length; i++) {
+			if (healthBars[i] != null) {
+				int width = healthBars[i].getWidth();
+				int height = healthBars[i].getHeight();
+				healthBars[i] = resizeImage(healthBars[i], width * 4, height * 4);
+			}
+		}
 		for (int i = 0; i < battleMenu.length; i++) {
 			if (battleMenu[i] != null) {
 				int width = battleMenu[i].getWidth();
@@ -445,8 +456,8 @@ public class Images {
 	public static void importStatusIcons() throws IOException {
 		BufferedImage statusIconSheet = ImageIO.read(new File("StatusIcons.png"));
 		for (int i = 0; i < 4; i++) {
-			statusIcons[i] = statusIconSheet.getSubimage(6 + i*32, 80, 20, 8);
-			statusIcons[i] = resizeImage(statusIcons[i], statusIcons[i].getWidth()*4, statusIcons[i].getHeight()*4);
+			statusIcons[i] = statusIconSheet.getSubimage(6 + i * 32, 80, 20, 8);
+			statusIcons[i] = resizeImage(statusIcons[i], statusIcons[i].getWidth() * 4, statusIcons[i].getHeight() * 4);
 		}
 	}
 
