@@ -9,12 +9,12 @@ public class Pokemon {
 	
 	// The BASE stats 
 	private int level = 1;
-	private int hp;
-	private int attack;
-	private int def;
-	private int spAtk;
-	private int spDef;
-	private int speed;
+	private int baseHp;
+	private int baseAttack;
+	private int baseDef;
+	private int baseSpAtk;
+	private int baseSpDef;
+	private int baseSpeed;
 
 	// Changes applied to the base stats for battle.
 	private int deltaHp = 0;
@@ -44,12 +44,12 @@ public class Pokemon {
 		this.type1 = type1;
 		typeList.add(type1);
 		this.type2 = null;
-		this.hp = hp;
-		this.attack = attack; 
-		this.def = def; 
-		this.spAtk = spAtk;
-		this.spDef = spDef; 
-		this.speed = speed; 
+		this.baseHp = hp;
+		this.baseAttack = attack; 
+		this.baseDef = def; 
+		this.baseSpAtk = spAtk;
+		this.baseSpDef = spDef; 
+		this.baseSpeed = speed; 
 		this.moveSet = moveSet;
 		for (int i = 0; i < Math.min(moveSet.size(), 4); i++) {
 			moveList[i] = moveSet.get(i);
@@ -63,12 +63,12 @@ public class Pokemon {
 		this.type2 = type2;
 		typeList.add(type1);
 		typeList.add(type2);
-		this.hp = hp;
-		this.attack = attack; 
-		this.def = def; 
-		this.spAtk = spAtk;
-		this.spDef = spDef; 
-		this.speed = speed; 
+		this.baseHp = hp;
+		this.baseAttack = attack; 
+		this.baseDef = def; 
+		this.baseSpAtk = spAtk;
+		this.baseSpDef = spDef; 
+		this.baseSpeed = speed; 
 		this.moveSet = moveSet;
 		for (int i = 0; i < Math.min(moveSet.size(), 4); i++) {
 			moveList[i] = moveSet.get(i);
@@ -79,12 +79,12 @@ public class Pokemon {
 	public Pokemon (Pokemon mon) {
 		this.level = mon.level; // Placeholder 
 		this.name = mon.name;
-		this.hp = mon.hp;
-		this.attack = mon.attack;
-		this.def = mon.def;
-		this.spAtk = mon.spAtk;
-		this.spDef = mon.spDef;
-		this.speed = mon.speed;
+		this.baseHp = mon.baseHp;
+		this.baseAttack = mon.baseAttack;
+		this.baseDef = mon.baseDef;
+		this.baseSpAtk = mon.baseSpAtk;
+		this.baseSpDef = mon.baseSpDef;
+		this.baseSpeed = mon.baseSpeed;
 		this.type1 = mon.type1;
 		if (typeList.size()==2) {
 			this.type2 = type2;
@@ -109,33 +109,33 @@ public class Pokemon {
 	}
 
 
-	public int getHp() {
-		return hp;
+	public int getCurrentHp() {
+		return baseHp - deltaHp;
 	}
 
 
-	public int getAttack() {
-		return attack;
+	public int getCurrentAttack() {
+		return baseAttack - deltaAttack;
 	}
 
 
-	public int getDef() {
-		return def;
+	public int getCurrentDef() {
+		return baseDef - deltaDef;
 	}
 
 
-	public int getSpAtk() {
-		return spAtk;
+	public int getCurrentSpAtk() {
+		return baseSpAtk - deltaSpAtk;
 	}
 
 
-	public int getSpDef() {
-		return spDef;
+	public int getCurrentSpDef() {
+		return baseSpDef - deltaSpDef;
 	}
 
 
-	public int getSpeed() {
-		return speed;
+	public int getCurrentSpeed() {
+		return baseSpeed - deltaSpeed;
 	}
 
 
@@ -231,14 +231,74 @@ public class Pokemon {
 		this.deltaSpeed = deltaSpeed;
 	}
 	
+	public int getBaseHp() {
+		return baseHp;
+	}
+
+
+	public void setBaseHp(int baseHp) {
+		this.baseHp = baseHp;
+	}
+
+
+	public int getBaseAttack() {
+		return baseAttack;
+	}
+
+
+	public void setBaseAttack(int baseAttack) {
+		this.baseAttack = baseAttack;
+	}
+
+
+	public int getBaseDef() {
+		return baseDef;
+	}
+
+
+	public void setBaseDef(int baseDef) {
+		this.baseDef = baseDef;
+	}
+
+
+	public int getBaseSpAtk() {
+		return baseSpAtk;
+	}
+
+
+	public void setBaseSpAtk(int baseSpAtk) {
+		this.baseSpAtk = baseSpAtk;
+	}
+
+
+	public int getBaseSpDef() {
+		return baseSpDef;
+	}
+
+
+	public void setBaseSpDef(int baseSpDef) {
+		this.baseSpDef = baseSpDef;
+	}
+
+
+	public int getBaseSpeed() {
+		return baseSpeed;
+	}
+
+
+	public void setBaseSpeed(int baseSpeed) {
+		this.baseSpeed = baseSpeed;
+	}
+
+
 	public void setLevel (int level) {
 		this.level = level;
-		hp += Math.round((level/50.0)*(this.hp));
-		attack += Math.round((level/50.0)*(this.attack));
-		def += Math.round((level/50.0)*(def));
-		spAtk += Math.round((level/50.0)*(spAtk));
-		spDef += Math.round((level/50.0)*(spDef));
-		speed += Math.round((level/50.0)*(speed));
+		baseHp += Math.round((level/50.0)*(baseHp));
+		baseAttack += Math.round((level/50.0)*(baseAttack));
+		baseDef += Math.round((level/50.0)*(baseDef));
+		baseSpAtk += Math.round((level/50.0)*(baseSpAtk));
+		baseSpDef += Math.round((level/50.0)*(baseSpDef));
+		baseSpeed += Math.round((level/50.0)*(baseSpeed));
 		
 	}
 	

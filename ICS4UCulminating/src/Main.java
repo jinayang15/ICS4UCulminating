@@ -18,7 +18,9 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	// 0 - not in battle
 	// 1 - options
 	// 2 - moves
-	// 3 - attacking/stuff happening
+	// 3 - turn check
+	// 4 - player turn
+	// 5 - enemy turn
 	static int battleState = 0;
 	static Battle battle = null;
 
@@ -87,8 +89,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		}
 		while (true) {
 			// main game loop
-			this.repaint();
 			update();
+			this.repaint();
 			try {
 				Thread.sleep(1000 / FPS);
 			} catch (Exception e) {
@@ -134,6 +136,45 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		} else if (gameState == 3) {
 			currentBG = Images.battleBackground;
 		}
+		if (battleState == 3) {
+			System.out.println("hi");
+			battle.setPlayerCurrentMove(battle.getPlayerMon().getMoves()[attackArrowIdx]);
+			battle.setOtherCurrentMove(battle.opponentChooseAttack());
+			battle.setRoundEnd(false);
+			if (battle.turnCheck()) {
+				battleState = 4;
+			} else {
+				battleState = 5;
+			}
+		} else if (battleState == 4) {
+			battle.checkFaint(battle.getPlayerMon());
+			battle.checkFaint(battle.getOtherMon());
+			if (battle.checkBattle()) {
+				if (!battle.getPlayerSkipTurn() && !battle.isPlayerAttacking()) {
+					 battle.attack(battle.getPlayerCurrentMove(), battle.getPlayerMon(),
+					 battle.getOtherMon());
+					 battle.setPlayerAttacking(true);
+
+//				 if (battle.checkBattle()) {
+//					 battle.setRoundEnd(true);
+//				 }
+				}
+			}
+
+		} else if (battleState == 5) {
+			battle.checkFaint(battle.getPlayerMon());
+			battle.checkFaint(battle.getOtherMon());
+			if (battle.checkBattle()) {
+				if (!battle.getPlayerSkipTurn() && !battle.isOtherAttacking()) {
+					 battle.attack(battle.getOtherCurrentMove(),
+					 battle.getOtherMon(),battle.getPlayerMon());
+					 battle.setOtherAttacking(true);
+				}
+			}
+//			 if (battle.checkBattle()) {
+//				 battle.setRoundEnd(true);
+//			 }
+		}
 	}
 
 	public void paintComponent(Graphics g) {
@@ -153,13 +194,23 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			}
 		}
 		if (gameState == 3) {
-
-			battle = new Battle(player, trainer);
 			baseBattleGraphics(g);
 			displayBattleSprites(g);
 			displayPokemonStats(g);
 			displayStatus(g);
 			if (battleState == 1) {
+				// reset moves after attack round and pause to show attacks
+				if (battle.isPlayerAttacking()) {
+					battle.setPlayerCurrentMove(null);
+					battle.setOtherCurrentMove(null);
+					battle.setPlayerAttacking(false);
+					battle.setOtherAttacking(false);
+					try {
+						Thread.sleep(2000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
 				displayOptionsMenuAndArrow(g);
 				displayText(g, Images.whiteFontIdx, Images.whiteFont,
 						"What will~" + battle.getPlayerMon().getName().toUpperCase() + " do?", 40,
@@ -167,9 +218,71 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			} else if (battleState == 2) {
 				displayAttackMenuAndArrow(g);
 				displayAttacks(g);
+			} else if (battleState == 4) {
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if (battle.getPlayerSkipTurn()) {
+					if (battle.getPlayerMon().getStatus() == 2) {
+						displayText(g, Images.whiteFontIdx, Images.whiteFont,
+								battle.getPlayerMon().getName().toUpperCase() + " is paralyzed.~It is unable to move!",
+								40, 488);
+					} else if (battle.getPlayerMon().getStatus() == 3) {
+						displayText(g, Images.whiteFontIdx, Images.whiteFont,
+								battle.getPlayerMon().getName().toUpperCase() + " is fast asleep.", 40, 488);
+					}
+				} else {
+					if (battle.getPlayerMon().getStatus() == 2) {
+						displayText(g, Images.whiteFontIdx, Images.whiteFont,
+								battle.getPlayerMon().getName().toUpperCase() + " is paralyzed.", 40, 488);
+					}
+					System.out.println("Our attack");
+					displayText(g, Images.whiteFontIdx, Images.whiteFont, battle.getPlayerMon().getName().toUpperCase()
+							+ " used~" + battle.getPlayerCurrentMove().getName().toUpperCase() + "!", 40, 488);
+				}
+				if (!battle.getRoundEnd()) {
+					battleState = 5;
+					battle.setRoundEnd(true);
+				} else {
+					battleState = 1;
+				}
+			} else if (battleState == 5) {
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				if (battle.getOtherSkipTurn()) {
+					if (battle.getOtherMon().getStatus() == 2) {
+						displayText(g, Images.whiteFontIdx, Images.whiteFont,
+								battle.getOtherMon().getName().toUpperCase() + " is paralyzed.~It is unable to move!",
+								40, 488);
+					} else if (battle.getOtherMon().getStatus() == 3) {
+						displayText(g, Images.whiteFontIdx, Images.whiteFont,
+								battle.getOtherMon().getName().toUpperCase() + " is fast asleep.", 40, 488);
+					}
+				} else {
+					if (battle.getOtherMon().getStatus() == 2) {
+						displayText(g, Images.whiteFontIdx, Images.whiteFont,
+								battle.getOtherMon().getName().toUpperCase() + " is paralyzed.", 40, 488);
+					}
+					System.out.println("enemy attack");
+					displayText(g, Images.whiteFontIdx, Images.whiteFont,
+							"Enemy " + battle.getOtherMon().getName().toUpperCase() + " used~"
+									+ battle.getOtherCurrentMove().getName().toUpperCase() + "!",
+							40, 488);
+				}
+				if (!battle.getRoundEnd()) {
+					battleState = 4;
+					battle.setRoundEnd(true);
+				} else {
+					battleState = 1;
+				}
 			}
-//			while (battle.getBattleContinue()) {
-//			}
 			// Sprites and Pop-ups
 //			g.drawImage(Images.battleSprites[Images.battleSpritesIdx
 //					.get(Pokemon.pokeList.get(spriteIdx).getName().toLowerCase())][0], 576, 32, null);
@@ -311,6 +424,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 					}
 				}
 
+			} else if (x == 'e') {
+				battleState = 3;
 			}
 			attackArrowX = attackArrowPositions[attackArrowIdx][0];
 			attackArrowY = attackArrowPositions[attackArrowIdx][1];
@@ -349,6 +464,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			bgY = 0;
 			battleState = 1;
 			trainer = new Trainer();
+			battle = new Battle(player, trainer);
 		} else if (gameState == 3) {
 			battleState++;
 //			spriteIdx++;
@@ -672,18 +788,20 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 
 	public static void displayAttacks(Graphics g) {
 		if (battle.getPlayerMon().getMoves()[0] != null) {
-			displayText(g, Images.moveFontIdx, Images.moveFont, battle.getPlayerMon().getMoves()[0].getName(), 64, 490);
+			displayText(g, Images.moveFontIdx, Images.moveFont,
+					battle.getPlayerMon().getMoves()[0].getName().toUpperCase(), 64, 490);
 		}
 		if (battle.getPlayerMon().getMoves()[1] != null) {
-			displayText(g, Images.moveFontIdx, Images.moveFont, battle.getPlayerMon().getMoves()[1].getName(), 360,
-					490);
+			displayText(g, Images.moveFontIdx, Images.moveFont,
+					battle.getPlayerMon().getMoves()[1].getName().toUpperCase(), 360, 490);
 		}
 		if (battle.getPlayerMon().getMoves()[2] != null) {
-			displayText(g, Images.moveFontIdx, Images.moveFont, battle.getPlayerMon().getMoves()[2].getName(), 64, 554);
+			displayText(g, Images.moveFontIdx, Images.moveFont,
+					battle.getPlayerMon().getMoves()[2].getName().toUpperCase(), 64, 554);
 		}
 		if (battle.getPlayerMon().getMoves()[3] != null) {
-			displayText(g, Images.moveFontIdx, Images.moveFont, battle.getPlayerMon().getMoves()[3].getName(), 360,
-					554);
+			displayText(g, Images.moveFontIdx, Images.moveFont,
+					battle.getPlayerMon().getMoves()[3].getName().toUpperCase(), 360, 554);
 		}
 		displayText(g, Images.moveFontIdx, Images.moveFont,
 				battle.getPlayerMon().getMoves()[attackArrowIdx].getCurrentPP() + "", 790, 496);
