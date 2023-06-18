@@ -561,6 +561,7 @@ public class Battle {
 					// 30% chance to poison the target
 					if (random <= 3) {
 						playerMon.setStatus(1);
+						System.out.println(playerMon.getName() + " was poisoned!");
 						otherAttackEffect = playerMon.getName() + " was poisoned!";
 					}
 				}
