@@ -9,6 +9,9 @@ import java.awt.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+// The Animations class is used to organize the animations! 
+
+
 public class Animations {
 	static int walkIndex = 1;
 	static int walkTickSpeed = 10;

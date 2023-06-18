@@ -37,7 +37,6 @@ What we accomplished:
 	  how much damage will be taken. 
 
 - Battle System
-	- For the most part, we were able to get the battles to work well. 
 	- Turn based system: To determine who goes first, checks were done to see if priority moves
 	  were being used (moves that are usually guarenteed to go first). If this was not the case,
 	  the base speed stat was used, and the Pokemon with the higher speed stat will go first.
@@ -49,8 +48,6 @@ What we accomplished:
 	- Type Effectiveness: Like the actual games, some attacks are super effective against certain 
 	  types while ineffective against others. This is made even more complicated when some Pokemon
 	  have multiple types. We ended up only implementing 8 types, but the effectiveness works!
-	  We got moves to deal "normal" damage (1x), ineffective damage (0.5x), and even supereffective
-	  damage (2x or even 4x!). 
 	- Statuses: This key component can help turn the tides of battle, and we were able to implement 
 	  them. We were able to get Sleep, Paralysis, Poison, and Burn to work (which is what we proposed). 
 	  These statuses have the same effects as the actual games. For example, a paralyzed Pokemon will
@@ -60,7 +57,6 @@ What we accomplished:
 	  gives the opponent a free turn, and we were able to achieve this. Whenever the player decides to 
 	  switch Pokemon, the other Pokemon will get a free hit onto the Pokemon that the player switched into. 
 
-
 What we could not do:
 - Items. It would have required more time, and the battle system as a whole was already extremely difficult.
   Adding items to work and curing statuses, healing HP, and more would have taken MUCH more time. 
@@ -68,6 +64,7 @@ What we could not do:
 - Bag function. Since we had no items, there was also no need for a bag. This also means that in the battle 
   screen, you will not be able to interact with the bag option 
 - Evolution. Unfortunately, because of how intensive graphics and battling was, we had no time to implement evolving.
+- No level up. Again, not enough time. 
 
 BUGS:
 - Collision in the town. If you walk up or down RIGHT beside a wall, it will look like you are running into nothing.
@@ -82,4 +79,3 @@ BUGS:
   NullPointerException may be thrown, but THE GAME IS OKAY. 
 - Badly Poisoned does not work
 - Sometimes bugs and battle does not work properly. For example, sometimes when you win, it crashes. 
-- After a battle, that is it LOL. 

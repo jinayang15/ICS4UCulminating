@@ -1,5 +1,8 @@
 import java.awt.Rectangle;
 
+// The Wall class is used to determine if the player is running against a wall. 
+// In other words, used for collision detection!
+
 public class Wall extends Rectangle {
 	boolean blockedUp = false;
 	boolean blockedDown = false;

@@ -60,6 +60,8 @@ public class PokeType {
 
 	// Getter that will return the value of the effectiveness (will be multiplied to
 	// the attack damage)
+	// It takes in the parameters of the attacktype and defensetype in integers
+	// Returns the damage multiplier 
 	public static double getTypeEffectiveness(int attackType, int defendType) throws IOException {
 		double damage = typeChart[attackType][defendType];
 		if (damage<1) { 

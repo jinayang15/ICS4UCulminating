@@ -1,4 +1,6 @@
 
+// Class for testing the battle stuff. DO NOT RUN THIS. 
+
 import java.io.*;
 
 public class RayTesting {

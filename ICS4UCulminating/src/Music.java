@@ -7,6 +7,7 @@ import javax.sound.sampled.*;
 public class Music {
 	public static Clip opening, lab, pewter, gym, pokeCenter, heal;
 	
+	// Initializing all of the music and importing it all
 	public static void initializeMusic() {
 		AudioInputStream sound;
 		FloatControl volume; // Used to control the volume of the music!

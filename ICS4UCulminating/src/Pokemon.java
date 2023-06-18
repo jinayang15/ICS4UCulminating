@@ -3,6 +3,8 @@ import java.util.*;
 
 // Class Pokemon
 // All Pokemon will inherit this class
+// Contains their stats and their moves. 
+
 public class Pokemon {
 	// ArrayList of Pokemon (could be temporary)
 	public static ArrayList<Pokemon> pokeList = new ArrayList<>();
@@ -39,8 +41,7 @@ public class Pokemon {
 	// Sleep - 3
 	// Burn - 4
 
-	// Overloaded constructors, which initializes the base stats and adds the moves
-	// to an array of moves.
+	// Constructor
 	public Pokemon(String name, PokeType type1, int hp, int attack, int def, int spAtk, int spDef, int speed,
 			ArrayList<Move> moveSet) {
 		if (!name.equals("peepeepoopoo")) {
@@ -61,7 +62,8 @@ public class Pokemon {
 			this.sprites = Images.battleSprites[Images.battleSpritesIdx.get(name.toLowerCase())];
 		}
 	}
-
+	// Overloaded constructors, which initializes the base stats and adds the moves
+	// to an array of moves.
 	public Pokemon(String name, PokeType type1, PokeType type2, int hp, int attack, int def, int spAtk, int spDef,
 			int speed, ArrayList<Move> moveSet) {
 		this.name = name;
@@ -106,7 +108,7 @@ public class Pokemon {
 		return this.name;
 	}
 
-	// Getters
+	// Getters and Setters
 
 	public int getLevel() {
 		return level;

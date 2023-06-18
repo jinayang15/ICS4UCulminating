@@ -2,7 +2,8 @@ import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.BufferedImage;
-// The Player class is used to store the user's Pokemon, items, and money.
+// The Player class is used to store the user's Pokemon, as well as the user's coordiantes and
+// everything else responsible for its graphical components. 
 // It will be also used in battle to determine what the user will do, such as attack, switch pokemon,
 // or use items. 
 
@@ -25,6 +26,7 @@ public class Player {
 	private static int wins = 0;
 	private static int losses = 0;
 	
+	// Constructor to determine what type of Gym Leader the player will be
 	public Player (String type) {
 		playerX = 512 - playerWidth;
 		playerY = 384 - playerHeight;

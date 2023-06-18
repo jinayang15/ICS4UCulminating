@@ -3,6 +3,7 @@ import java.util.*;
 
 // Class Move 
 // All Pokemon Moves will inherit this class
+// It is used to get the name, accuracy, attack power, etc. 
 public class Move {
 	public static ArrayList<Move> allMoves = new ArrayList<>();
 	public static ArrayList<Move>[] moveSets = new ArrayList[59];
@@ -15,6 +16,7 @@ public class Move {
 	private double accuracy;
 	private String effect;
 
+	// Constructor 
 	public Move(String name, PokeType type, String category, int pp, int atkPower, double accuracy, String effect) {
 		this.name = name;
 		this.type = type;

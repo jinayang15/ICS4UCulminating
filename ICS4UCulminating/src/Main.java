@@ -8,6 +8,14 @@ import java.util.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 
+// Jina Yang, Ray Guan
+// June 18th, 2023
+// This is our ISU, our own version of Pokemon. More information (what we did, bugs, etc) can be found in the README document. 
+
+
+// The Main class is used to coordinate everything!
+
+
 @SuppressWarnings("serial") // funky warning, just suppress it. It's not gonna do anything.
 public class Main extends JPanel implements Runnable, KeyListener, MouseListener {
 	// 0 - start menu
@@ -103,6 +111,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	}
 
 	@Override
+	// Threading
 	public void run() {
 		try {
 			initialize();
@@ -142,6 +151,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		// update stuff
 		Music.playMusic();
 		
+		// Getting the different screens according to the game state
 		if (gameState == 0) {
 			currentBG = Images.fireRedPressStart;
 		} else if (gameState == 1) {
@@ -176,7 +186,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		else if (gameState==12) {
 			currentBG = Images.start2;
 		}
-		// IM CURRENTLY TRYNA GET POKEMON CENTER TO WORK 
+		// Pokemon center
 		else if (gameState==13) {
 			currentBG = Images.pokemonCenter;
 			Animations.walk();
@@ -189,6 +199,9 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		else if (gameState==15) {
 			currentBG = Images.winScreen;
 		}
+		
+		// Battle states: For battle 
+		
 		if (battleState == 3) {
 			// moves intended to happen
 			battle.applyStatus();
@@ -260,10 +273,12 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		}
 	}
 
+	// Paint component
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.drawImage(currentBG, bgX, bgY, null);
 		
+		// Drawing based on the game state
 		if (gameState==13) {
 			g.drawImage(Player.getCurrentPlayerImage(), Player.getPlayerX(), Player.getPlayerY(), null);
 			g.drawRect(Player.hitbox.x, Player.hitbox.y, Player.hitbox.width, Player.hitbox.height);
@@ -282,6 +297,10 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			}
 		}
 		if (gameState == 3) {
+			
+			// BATTLE GRAPHICS
+			// This includes all the HP bars, the status effects, Pokemon sprites, etc. 
+			
 			if (battleState < 8) {
 				baseBattleGraphics(g);
 				displayBattleSprites(g);
@@ -602,26 +621,27 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	public void keyPressed(KeyEvent e) {
 		char x = e.getKeyChar();
 		
-		if (x=='p') {
-			Player.updateLosses();
-			Player.updateLosses();
-			Player.updateLosses();
-			Player.updateLosses();
-			Player.updateLosses();
-			Player.updateLosses();
-			Player.updateLosses();
-			Player.updateLosses();
-			if (Player.getLosses()==8) {
-				bgX = 0;
-				bgY = 0;
-				gameState = 14;
-			}
-		}
-		if (x=='o') {
-			bgX = 0;
-			bgY = 0;
-			gameState = 15;
-		}
+		// Was testing the final ending and winning screens. 
+//		if (x=='p') {
+//			Player.updateLosses();
+//			Player.updateLosses();
+//			Player.updateLosses();
+//			Player.updateLosses();
+//			Player.updateLosses();
+//			Player.updateLosses();
+//			Player.updateLosses();
+//			Player.updateLosses();
+//			if (Player.getLosses()==8) {
+//				bgX = 0;
+//				bgY = 0;
+//				gameState = 14;
+//			}
+//		}
+//		if (x=='o') {
+//			bgX = 0;
+//			bgY = 0;
+//			gameState = 15;
+//		}
 		
 		// Shuffling through the intro and menu screens
 		
@@ -670,6 +690,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			}
 			
 		}
+		// Starting a battle by interacting with the gym 
 		else if (gameState==2 && x=='e') {
 			if (bgY==-772 && bgX>=-544 && bgX<=-500) {
 				gameState++;
@@ -745,6 +766,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 //			}
 //			System.out.println(checkTile());
 			}
+		
+		// BATTLE INTERACTIONS (selecting your attack, moving the selection arrow, etc) 
 		 else if (gameState == 3 && battleState == 1) {
 			if (x == 'w') {
 				if (optionsArrowIdx == 2 || optionsArrowIdx == 3) {

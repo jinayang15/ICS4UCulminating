@@ -9,8 +9,13 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.awt.image.AffineTransformOp;
 
+// The Image class is used to import all of the images that we need. 
+// This includes the backgrounds, Pokemon, fonts, and more!
+
 public class Images {
 
+	// ALL THE IMAGE VARIABLES 
+	
 	public static BufferedImage[] pewterCity = new BufferedImage[4];
 	public static BufferedImage[] trainerDown = new BufferedImage[3];
 	public static BufferedImage[] trainerUp = new BufferedImage[3];
@@ -42,6 +47,8 @@ public class Images {
 	public static BufferedImage loseScreen;
 	public static BufferedImage pkmnMenuBG;
 
+	
+	// This method is called in the Main to import all of the images
 	public static void importAllImages() throws IOException {
 		importMisc();
 		importPewterCity();
@@ -56,6 +63,11 @@ public class Images {
 		importPokemonMenu();
 	}
 
+	// All of these next methods are used to import the images.
+	// All pretty self explanatory 
+	// All of them take in no parameters
+	// All of them return nothing
+	
 	public static void importMisc() throws IOException {
 		fireRedPressStart = ImageIO.read(new File("FireRedPressStart2.png"));
 		fireRedPressStart = resizeImage(fireRedPressStart, 960, 640);

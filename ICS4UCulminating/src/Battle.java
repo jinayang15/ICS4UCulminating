@@ -1,8 +1,7 @@
-// The battle class is used for BATTLES
 
-// LOGIC BEHIND BATTLES:
-// We cannot simply choose who goes first based on speed, because there are some moves that have priority - more specifically, quick attack,
-// which ALWAYS goes first. As a result, we will first get what the user wants to do, then get what the computer wants, and THEN apply it. 
+
+// This class is used to implement and manage battles. It will determine who goes first, what attack is used,
+// how much damage is done, etc. It will also coordinate part of the graphical portion of battles. 
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -85,7 +84,6 @@ public class Battle {
 		otherMon = other.getPokemonList()[0];
 
 		updateStats();
-//		battleStart();
 	}
 
 	// Overloaded constructor for switching in Pokemon
@@ -99,7 +97,6 @@ public class Battle {
 		playerMon = player.getPokemonList()[index];
 
 		System.out.println("NEW POKEMON HP: " + playerMon.getCurrentHp());
-//		battleStart();
 	}
 
 	// Overloaded constructor for switching the enemy Pokemon
@@ -111,19 +108,18 @@ public class Battle {
 //		battleStart();
 	}
 
-	// BATTLE START
-	public void battleStart() {
-		while (battleContinue) {
-			coordinateBattle();
-		}
-	}
+//	// BATTLE START
+//	public void battleStart() {
+//		while (battleContinue) {
+//			coordinateBattle();
+//		}
+//	}
 
 	// The trainerChooseAttack method is used to determine what attack the user
 	// chooses
 	// It takes in no parameter
 	// It returns nothing
 	public Move trainerChooseAttack() {
-		// WHAT THE USER CHOOSES BASED ON THE GRAPHICS THINGY
 		int index = 0;
 		int tempCount = 0;
 		Scanner s = new Scanner(System.in);
@@ -213,10 +209,12 @@ public class Battle {
 				battleContinue = false;
 				return;
 			}
-			turnCheck2(trainerMove, otherMove);
+//			turnCheck2(trainerMove, otherMove);
 		}
 	}
 
+	// The turnCheck method is used to see whos turn it is
+	// It takes in no parameters
 	// Returns true for player turn
 	// Returns false for other turn
 	public boolean turnCheck() {
@@ -244,209 +242,211 @@ public class Battle {
 			return false;
 		}
 	}
+	
 
-	public void turnCheck2(Move trainerMove, Move otherMove) {
-		// If both Pokemon choose to use quick attack, which is a priority move, then
-		// the one with the higher speed stat will go first
-		if (!battleContinue) return;
-		if (trainerMove.getName().equals("Quick Attack") && otherMove.getName().equals("Quick Attack")) {
-			if (playerMon.getCurrentSpeed() >= otherMon.getCurrentSpeed()) {
-				if (!playerSkipTurn) {
-					// Checking stats to ensure that fainted Pokemon cannot go
-					attack(trainerMove, playerMon, otherMon);
-					if (!battleContinue)
-						return;
-					else if (otherMon.getCurrentHp() <= 0) {
-						checkBattle();
-						return;
-					}
-				} else {
-					if (playerMon.getStatus() == 2) {
-						System.out.println(playerMon.getName() + " was fully paralyzed!");
-					} else if (playerMon.getStatus() == 3) {
-						System.out.println(playerMon.getName() + " is asleep!");
-					}
-				}
-				if (!otherSkipTurn) {
-					attack(otherMove, otherMon, playerMon);
-					if (!battleContinue)
-						return;
-					else if (playerMon.getCurrentHp() <= 0) {
-						chooseNewPokemon();
-					}
-				} else {
-					if (otherMon.getStatus() == 2) {
-						System.out.println(otherMon.getName() + " was fully paralyzed!");
-					} else if (otherMon.getStatus() == 3) {
-						System.out.println(otherMon.getName() + " is asleep!");
-					} else if (otherMon.getStatus() == 0) {
-						if (!battleContinue) {
-							return;
-						}
-					}
-				}
-			} else {
-				if (!otherSkipTurn) {
-					attack(otherMove, otherMon, playerMon);
-					if (!battleContinue)
-						return;
-					else if (playerMon.getCurrentHp() <= 0) {
-						chooseNewPokemon();
-					}
-				} else {
-					if (otherMon.getStatus() == 2) {
-						System.out.println(otherMon.getName() + " was fully paralyzed!");
-					} else if (otherMon.getStatus() == 3) {
-						System.out.println(otherMon.getName() + " is asleep!");
-					}
-				}
-				if (!playerSkipTurn) {
-					attack(trainerMove, playerMon, otherMon);
-					if (!battleContinue)
-						return;
-					else if (otherMon.getCurrentHp() <= 0) {
-						checkBattle();
-						return;
-					}
-				} else {
-					if (playerMon.getStatus() == 2) {
-						System.out.println(playerMon.getName() + " was fully paralyzed!");
-					} else if (playerMon.getStatus() == 3) {
-						System.out.println(playerMon.getName() + " is asleep!");
-					}
-				}
-			}
-		}
-		// If only the user chooses quick attack, they are guaranteed to go first
-		else if (trainerMove.getName().equals("Quick Attack")) {
-			if (!playerSkipTurn) {
-				attack(trainerMove, playerMon, otherMon);
-				if (!battleContinue)
-					return;
-				else if (otherMon.getCurrentHp() <= 0) {
-					checkBattle();
-					return;
-				}
-			} else {
-				if (playerMon.getStatus() == 2) {
-					System.out.println(playerMon.getName() + " was fully paralyzed!");
-				} else if (playerMon.getStatus() == 3) {
-					System.out.println(playerMon.getName() + " is asleep!");
-				}
-			}
-			if (!otherSkipTurn) {
-				attack(otherMove, otherMon, playerMon);
-				if (!battleContinue)
-					return;
-				else if (playerMon.getCurrentHp() <= 0) {
-					chooseNewPokemon();
-				}
-			} else {
-				if (otherMon.getStatus() == 2) {
-					System.out.println(otherMon.getName() + " was fully paralyzed!");
-				} else if (otherMon.getStatus() == 3) {
-					System.out.println(otherMon.getName() + " is asleep!");
-				}
-			}
-		}
-		// If the only the opponent uses quick attack, they are guaranteed to go first
-		else if (otherMove.getName().equals("Quick Attack")) {
-			if (!otherSkipTurn) {
-				attack(otherMove, otherMon, playerMon);
-				if (!battleContinue)
-					return;
-				else if (playerMon.getCurrentHp() <= 0) {
-					chooseNewPokemon();
-				}
-			} else {
-				if (otherMon.getStatus() == 2) {
-					System.out.println(otherMon.getName() + " was fully paralyzed!");
-				} else if (otherMon.getStatus() == 3) {
-					System.out.println(otherMon.getName() + " is asleep!");
-				}
-			}
-			if (!playerSkipTurn) {
-				attack(trainerMove, playerMon, otherMon);
-				if (!battleContinue)
-					return;
-				else if (otherMon.getCurrentHp() <= 0) {
-					checkBattle();
-					return;
-				}
-			} else {
-				if (playerMon.getStatus() == 2) {
-					System.out.println(playerMon.getName() + " was fully paralyzed!");
-				} else if (playerMon.getStatus() == 3) {
-					System.out.println(playerMon.getName() + " is asleep!");
-				}
-			}
-		} else {
-			if (playerMon.getCurrentSpeed() >= otherMon.getCurrentSpeed()) {
-				if (!playerSkipTurn) {
-					attack(trainerMove, playerMon, otherMon);
-					if (!battleContinue)
-						return;
-					else if (otherMon.getCurrentHp() <= 0) {
-						checkBattle();
-						return;
-					}
-				} else {
-					if (playerMon.getStatus() == 2) {
-						System.out.println(playerMon.getName() + " was fully paralyzed!");
-					} else if (playerMon.getStatus() == 3) {
-						System.out.println(playerMon.getName() + " is asleep!");
-					}
-				}
-				if (!otherSkipTurn) {
-					attack(otherMove, otherMon, playerMon);
-					if (!battleContinue)
-						return;
-					else if (playerMon.getCurrentHp() <= 0) {
-						chooseNewPokemon();
-					}
-				} else {
-					if (otherMon.getStatus() == 2) {
-						System.out.println(otherMon.getName() + " was fully paralyzed!");
-					} else if (otherMon.getStatus() == 3) {
-						System.out.println(otherMon.getName() + " is asleep!");
-					}
-				}
-			} else {
-				if (!otherSkipTurn) {
-					attack(otherMove, otherMon, playerMon);
-					if (!battleContinue)
-						return;
-					else if (playerMon.getCurrentHp() <= 0) {
-						chooseNewPokemon();
-					}
-				} else {
-					if (otherMon.getStatus() == 2) {
-						System.out.println(otherMon.getName() + " was fully paralyzed!");
-					} else if (otherMon.getStatus() == 3) {
-						System.out.println(otherMon.getName() + " is asleep!");
-					}
-				}
-				if (!playerSkipTurn) {
-					attack(trainerMove, playerMon, otherMon);
-					if (!battleContinue)
-						return;
-					else if (otherMon.getCurrentHp() <= 0) {
-						checkBattle();
-						return;
-					}
-				} else {
-					if (playerMon.getStatus() == 2) {
-						System.out.println(playerMon.getName() + " was fully paralyzed!");
-					} else if (playerMon.getStatus() == 3) {
-						System.out.println(playerMon.getName() + " is asleep!");
-					}
-				}
-			}
-		}
-	}
+//	public void turnCheck2(Move trainerMove, Move otherMove) {
+//		// If both Pokemon choose to use quick attack, which is a priority move, then
+//		// the one with the higher speed stat will go first
+//		if (trainerMove.getName().equals("Quick Attack") && otherMove.getName().equals("Quick Attack")) {
+//			if (playerMon.getCurrentSpeed() >= otherMon.getCurrentSpeed()) {
+//				if (!playerSkipTurn) {
+//					// Checking stats to ensure that fainted Pokemon cannot go
+//					attack(trainerMove, playerMon, otherMon);
+//					if (!battleContinue)
+//						return;
+//					else if (otherMon.getCurrentHp() <= 0) {
+//						checkBattle();
+//						return;
+//					}
+//				} else {
+//					if (playerMon.getStatus() == 2) {
+//						System.out.println(playerMon.getName() + " was fully paralyzed!");
+//					} else if (playerMon.getStatus() == 3) {
+//						System.out.println(playerMon.getName() + " is asleep!");
+//					}
+//				}
+//				if (!otherSkipTurn) {
+//					attack(otherMove, otherMon, playerMon);
+//					if (!battleContinue)
+//						return;
+//					else if (playerMon.getCurrentHp() <= 0) {
+//						chooseNewPokemon();
+//					}
+//				} else {
+//					if (otherMon.getStatus() == 2) {
+//						System.out.println(otherMon.getName() + " was fully paralyzed!");
+//					} else if (otherMon.getStatus() == 3) {
+//						System.out.println(otherMon.getName() + " is asleep!");
+//					} else if (otherMon.getStatus() == 0) {
+//						if (!battleContinue) {
+//							return;
+//						}
+//					}
+//				}
+//			} else {
+//				if (!otherSkipTurn) {
+//					attack(otherMove, otherMon, playerMon);
+//					if (!battleContinue)
+//						return;
+//					else if (playerMon.getCurrentHp() <= 0) {
+//						chooseNewPokemon();
+//					}
+//				} else {
+//					if (otherMon.getStatus() == 2) {
+//						System.out.println(otherMon.getName() + " was fully paralyzed!");
+//					} else if (otherMon.getStatus() == 3) {
+//						System.out.println(otherMon.getName() + " is asleep!");
+//					}
+//				}
+//				if (!playerSkipTurn) {
+//					attack(trainerMove, playerMon, otherMon);
+//					if (!battleContinue)
+//						return;
+//					else if (otherMon.getCurrentHp() <= 0) {
+//						checkBattle();
+//						return;
+//					}
+//				} else {
+//					if (playerMon.getStatus() == 2) {
+//						System.out.println(playerMon.getName() + " was fully paralyzed!");
+//					} else if (playerMon.getStatus() == 3) {
+//						System.out.println(playerMon.getName() + " is asleep!");
+//					}
+//				}
+//			}
+//		}
+//		// If only the user chooses quick attack, they are guaranteed to go first
+//		else if (trainerMove.getName().equals("Quick Attack")) {
+//			if (!playerSkipTurn) {
+//				attack(trainerMove, playerMon, otherMon);
+//				if (!battleContinue)
+//					return;
+//				else if (otherMon.getCurrentHp() <= 0) {
+//					checkBattle();
+//					return;
+//				}
+//			} else {
+//				if (playerMon.getStatus() == 2) {
+//					System.out.println(playerMon.getName() + " was fully paralyzed!");
+//				} else if (playerMon.getStatus() == 3) {
+//					System.out.println(playerMon.getName() + " is asleep!");
+//				}
+//			}
+//			if (!otherSkipTurn) {
+//				attack(otherMove, otherMon, playerMon);
+//				if (!battleContinue)
+//					return;
+//				else if (playerMon.getCurrentHp() <= 0) {
+//					chooseNewPokemon();
+//				}
+//			} else {
+//				if (otherMon.getStatus() == 2) {
+//					System.out.println(otherMon.getName() + " was fully paralyzed!");
+//				} else if (otherMon.getStatus() == 3) {
+//					System.out.println(otherMon.getName() + " is asleep!");
+//				}
+//			}
+//		}
+//		// If the only the opponent uses quick attack, they are guaranteed to go first
+//		else if (otherMove.getName().equals("Quick Attack")) {
+//			if (!otherSkipTurn) {
+//				attack(otherMove, otherMon, playerMon);
+//				if (!battleContinue)
+//					return;
+//				else if (playerMon.getCurrentHp() <= 0) {
+//					chooseNewPokemon();
+//				}
+//			} else {
+//				if (otherMon.getStatus() == 2) {
+//					System.out.println(otherMon.getName() + " was fully paralyzed!");
+//				} else if (otherMon.getStatus() == 3) {
+//					System.out.println(otherMon.getName() + " is asleep!");
+//				}
+//			}
+//			if (!playerSkipTurn) {
+//				attack(trainerMove, playerMon, otherMon);
+//				if (!battleContinue)
+//					return;
+//				else if (otherMon.getCurrentHp() <= 0) {
+//					checkBattle();
+//					return;
+//				}
+//			} else {
+//				if (playerMon.getStatus() == 2) {
+//					System.out.println(playerMon.getName() + " was fully paralyzed!");
+//				} else if (playerMon.getStatus() == 3) {
+//					System.out.println(playerMon.getName() + " is asleep!");
+//				}
+//			}
+//		} else {
+//			if (playerMon.getCurrentSpeed() >= otherMon.getCurrentSpeed()) {
+//				if (!playerSkipTurn) {
+//					attack(trainerMove, playerMon, otherMon);
+//					if (!battleContinue)
+//						return;
+//					else if (otherMon.getCurrentHp() <= 0) {
+//						checkBattle();
+//						return;
+//					}
+//				} else {
+//					if (playerMon.getStatus() == 2) {
+//						System.out.println(playerMon.getName() + " was fully paralyzed!");
+//					} else if (playerMon.getStatus() == 3) {
+//						System.out.println(playerMon.getName() + " is asleep!");
+//					}
+//				}
+//				if (!otherSkipTurn) {
+//					attack(otherMove, otherMon, playerMon);
+//					if (!battleContinue)
+//						return;
+//					else if (playerMon.getCurrentHp() <= 0) {
+//						chooseNewPokemon();
+//					}
+//				} else {
+//					if (otherMon.getStatus() == 2) {
+//						System.out.println(otherMon.getName() + " was fully paralyzed!");
+//					} else if (otherMon.getStatus() == 3) {
+//						System.out.println(otherMon.getName() + " is asleep!");
+//					}
+//				}
+//			} else {
+//				if (!otherSkipTurn) {
+//					attack(otherMove, otherMon, playerMon);
+//					if (!battleContinue)
+//						return;
+//					else if (playerMon.getCurrentHp() <= 0) {
+//						chooseNewPokemon();
+//					}
+//				} else {
+//					if (otherMon.getStatus() == 2) {
+//						System.out.println(otherMon.getName() + " was fully paralyzed!");
+//					} else if (otherMon.getStatus() == 3) {
+//						System.out.println(otherMon.getName() + " is asleep!");
+//					}
+//				}
+//				if (!playerSkipTurn) {
+//					attack(trainerMove, playerMon, otherMon);
+//					if (!battleContinue)
+//						return;
+//					else if (otherMon.getCurrentHp() <= 0) {
+//						checkBattle();
+//						return;
+//					}
+//				} else {
+//					if (playerMon.getStatus() == 2) {
+//						System.out.println(playerMon.getName() + " was fully paralyzed!");
+//					} else if (playerMon.getStatus() == 3) {
+//						System.out.println(playerMon.getName() + " is asleep!");
+//					}
+//				}
+//			}
+//		}
+//	}
 
 		
 	// The attack method is used to determine the attacks of both the player and opponent 
+	// It takes in the parameter of the attacking move, the attacking Pokemon, and the defending Pokemon
+	// It returns nothing. 
 	 public void attack (Move attack, Pokemon attackMon, Pokemon defendMon) {
 		boolean keepGoing = true;
 		double stab = 1; // STAB stands for 'Same Type Attack Bonus'. If the Pokemon attacks with a move that has the same type as itself, it gets this bonus
@@ -1066,7 +1066,6 @@ public class Battle {
 	// It takes in no parameters
 	// It returns nothing
 	public void updateStats() {
-
 		// checkBattle();
 	}
 
@@ -1154,9 +1153,9 @@ public class Battle {
 		otherMon.setDeltaSpDef(0);
 		otherMon.setDeltaSpeed(0);
 		
-		Main.bgX = Main.saveBGX;
-		Main.bgY = Main.saveBGY;
-		Main.gameState = 2;
+//		Main.bgX = Main.saveBGX;
+//		Main.bgY = Main.saveBGY;
+//		Main.gameState = 2;
 	}
 	
 	// The applyAttackChecker method is used to see which Pokemon is attacking - either the player or the opponent
