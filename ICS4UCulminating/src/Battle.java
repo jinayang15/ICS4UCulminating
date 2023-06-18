@@ -27,16 +27,18 @@ public class Battle {
 
 	private boolean playerAttacking = false;
 	private Move playerCurrentMove = null;
-	private boolean playerSkipTurn = false; // Boolean to determine if the trainers turn is skipped
+	private boolean playerSkipTurn = false;// Boolean to determine if the trainers turn is skipped
+	private boolean playerAttacked = false;
 	private boolean playerMiss = false;
 	private String playerAttackEffect = null;
 
 	private boolean otherAttacking = false;
 	private Move otherCurrentMove = null;
 	private boolean otherSkipTurn = false; // Same as last one, except its for opponent
-	private boolean otherMiss = false; 
+	private boolean otherAttacked = false;
+	private boolean otherMiss = false;
 	private String otherAttackEffect = null;
-	
+
 	private String currentEffect; // current effect text
 	private boolean displayingEffect = false; // currently displaying effect
 	private boolean displayedBeforePlayerEffect = false; // previously displayed effect
@@ -190,8 +192,7 @@ public class Battle {
 //			double stab = calculateStab(otherMon, otherMove);
 //			attack(otherMove, otherMon, playerMon);
 //			updateStats();
-		}
-		else {
+		} else {
 			System.out.println("\nYOU\t" + playerMon.getName() + " HP: " + playerMon.getCurrentHp() + "\t Level: "
 					+ playerMon.getLevel());
 			System.out.println("--------------------");
@@ -443,6 +444,7 @@ public class Battle {
 			}
 		}
 	}
+
 	public void attack(Move attack, Pokemon attackMon, Pokemon defendMon) {
 		boolean keepGoing = true;
 		// PP Counter!!
@@ -478,7 +480,7 @@ public class Battle {
 						int afterAttack = playerMon.getDeltaHp();
 						otherMon.setDeltaHp(
 								otherMon.getDeltaHp() + (int) Math.round((afterAttack - beforeAttack) * 0.25));
-						otherAttackEffect =  otherMon.getName() + " is damaged by recoil!";
+						otherAttackEffect = otherMon.getName() + " is damaged by recoil!";
 						System.out.println("\n" + otherMon.getName() + " is damaged by recoil!");
 					}
 
@@ -610,7 +612,8 @@ public class Battle {
 							random = (int) (Math.random() * (10)) + 1;
 							if (random == 1) {
 								otherMon.setStatus(4);
-								System.out.println("The opposing " + otherMon.getName() + " was burned!");
+								System.out.println(otherMon.getName() + " was burned!");
+								playerAttackEffect = otherMon.getName() + " was burned!";
 							}
 						}
 					}
@@ -626,6 +629,7 @@ public class Battle {
 							if (random == 1) {
 								playerMon.setStatus(4);
 								System.out.println(playerMon.getName() + " was burned!");
+								otherAttackEffect = playerMon.getName() + " was burned!";
 							}
 						}
 					}
@@ -651,7 +655,7 @@ public class Battle {
 							playerMonSpeedCount--;
 							playerMon.setDeltaSpeed(
 									playerMon.getDeltaSpeed() + (int) Math.floor(playerMon.getBaseSpeed() / 6));
-							otherAttackEffect = otherMon.getName() + "'s speed fell!";
+							otherAttackEffect = playerMon.getName() + "'s speed fell!";
 							System.out.println("\n" + playerMon.getName() + "'s speed fell!");
 						}
 					}
@@ -671,10 +675,12 @@ public class Battle {
 						int afterAttack = otherMon.getDeltaHp();
 						playerMon.setDeltaHp(playerMon.getDeltaHp() - (int) (0.5 * (afterAttack - beforeAttack)));
 						System.out.println("\n" + playerMon.getName() + " recovered some HP!");
+						playerAttackEffect = playerMon.getName() + " recovered some HP!";
 					} else {
 						int afterAttack = playerMon.getDeltaHp();
 						otherMon.setDeltaHp(otherMon.getDeltaHp() - (int) (0.5 * (afterAttack - beforeAttack)));
 						System.out.println("\n" + otherMon.getName() + " recovered some HP!");
+						otherAttackEffect = otherMon.getName() + " recovered some HP!";
 					}
 				}
 				hit = false;
@@ -689,6 +695,7 @@ public class Battle {
 							otherMon.setDeltaSpeed(
 									otherMon.getDeltaSpeed() + (int) Math.floor(otherMon.getBaseSpeed() / 6));
 							System.out.println("\n" + otherMon.getName() + "'s speed fell!");
+							playerAttackEffect = otherMon.getName() + "'s speed fell!";
 						}
 					} else {
 						if (playerMonSpeedCount > -6) {
@@ -696,6 +703,7 @@ public class Battle {
 							playerMon.setDeltaSpeed(
 									playerMon.getDeltaSpeed() + (int) Math.floor(playerMon.getBaseSpeed() / 6));
 							System.out.println("\n" + playerMon.getName() + "'s speed fell!");
+							otherAttackEffect = playerMon.getName() + "'s speed fell!";
 						}
 					}
 				}
@@ -719,6 +727,7 @@ public class Battle {
 						if (playerMon.getStatus() == 0 && random == 1) {
 							playerMon.setStatus(2);
 							System.out.println(playerMon.getName() + " was paralyzed!");
+							otherAttackEffect = playerMon.getName() + " was paralyzed!";
 						}
 					}
 				}
@@ -736,6 +745,7 @@ public class Battle {
 						if (random <= 3) {
 							playerMon.setStatus(1);
 							System.out.println(playerMon.getName() + " was poisoned!");
+							otherAttackEffect = playerMon.getName() + " was poisoned!";
 						}
 					}
 				}
@@ -760,6 +770,7 @@ public class Battle {
 			if (attack.getName().equals("Swords Dance")) {
 				System.out.println(attackMon.getName() + " used Swords Dance!");
 				System.out.println(attackMon.getName() + "'s attack rose sharply!");
+				otherAttackEffect = attackMon.getName() + "'s attack rose sharply!";
 				if (attackMon.equals(playerMon)) {
 					if (playerMonAtkCount == 5) {
 						playerMonAtkCount++;
@@ -785,6 +796,7 @@ public class Battle {
 			} else if (attack.getName().equals("Tail Whip") || attack.getName().equals("Leer")) {
 				applyAttackChecker(attackMon, attack, stab);
 				if (hit) {
+					otherAttackEffect = defendMon.getName() + "'s defense fell!";
 					System.out.println(defendMon.getName() + "'s defense fell!");
 					if (attackMon.equals(playerMon)) {
 						if (otherMonDefCount > -6) {
@@ -804,6 +816,7 @@ public class Battle {
 			} else if (attack.getName().equals("Growl")) {
 				applyAttackChecker(attackMon, attack, stab);
 				if (hit) {
+					otherAttackEffect = defendMon.getName() + "'s attack fell!";
 					System.out.println(defendMon.getName() + "'s attack fell!");
 					if (attackMon.equals(playerMon)) {
 						if (otherMonAtkCount > -6) {
@@ -822,6 +835,7 @@ public class Battle {
 				}
 				hit = false;
 			} else if (attack.getName().equals("Growth")) {
+				otherAttackEffect = attackMon.getName() + "'s special attack rose!";
 				System.out.println(attackMon.getName() + "'s special attack rose!");
 				if (attackMon.equals(playerMon)) {
 					if (playerMonSpAtkCount < 6) {
@@ -842,6 +856,7 @@ public class Battle {
 				if (hit) {
 					if (attackMon.equals(playerMon)) {
 						if (otherMon.getStatus() != 0) {
+							playerAttackEffect = "It had no effect!";
 							System.out.println("It had no effect!");
 						} else {
 							for (int i = 0; i < otherMon.getTypeList().size(); i++) {
@@ -850,13 +865,16 @@ public class Battle {
 							}
 							if (keepGoing) {
 								otherMon.setStatus(1);
+								playerAttackEffect = "The opposing " + otherMon.getName() + " was poisoned!";
 								System.out.println("The opposing " + otherMon.getName() + " was poisoned!");
 							} else {
+								playerAttackEffect = "It had no effect!";
 								System.out.println("It had no effect!");
 							}
 						}
 					} else {
 						if (playerMon.getStatus() != 0) {
+							otherAttackEffect = "It had no effect!";
 							System.out.println("It had no effect!");
 						}
 						for (int i = 0; i < playerMon.getTypeList().size(); i++) {
@@ -866,8 +884,10 @@ public class Battle {
 						if (keepGoing) {
 							playerMon.setStatus(1);
 							System.out.println(playerMon.getName() + " was poisoned!");
+							otherAttackEffect = playerMon.getName() + " was poisoned!";
 						} else {
 							System.out.println("It had no effect!");
+							otherAttackEffect = "It had no effect!";
 						}
 					}
 				}
@@ -879,6 +899,7 @@ public class Battle {
 					if (attackMon.equals(playerMon)) {
 						if (otherMon.getStatus() != 0) {
 							System.out.println("It had no effect!");
+							playerAttackEffect = "It had no effect!";
 						} else {
 							for (int i = 0; i < otherMon.getTypeList().size(); i++) {
 								if (otherMon.getTypeList().get(i).equals(new PokeType("Electric")))
@@ -888,13 +909,16 @@ public class Battle {
 								otherMon.setStatus(2);
 								System.out.println("The opposing " + otherMon.getName()
 										+ " was paralyzed! It may be unable to move!");
+								playerAttackEffect = otherMon.getName() + " was paralyzed!~It may be unable to move!";
 							} else {
 								System.out.println("It had no effect!");
+								playerAttackEffect = "It had no effect!";
 							}
 						}
 					} else {
 						if (playerMon.getStatus() != 0) {
 							System.out.println("It had no effect!");
+							otherAttackEffect = "It had no effect!";
 						} else {
 							for (int i = 0; i < playerMon.getTypeList().size(); i++) {
 								if (playerMon.getTypeList().get(i).equals(new PokeType("Electric")))
@@ -903,8 +927,10 @@ public class Battle {
 							if (keepGoing) {
 								playerMon.setStatus(2);
 								System.out.println(playerMon.getName() + " was paralyzed! It may be unable to move!");
+								otherAttackEffect = playerMon.getName() + " was paralyzed!~It may be unable to move!";
 							} else {
 								System.out.println("It had no effect!");
+								otherAttackEffect = "It had no effect!";
 							}
 						}
 					}
@@ -916,19 +942,23 @@ public class Battle {
 				if (attackMon.equals(playerMon)) {
 					if (otherMon.getStatus() != 0) {
 						System.out.println("It had no effect!");
+						playerAttackEffect = "It had no effect!";
 					} else {
 						if (hit) {
 							otherMon.setStatus(3);
 							System.out.println(otherMon.getName() + " went to sleep!");
+							playerAttackEffect = otherMon.getName() + " went to sleep!";
 						}
 					}
 				} else {
 					if (playerMon.getStatus() != 0) {
 						System.out.println("It had no effect!");
+						otherAttackEffect = "It had no effect!";
 					} else {
 						if (hit) {
 							playerMon.setStatus(3);
 							System.out.println(playerMon.getName() + " went to sleep!");
+							otherAttackEffect = playerMon.getName() + " went to sleep!";
 						}
 					}
 				}
@@ -939,6 +969,7 @@ public class Battle {
 					if (attackMon.equals(playerMon)) {
 						if (otherMon.getStatus() != 0) {
 							System.out.println("It had no effect!");
+							playerAttackEffect = "It had no effect!";
 						} else {
 							for (int i = 0; i < otherMon.getTypeList().size(); i++) {
 								if (otherMon.getTypeList().get(i).equals(new PokeType("Electric")))
@@ -948,13 +979,16 @@ public class Battle {
 								otherMon.setStatus(2);
 								System.out.println("The opposing " + otherMon.getName()
 										+ " was paralyzed! It may be unable to move!");
+								playerAttackEffect = otherMon.getName() + " was paralyzed!~It may be unable to move!";
 							} else {
 								System.out.println("It had no effect!");
+								playerAttackEffect = "It had no effect!";
 							}
 						}
 					} else {
 						if (playerMon.getStatus() != 0) {
 							System.out.println("It had no effect!");
+							otherAttackEffect = "It had no effect!";
 						} else {
 							for (int i = 0; i < playerMon.getTypeList().size(); i++) {
 								if (playerMon.getTypeList().get(i).equals(new PokeType("Electric")))
@@ -963,8 +997,10 @@ public class Battle {
 							if (keepGoing) {
 								playerMon.setStatus(2);
 								System.out.println(playerMon.getName() + " was paralyzed! It may be unable to move!");
+								otherAttackEffect = playerMon.getName() + " was paralyzed!~It may be unable to move!";
 							} else {
 								System.out.println("It had no effect!");
+								otherAttackEffect = "It had no effect!";
 							}
 						}
 					}
@@ -976,6 +1012,7 @@ public class Battle {
 					if (attackMon.equals(playerMon)) {
 						if (otherMon.getStatus() != 0) {
 							System.out.println("It had no effect!");
+							playerAttackEffect = "It had no effect!";
 						} else {
 							for (int i = 0; i < otherMon.getTypeList().size(); i++) {
 								if (otherMon.getTypeList().get(i).equals(new PokeType("Poison")))
@@ -984,13 +1021,16 @@ public class Battle {
 							if (keepGoing) {
 								otherMon.setStatus(5);
 								System.out.println("The opposing " + otherMon.getName() + " was badly poisoned!");
+								playerAttackEffect = otherMon.getName() + " was badly poisoned!";
 							} else {
 								System.out.println("It had no effect!");
+								playerAttackEffect = "It had no effect!";
 							}
 						}
 					} else {
 						if (playerMon.getStatus() != 0) {
 							System.out.println("It had no effect!");
+							otherAttackEffect = "It had no effect!";
 						} else {
 							for (int i = 0; i < playerMon.getTypeList().size(); i++) {
 								if (playerMon.getTypeList().get(i).equals(new PokeType("Poison")))
@@ -999,34 +1039,38 @@ public class Battle {
 							if (keepGoing) {
 								playerMon.setStatus(5);
 								System.out.println(playerMon.getName() + " was badly poisoned!");
+								otherAttackEffect = playerMon.getName() + " was badly poisoned!";
 							} else {
 								System.out.println("It had no effect!");
+								otherAttackEffect = "It had no effect!";
 							}
 						}
 					}
 				}
 				hit = false;
 			} else if (attack.getName().equals("Withdraw")) {
+				
 				System.out.println(attackMon.getName() + " used Withdraw!");
 				System.out.println(attackMon.getName() + "'s defense rose!");
 				if (attackMon.equals(playerMon)) {
 					if (playerMonDefCount < 6) {
 						playerMonDefCount++;
 						playerMon.setDeltaDef(playerMon.getDeltaDef() + (int) (playerMon.getBaseDef() / 6));
+						playerAttackEffect = attackMon.getName() + "'s defense rose!";
 					}
 				} else {
 					System.out.println(otherMon.getName() + " used Withdraw!");
 					if (otherMonDefCount < 6) {
 						otherMonDefCount++;
 						otherMon.setDeltaDef(otherMon.getDeltaDef() + (int) (otherMon.getBaseDef() / 6));
+						otherAttackEffect = attackMon.getName() + "'s defense rose!";
 					}
 				}
 			}
 //			updateStats();
 		}
 	}
-	
-	
+
 	// The updateStats method is used to update the stats of the Pokemon
 	// It takes in no parameters
 	// It returns nothing
@@ -1089,8 +1133,8 @@ public class Battle {
 	public void otherChooseNewPokemon() {
 		for (int i = 0; i < other.getPokemonList().length; i++) {
 			if (other.getPokemonList()[i].getFaint() == false) {
-				 this.setOtherMon(other.getPokemonList()[i]);
-				 break;
+				this.setOtherMon(other.getPokemonList()[i]);
+				break;
 			}
 		}
 		this.setOtherAttacking(false);
@@ -1437,13 +1481,24 @@ public class Battle {
 			otherToxicCounter++;
 		}
 	}
+
 	public void resetTurn() {
+		this.setPlayerMiss(false);
+		this.setOtherMiss(false);
 		this.setPlayerCurrentMove(null);
 		this.setOtherCurrentMove(null);
 		this.setPlayerAttacking(false);
 		this.setOtherAttacking(false);
 		this.setDisplayedBeforePlayerEffect(false);
 		this.setDisplayedBeforeOtherEffect(false);
+		this.setDisplayedAfterOtherEffect(false);
+		this.setDisplayedAfterPlayerEffect(false);
+		this.setPlayerAttacked(false);
+		this.setOtherAttacked(false);
+		this.setOtherAttackEffect(null);
+		this.setPlayerAttackEffect(null);
+		this.setCurrentEffect(null);
+		this.setDisplayingEffect(false);
 	}
 
 	// The calculateStab method is used to calculate STAB (same type attack bonus)
@@ -1498,6 +1553,7 @@ public class Battle {
 	public void setOtherMon(Pokemon otherMon) {
 		this.otherMon = otherMon;
 	}
+
 	public Move getPlayerCurrentMove() {
 		return playerCurrentMove;
 	}
@@ -1626,22 +1682,36 @@ public class Battle {
 		this.otherMiss = otherMiss;
 	}
 
-	public boolean isPlayerAttackEffect() {
+	public String getPlayerAttackEffect() {
 		return playerAttackEffect;
 	}
 
-	public void setPlayerAttackEffect(boolean playerAttackEffect) {
+	public void setPlayerAttackEffect(String playerAttackEffect) {
 		this.playerAttackEffect = playerAttackEffect;
 	}
 
-	public boolean isOtherAttackEffect() {
+	public String getOtherAttackEffect() {
 		return otherAttackEffect;
 	}
 
-	public void setOtherAttackEffect(boolean otherAttackEffect) {
+	public void setOtherAttackEffect(String otherAttackEffect) {
 		this.otherAttackEffect = otherAttackEffect;
 	}
-	
-	
+
+	public boolean isPlayerAttacked() {
+		return playerAttacked;
+	}
+
+	public void setPlayerAttacked(boolean playerAttacked) {
+		this.playerAttacked = playerAttacked;
+	}
+
+	public boolean isOtherAttacked() {
+		return otherAttacked;
+	}
+
+	public void setOtherAttacked(boolean otherAttacked) {
+		this.otherAttacked = otherAttacked;
+	}
 
 }

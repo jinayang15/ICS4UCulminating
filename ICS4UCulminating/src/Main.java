@@ -258,13 +258,12 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 							battle.setCurrentEffect("Go " + battle.getPlayerMon().getName().toUpperCase() + "!");
 							battle.setSwitchPokemon(false);
 							battle.setPlayerSkipTurn(false);
-						}
-						else if (battle.getPlayerMon().getStatus() == 2) {
+						} else if (battle.getPlayerMon().getStatus() == 2) {
 							battle.setCurrentEffect(battle.getPlayerMon().getName().toUpperCase()
 									+ " is paralyzed.~It is unable to move!");
 						} else if (battle.getPlayerMon().getStatus() == 3) {
 							battle.setCurrentEffect(battle.getPlayerMon().getName().toUpperCase() + " is fast asleep.");
-						} 
+						}
 						if (battle.getRoundEnd()) {
 							nextBattleState = 1;
 							battle.setRoundEnd(false);
@@ -284,7 +283,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 						}
 						battle.setPlayerSkipTurn(false);
 					}
-				} else {
+				} else if (!battle.getPlayerSkipTurn()) {
 					if (battle.getPlayerMon().getStatus() >= 1) {
 						if (battle.isDisplayedBeforePlayerEffect()) {
 							if (battle.getRoundEnd()) {
@@ -307,26 +306,50 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 										battle.getPlayerMon().getName().toUpperCase() + " is paralyzed.");
 							} else if (battle.getPlayerMon().getStatus() == 4) {
 								battle.setCurrentEffect(battle.getPlayerMon().getName().toUpperCase() + " was burned.");
-							}
-							else if (battle.getPlayerMon().getStatus() == 5) {
-								battle.setCurrentEffect(battle.getPlayerMon().getName().toUpperCase() + " was badly poisoned");
+							} else if (battle.getPlayerMon().getStatus() == 5) {
+								battle.setCurrentEffect(
+										battle.getPlayerMon().getName().toUpperCase() + " was badly poisoned");
 							}
 						}
 						battleState = 6;
 						battle.setDisplayingEffect(true);
-					} else if (!battle.getPlayerSkipTurn()) {
+					} else if (!battle.getPlayerSkipTurn() && !battle.isPlayerAttacked()) {
+						System.out.println("Player: " + battle.getPlayerAttackEffect());
+						System.out.println("P: " + (battle.getPlayerAttackEffect() == null));
 						if (battle.getRoundEnd()) {
 							nextBattleState = 1;
 							battle.setRoundEnd(false);
-						} else {
+						} else if (battle.getPlayerAttackEffect() == null) {
 							nextBattleState = 5;
 							battle.setRoundEnd(true);
+						} else {
+							nextBattleState = 4;
 						}
 						battle.setCurrentEffect(battle.getPlayerMon().getName().toUpperCase() + " used~"
 								+ battle.getPlayerCurrentMove().getName().toUpperCase() + "!");
 						battleState = 6;
 						battle.setDisplayingEffect(true);
+						battle.setPlayerAttacked(true);
+
 					}
+				} else if (battle.isPlayerAttacked() && !battle.isDisplayedAfterPlayerEffect()) {
+					System.out.println("Displaying player attack effect");
+					nextBattleState = battleState;
+					battle.setCurrentEffect(battle.getPlayerAttackEffect());
+					battleState = 6;
+					battle.setDisplayingEffect(true);
+					battle.setDisplayedAfterPlayerEffect(true);
+				} else if (battle.isDisplayedAfterPlayerEffect()) {
+					System.out.println("Switching battleState1");
+					if (battle.getRoundEnd()) {
+						battleState = 1;
+						battle.setRoundEnd(false);
+					} else {
+						battleState = 5;
+						battle.setRoundEnd(true);
+					}
+					battle.setDisplayedAfterPlayerEffect(false);
+					battle.setPlayerAttacked(false);
 				}
 			} else if (battleState == 5) {
 				battle.setDisplayedBeforePlayerEffect(false);
@@ -336,7 +359,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 							battle.setCurrentEffect("Enemy " + battle.getOtherMon().getName().toUpperCase()
 									+ " is paralyzed.~It is unable to move!");
 						} else if (battle.getOtherMon().getStatus() == 3) {
-							battle.setCurrentEffect("Enemy " + battle.getOtherMon().getName().toUpperCase() + " is fast asleep.");
+							battle.setCurrentEffect(
+									"Enemy " + battle.getOtherMon().getName().toUpperCase() + " is fast asleep.");
 						}
 						if (battle.getRoundEnd()) {
 							nextBattleState = 1;
@@ -357,7 +381,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 						}
 						battle.setOtherSkipTurn(false);
 					}
-				} else {
+				} else if (!battle.getOtherSkipTurn() && !battle.isOtherAttacked()) {
 					if (battle.getOtherMon().getStatus() >= 1) {
 						if (battle.isDisplayedBeforeOtherEffect()) {
 							if (battle.getRoundEnd()) {
@@ -385,31 +409,57 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 						}
 						battleState = 6;
 						battle.setDisplayingEffect(true);
-					} else if (!battle.getOtherSkipTurn()) {
+					} else {
+						System.out.println("Other: " + battle.getOtherAttackEffect());
+						System.out.println("O: " + (battle.getOtherAttackEffect() == null));
 						if (battle.getRoundEnd()) {
 							nextBattleState = 1;
 							battle.setRoundEnd(false);
-						} else {
+						} else if (battle.getOtherAttackEffect() == null) {
 							nextBattleState = 4;
 							battle.setRoundEnd(true);
+						} else {
+							nextBattleState = 5;
 						}
 						battle.setCurrentEffect("Enemy " + battle.getOtherMon().getName().toUpperCase() + " used~"
 								+ battle.getOtherCurrentMove().getName().toUpperCase() + "!");
 						battleState = 6;
 						battle.setDisplayingEffect(true);
+						battle.setOtherAttacked(true);
 					}
-
+				} else if (battle.isOtherAttacked() && !battle.isDisplayedAfterOtherEffect()) {
+					System.out.println("Displaying other attack effect: " + battle.getOtherAttackEffect());
+					battle.setCurrentEffect(battle.getOtherAttackEffect());
+					nextBattleState = battleState;
+					battleState = 6;
+					battle.setDisplayingEffect(true);
+					battle.setDisplayedAfterOtherEffect(true);
+				} else if (battle.isDisplayedAfterOtherEffect()) {
+					System.out.println("Switching battle states2");
+					if (battle.getRoundEnd()) {
+						battleState = 1;
+						battle.setRoundEnd(false);
+					} else {
+						battleState = 4;
+						battle.setRoundEnd(true);
+					}
+					battle.setOtherAttacked(false);
+					battle.setDisplayedAfterOtherEffect(false);
 				}
 			} else if (battleState == 6) {
+				System.out.println("Attacked: " + battle.isPlayerAttacked() + " " + "PlayerAfterEffect: "
+						+ battle.isDisplayedAfterPlayerEffect());
+				System.out.println("Attacked: " + battle.isOtherAttacked() + " " + "OtherAFterEffect: "
+						+ battle.isDisplayedAfterOtherEffect());
 				try {
+//					System.out.println(battle.getCurrentEffect());
 					displayText(g, Images.whiteFontIdx, Images.whiteFont, battle.getCurrentEffect(), 40, 488);
 				} catch (NullPointerException e) {
-					System.out.println("uh oh!" + battle.getOtherMon().getStatus() + " " + battleState);
+					e.printStackTrace();
 				}
 				if (battle.getPlayerSkipTurn() && nextBattleState != 4) {
 					battle.setDisplayedBeforePlayerEffect(true);
-				}
-				if (battle.getOtherSkipTurn() && nextBattleState != 5) {
+				} else if (battle.getOtherSkipTurn() && nextBattleState != 5) {
 					battle.setDisplayedBeforeOtherEffect(true);
 				}
 				if (battle.isPlayerAttacking()) {
@@ -422,7 +472,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 					}
 				}
 				battleState = nextBattleState;
-				battle.setCurrentEffect(null);
 				// pokemon menu
 			} else if (battleState == 8) {
 				// first pokemon
@@ -930,7 +979,12 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 				yPos += 64;
 
 			} else {
-				int idx = map.get("" + text.charAt(i));
+				int idx;
+				if (text.charAt(i) == '\'') {
+					idx = 75;
+				} else {
+					idx = map.get("" + text.charAt(i));
+				}
 				g.drawImage(images[idx], xPos, yPos, null);
 				xPos += images[idx].getWidth() - images[idx].getWidth() / 4 - 1;
 			}
