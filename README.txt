@@ -66,6 +66,7 @@ What we could not do:
 - Because we did not include items, it made no sense to add a Poke Mart, which helped save us plenty of time. 
 - Bag function. Since we had no items, there was also no need for a bag. This also means that in the battle 
   screen, you will not be able to interact with the bag option 
+- Evolution. Unfortunately, because of how intensive graphics and battling was, we had no time to implement evolving.
 
 BUGS:
 - Collision in the town. If you walk up or down RIGHT beside a wall, it will look like you are running into nothing.
