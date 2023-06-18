@@ -81,7 +81,7 @@ public class Images {
 	}
 
 	public static void importPewterCity() throws IOException {
-		BufferedImage pewterCitySheet = ImageIO.read(new File("PewterCitySheetTiles.png"));
+		BufferedImage pewterCitySheet = ImageIO.read(new File("PewterCitySheet.png"));
 		pewterCity[0] = pewterCitySheet.getSubimage(0, 0, 768, 640);
 		pewterCity[0] = resizeImage(pewterCity[0], Main.tileSize * Main.tileMapWidth,
 				Main.tileSize * Main.tileMapHeight);

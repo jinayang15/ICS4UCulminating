@@ -126,5 +126,7 @@ public class Player {
 		losses++;
 	}
 	
-	
+	public static void resetLosses() {
+		losses = 0;
+	}
 }

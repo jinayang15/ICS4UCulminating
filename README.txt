@@ -1,3 +1,7 @@
+NOTES BEFORE YOU PLAY:
+- IF YOUR TEAM HAS FAINTED, DO NOT START A NEW BATTLE - GO TO THE POKEMON CENTER FIRST!!
+
+
 For this assignment, Jina and Ray were partners. Tasks were divided so that Jina was responsible
 for all the graphical parts (character movement, collision detection in the town, battle sprites,
 battle text, etc). Ray was responsible for all of the battle components (getting basic attacks, 
@@ -50,12 +54,7 @@ What we accomplished:
 	  have multiple types. We ended up only implementing 8 types, but the effectiveness works!
 	- Statuses: This key component can help turn the tides of battle, and we were able to implement 
 	  them. We were able to get Sleep, Paralysis, Poison, and Burn to work (which is what we proposed). 
-	  These statuses have the same effects as the actual games. For example, a paralyzed Pokemon will
-	  have its speed stat cut drastically, with a small chance of being paralyzed and not being able
-	  to attack. Burns will deal damage over time, as well as cut the burned Pokemon's attack stat. 
-	- Switching Pokemon: This was surprisingly difficult, since in the actual games, switching Pokemon
-	  gives the opponent a free turn, and we were able to achieve this. Whenever the player decides to 
-	  switch Pokemon, the other Pokemon will get a free hit onto the Pokemon that the player switched into. 
+	  These statuses have the same effects as the actual games. 
 
 What we could not do:
 - Items. It would have required more time, and the battle system as a whole was already extremely difficult.
@@ -79,3 +78,5 @@ BUGS:
   NullPointerException may be thrown, but THE GAME IS OKAY. 
 - Badly Poisoned does not work
 - Sometimes bugs and battle does not work properly. For example, sometimes when you win, it crashes. 
+- Sometimes, when you switch into a Pokemon, attack may not work, crashing the game.
+- Moves like absorb and mega drain do not work for some reason.

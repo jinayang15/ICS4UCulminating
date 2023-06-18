@@ -1131,7 +1131,6 @@ public class Battle {
 	// It returns nothing 
 	public void endBattle() {
 		
-		System.out.println("battle continue: " + battleContinue);
 		playerMon.setDeltaAttack(0);
 		playerMon.setDeltaDef(0);
 		playerMon.setDeltaSpAtk(0);
@@ -1153,9 +1152,42 @@ public class Battle {
 		otherMon.setDeltaSpDef(0);
 		otherMon.setDeltaSpeed(0);
 		
-//		Main.bgX = Main.saveBGX;
-//		Main.bgY = Main.saveBGY;
-//		Main.gameState = 2;
+		attack = false;
+		switchPokemon = false; // Boolean that sees if the user is switching Pokemon
+		battleContinue = true; // Boolean to see if the battle is going to continue
+		quickAttack = false;
+		hit = false; // To check if the attack hit the other pokemon
+		roundEnd = true; // Checks if the attack round has ended
+
+		playerAttacking = false;
+		playerCurrentMove = null;
+		playerSkipTurn = false;// Boolean to determine if the trainers turn is skipped
+		playerAttacked = false;
+		playerMiss = false;
+		playerAttackEffect = null;
+
+		otherAttacking = false;
+		otherCurrentMove = null;
+		otherSkipTurn = false; // Same as last one, except its for opponent
+		otherAttacked = false;
+		otherMiss = false;
+		otherAttackEffect = null;
+
+		displayingEffect = false; // currently displaying effect
+		displayedBeforePlayerEffect = false; // previously displayed effect
+		displayedBeforeOtherEffect = false; // previously displayed effect
+		displayedAfterPlayerEffect = false; // next displayed effect
+		displayedAfterOtherEffect = false; // next displayed effect
+		
+		if (Player.getLosses()==8) {
+			Main.bgX = 0;
+			Main.bgY = 0;
+			Main.gameState = 14;
+		}
+		
+		Main.bgX = Main.saveBGX;
+		Main.bgY = Main.saveBGY;
+		Main.gameState = 2;
 	}
 	
 	// The applyAttackChecker method is used to see which Pokemon is attacking - either the player or the opponent

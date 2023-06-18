@@ -15,7 +15,6 @@ import javax.swing.*;
 
 // The Main class is used to coordinate everything!
 
-
 @SuppressWarnings("serial") // funky warning, just suppress it. It's not gonna do anything.
 public class Main extends JPanel implements Runnable, KeyListener, MouseListener {
 	// 0 - start menu
@@ -122,16 +121,26 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			// main game loop
 			update();
 			this.repaint();
-			try {
-				// pause when displaying an effect
-				if (battle.isDisplayingEffect()) {
-					Thread.sleep(2000);
-					battle.setDisplayingEffect(false);
+			if (gameState==3) {
+				try {
+					// pause when displaying an effect
+					if (battle.isDisplayingEffect()) {
+						Thread.sleep(2000);
+						battle.setDisplayingEffect(false);
+						Thread.sleep(1000 / FPS);
+					}
+				} catch (NullPointerException e) {
+				} catch (InterruptedException e) {
 				}
-				Thread.sleep(1000 / FPS);
-			} catch (NullPointerException e) {
-			} catch (InterruptedException e) {
 			}
+			else 
+			try {
+				Thread.sleep(1000 / FPS);
+			}
+			catch (InterruptedException e) {
+				
+			}
+			
 		}
 	}
 
@@ -166,6 +175,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 					}
 				}
 			}
+			
 			Animations.walk();
 			Animations.resetWalk();
 			bgShift();
@@ -173,6 +183,90 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		
 		else if (gameState == 3) {
 			currentBG = Images.battleBackground;
+			if (battleState == 3) {
+				// moves intended to happen
+				battle.applyStatus();
+				battle.setPlayerCurrentMove(battle.getPlayerMon().getMoves()[attackArrowIdx]);
+				battle.setOtherCurrentMove(battle.opponentChooseAttack());
+				battle.setRoundEnd(false);
+				if (battle.turnCheck()) {
+					battleState = 4;
+				} else {
+					battleState = 5;
+				}
+			}
+			if (battleState == 4) {
+				battle.setOtherAttacking(false);
+				battle.checkFaint(battle.getPlayerMon());
+				battle.checkFaint(battle.getOtherMon());
+				if (battle.checkBattle()) {
+					if (battle.getPlayerMon().getFaint()) {
+						battleState = 8;
+					} else if (battle.getOtherMon().getFaint()) {
+						battle.otherChooseNewPokemon();
+						battle.resetTurn();
+						battleState = 1;
+					} else if (!battle.getPlayerSkipTurn() && !battle.isPlayerAttacking()) {
+						battle.attack(battle.getPlayerCurrentMove(), battle.getPlayerMon(), battle.getOtherMon());
+						battle.setPlayerAttacking(true);
+					}
+				} else {
+					if (battle.getOtherMon().getFaint()) {
+						if (battle.getPlayerMon().getFaint()) {
+							// tie
+						}
+						// win
+						battleState = 0;
+						nextBattleState = 0;
+						battle.endBattle();
+						return;
+					} else if (battle.getPlayerMon().getFaint()) {
+						// lost
+						battleState = 0;
+						nextBattleState = 0;
+						battle.endBattle();
+						return;
+					}
+				}
+
+			}
+			if (battleState == 5) {
+				battle.setPlayerAttacking(false);
+				battle.checkFaint(battle.getPlayerMon());
+				battle.checkFaint(battle.getOtherMon());
+				if (battle.checkBattle()) {
+					if (battle.getPlayerMon().getFaint()) {
+						battleState = 8;
+					} else if (battle.getOtherMon().getFaint()) {
+						battle.otherChooseNewPokemon();
+						battle.resetTurn();
+						battleState = 1;
+					} else if (!battle.getOtherSkipTurn() && !battle.isOtherAttacking()) {
+						battle.attack(battle.getOtherCurrentMove(), battle.getOtherMon(), battle.getPlayerMon());
+						battle.setOtherAttacking(true);
+					}
+				} else {
+					if (battle.getOtherMon().getFaint()) {
+						if (battle.getPlayerMon().getFaint()) {
+							// tie
+						}
+						// win 					
+						battleState = 0;
+						nextBattleState = 0;
+						battle.endBattle();
+						return;
+					} else if (battle.getPlayerMon().getFaint()) {
+						// lost
+						battleState = 0;
+						nextBattleState = 0;
+						battle.endBattle();
+						return;
+					}
+				}
+			}
+			if (battleState == 8) {
+				currentBG = Images.pkmnMenuBG;
+			}
 		}
 		else if (gameState==9) {
 			currentBG = Images.aboutUs;
@@ -200,77 +294,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			currentBG = Images.winScreen;
 		}
 		
-		// Battle states: For battle 
-		
-		if (battleState == 3) {
-			// moves intended to happen
-			battle.applyStatus();
-			battle.setPlayerCurrentMove(battle.getPlayerMon().getMoves()[attackArrowIdx]);
-			battle.setOtherCurrentMove(battle.opponentChooseAttack());
-			battle.setRoundEnd(false);
-			if (battle.turnCheck()) {
-				battleState = 4;
-			} else {
-				battleState = 5;
-			}
-		}
-		if (battleState == 4) {
-			battle.setOtherAttacking(false);
-			battle.checkFaint(battle.getPlayerMon());
-			battle.checkFaint(battle.getOtherMon());
-			if (battle.checkBattle()) {
-				if (battle.getPlayerMon().getFaint()) {
-					battleState = 8;
-				} else if (battle.getOtherMon().getFaint()) {
-					battle.otherChooseNewPokemon();
-					battle.resetTurn();
-					battleState = 1;
-				} else if (!battle.getPlayerSkipTurn() && !battle.isPlayerAttacking()) {
-					battle.attack(battle.getPlayerCurrentMove(), battle.getPlayerMon(), battle.getOtherMon());
-					battle.setPlayerAttacking(true);
-				}
-			} else {
-				if (battle.getOtherMon().getFaint()) {
-					if (battle.getPlayerMon().getFaint()) {
-						// tie
-					}
-					// win
-				} else if (battle.getPlayerMon().getFaint()) {
-					// lost
-				}
-			}
-
-		}
-		if (battleState == 5) {
-			battle.setPlayerAttacking(false);
-			battle.checkFaint(battle.getPlayerMon());
-			battle.checkFaint(battle.getOtherMon());
-			if (battle.checkBattle()) {
-				if (battle.getPlayerMon().getFaint()) {
-					battleState = 8;
-				} else if (battle.getOtherMon().getFaint()) {
-					battle.otherChooseNewPokemon();
-					battle.resetTurn();
-					battleState = 1;
-				} else if (!battle.getOtherSkipTurn() && !battle.isOtherAttacking()) {
-					battle.attack(battle.getOtherCurrentMove(), battle.getOtherMon(), battle.getPlayerMon());
-					battle.setOtherAttacking(true);
-				}
-			} else {
-				if (battle.getOtherMon().getFaint()) {
-					if (battle.getPlayerMon().getFaint()) {
-						// tie
-					}
-					// win 					
-					
-				} else if (battle.getPlayerMon().getFaint()) {
-					// lost
-				}
-			}
-		}
-		if (battleState == 8) {
-			currentBG = Images.pkmnMenuBG;
-		}
 	}
 
 	// Paint component
@@ -290,8 +313,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			for (int i = 0; i < 40; i++) {
 				for (int j = 0; j < 48; j++) {
 					if (allWalls[i][j] != null) {
-						g.setColor(Color.RED);
-						g.fillRect(allWalls[i][j].x, allWalls[i][j].y, 64, 64);
+//						g.setColor(Color.RED);
+//						g.fillRect(allWalls[i][j].x, allWalls[i][j].y, 64, 64);
 					}
 				}
 			}
@@ -622,26 +645,21 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		char x = e.getKeyChar();
 		
 		// Was testing the final ending and winning screens. 
-//		if (x=='p') {
-//			Player.updateLosses();
-//			Player.updateLosses();
-//			Player.updateLosses();
-//			Player.updateLosses();
-//			Player.updateLosses();
-//			Player.updateLosses();
-//			Player.updateLosses();
-//			Player.updateLosses();
-//			if (Player.getLosses()==8) {
-//				bgX = 0;
-//				bgY = 0;
-//				gameState = 14;
-//			}
-//		}
-//		if (x=='o') {
-//			bgX = 0;
-//			bgY = 0;
-//			gameState = 15;
-//		}
+		if (x=='p') {
+			Player.updateLosses();
+			Player.updateLosses();
+			Player.updateLosses();
+			Player.updateLosses();
+			Player.updateLosses();
+			Player.updateLosses();
+			Player.updateLosses();
+			Player.updateLosses();
+			if (Player.getLosses()==8) {
+				bgX = 0;
+				bgY = 0;
+				gameState = 14;
+			}
+		}
 		
 		// Shuffling through the intro and menu screens
 		
@@ -668,7 +686,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		else if (gameState==11 && x=='e') {
 			gameState = 12;
 		}
-		
+		// they can choose their types 
 		else if (gameState == 12) {
 			if (x=='1') {
 				ray = new Player ("Grass");
@@ -728,16 +746,39 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 					Music.healMusic();
 					Thread.sleep(3000);
 					gameState = 13;
-					for (int i = 0; i < player.getPokemonList().length; i++) {
-						player.getPokemonList()[i].setDeltaHp(0);
-						player.getPokemonList()[i].setStatus(0);
+					for (int i = 0; i < ray.getPokemonList().length; i++) {
+						ray.getPokemonList()[i].setDeltaHp(0);
+						ray.getPokemonList()[i].setStatus(0);
 					}
 				}
 				catch (InterruptedException E) {
 					
 				}
 			}
-			
+		}
+		else if (gameState==13) {
+			if (x == 'w') {
+				Player.setDirection(1);
+				Player.setMoving(true);
+				if (bgX == -448 && bgY == -768) {
+//					Battle b = new Battle(player, new Trainer());
+				}
+			} else if (x == 's') {
+				Player.setDirection(2);
+				Player.setMoving(true);
+			} else if (x == 'a') {
+				Player.setDirection(3);
+				Player.setMoving(true);
+			} else if (x == 'd') {
+				Player.setDirection(4);
+				Player.setMoving(true);
+			}
+			lastKeyPressed = e.getKeyChar();
+		}
+		
+		else if (gameState==14 && x=='e') {
+			Player.resetLosses();
+			gameState = 0;
 		}
 		
 		else if (gameState==2 && (!Player.getMoving() || x != lastKeyPressed)) {
@@ -1016,7 +1057,12 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		// it might mess up your graphics and collisions
 		frame.setResizable(false);
 	}
-
+	
+	// THE REST OF THESE METHODS ARE ALL FOR GRAPHICS
+	// For example, moving the screen with the user
+	// Or all the battle interface stuff. 
+	// The names are all pretty self explanatory. 
+	
 	// background shifts with the player
 	public void bgShift() {
 		if (Player.getMoving()) {
