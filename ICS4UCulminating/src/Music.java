@@ -5,7 +5,7 @@ import java.io.File;
 import javax.sound.sampled.*;
 
 public class Music {
-	public static Clip opening, lab, pewter, gym, pokeCenter;
+	public static Clip opening, lab, pewter, gym, pokeCenter, heal;
 	
 	public static void initializeMusic() {
 		AudioInputStream sound;
@@ -30,12 +30,18 @@ public class Music {
 			sound = AudioSystem.getAudioInputStream(new File ("pokeCenter.wav"));
 			pokeCenter = AudioSystem.getClip();
 			pokeCenter.open(sound);
+			
+			sound = AudioSystem.getAudioInputStream(new File ("heal.wav"));
+			heal = AudioSystem.getClip();
+			heal.open(sound);
 		}
 		catch (Exception e) {
 			
 		}
 	}
-	
+	// The playMusic method is used to play music
+	// It takes in no parameters
+	// Returns nothing
 	public static void playMusic() {
 		if (Main.gameState==0 || Main.gameState==1 || Main.gameState==4) {
 //			gym.stop();
@@ -45,6 +51,8 @@ public class Music {
 		else if (Main.gameState==2) {
 			lab.stop();
 			lab.setFramePosition(0);
+			pokeCenter.stop();
+			pokeCenter.setFramePosition(0);
 			pewter.loop(Clip.LOOP_CONTINUOUSLY);
 		}
 		else if (Main.gameState==3) {
@@ -62,5 +70,15 @@ public class Music {
 			pewter.setFramePosition(0);
 			pokeCenter.loop(Clip.LOOP_CONTINUOUSLY);
 		}
+	}
+	
+	// The healMusic method is used when the user is healing. 
+	// No parameters
+	// Nothing returned
+	public static void healMusic() {
+		pokeCenter.stop();
+		pokeCenter.setFramePosition(0);
+		heal.start();
+		heal.setFramePosition(0);
 	}
 }

@@ -62,7 +62,7 @@ public class Images {
 	
 	public static void importPokemonCenter() throws IOException {
 		pokemonCenter = ImageIO.read(new File ("test.png"));
-		pokemonCenter = resizeImage(pokemonCenter, 3072, 2560);
+		pokemonCenter = resizeImage(pokemonCenter, 1440, 960);
 	}
 
 	public static void importTrainer() throws IOException {

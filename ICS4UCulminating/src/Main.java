@@ -22,8 +22,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	static int screenWidth = 960;
 	static int screenHeight = 640;
 	static int tileSize = 64;
-	static int tileScreenWidth = screenWidth / tileSize;
-	static int tileScreenHeight = screenHeight / tileSize;
+	static int tileScreenWidth = screenWidth / tileSize; // 15
+	static int tileScreenHeight = screenHeight / tileSize; //10
 	static int tileMapWidth = 48;
 	static int tileMapHeight = 40;
 	BufferedImage currentBG;
@@ -72,6 +72,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			// main game loop
 			update();
 			this.repaint();
+			System.out.println("x: " + bgX + " y: " + bgY);
 			try {
 				Thread.sleep(1000 / FPS);
 			} catch (Exception e) {
@@ -282,12 +283,40 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 				bgX = 0;
 				bgY = 0;
 			}
-//			else if (bgY==-1348 && bgX>=-676 && bgX<=-632) {
-//				bgX = 0;
-//				bgY = 0;
-//				gameState = 8;
-//			}
+			// Entering the Poke Center
+			else if (bgY==-1348 && bgX>=-676 && bgX<=-632) {
+				saveBGX = bgX;
+				saveBGY = bgY;
+				bgX = -244;
+				bgY = -290;
+				tileMapWidth = 22;
+				tileMapHeight = 15;
+				gameState = 8;
+			}
 		}
+		
+		else if (gameState==8 && x=='e') {
+			if (bgY>=-320 && bgY<=-284 && bgX>=-310 && bgX<=-200) {
+				bgX = saveBGX;
+				bgY = saveBGY;
+				tileMapWidth = 48;
+				tileMapHeight = 40;
+				gameState=2;
+			}
+			if (bgY==0 && bgX>=-280 && bgX<=-224) {
+				try {
+					gameState = -1; // Temporary gamestate
+					Music.healMusic();
+					Thread.sleep(3000);
+					gameState = 8;
+				}
+				catch (InterruptedException E) {
+					
+				}
+			}
+			
+		}
+		
 		else if (gameState==2 && (!Player.getMoving() || x != lastKeyPressed)) {
 //			if (x != lastKeyPressed) {
 //				movesQ.add(e.getKeyChar());
@@ -313,6 +342,25 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			lastKeyPressed = e.getKeyChar();
 //			}
 //			System.out.println(checkTile());
+		}
+		else if (gameState==8) {
+			if (x == 'w') {
+				Player.setDirection(1);
+				Player.setMoving(true);
+				if (bgX == -448 && bgY == -768) {
+//						Battle b = new Battle(player, new Trainer());
+				}
+			} else if (x == 's') {
+				Player.setDirection(2);
+				Player.setMoving(true);
+			} else if (x == 'a') {
+				Player.setDirection(3);
+				Player.setMoving(true);
+			} else if (x == 'd') {
+				Player.setDirection(4);
+				Player.setMoving(true);
+			}
+			lastKeyPressed = e.getKeyChar();
 		}
 	}
 
