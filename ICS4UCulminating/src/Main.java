@@ -72,7 +72,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			// main game loop
 			update();
 			this.repaint();
-			System.out.println("x: " + bgX + " y: " + bgY);
 			try {
 				Thread.sleep(1000 / FPS);
 			} catch (Exception e) {
