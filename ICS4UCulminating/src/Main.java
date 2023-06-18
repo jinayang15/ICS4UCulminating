@@ -283,19 +283,22 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 						}
 						battle.setPlayerSkipTurn(false);
 					}
-				} else if (!battle.getPlayerSkipTurn()) {
+				} else if (!battle.getPlayerSkipTurn() && !battle.isOtherAttacked()) {
 					if (battle.getPlayerMon().getStatus() >= 1) {
 						if (battle.isDisplayedBeforePlayerEffect()) {
 							if (battle.getRoundEnd()) {
 								nextBattleState = 1;
 								battle.setRoundEnd(false);
-							} else {
+							} else if (battle.getPlayerAttackEffect() == null) {
 								nextBattleState = 5;
 								battle.setRoundEnd(true);
+							} else {
+								nextBattleState = 4;
 							}
 							battle.setCurrentEffect(battle.getPlayerMon().getName().toUpperCase() + " used~"
 									+ battle.getPlayerCurrentMove().getName().toUpperCase() + "!");
 							battle.setDisplayedBeforePlayerEffect(false);
+							battle.setPlayerAttacked(true);
 						} else {
 							nextBattleState = battleState;
 							if (battle.getPlayerMon().getStatus() == 1) {
@@ -352,6 +355,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 					battle.setPlayerAttacked(false);
 				}
 			} else if (battleState == 5) {
+				System.out.println("!!!!!!Attacked: " + battle.isOtherAttacked() + " " + "OtherAFterEffect: "
+						+ battle.isDisplayedAfterOtherEffect());
 				battle.setDisplayedBeforePlayerEffect(false);
 				if (battle.getOtherSkipTurn()) {
 					if (!battle.isDisplayedBeforeOtherEffect()) {
@@ -387,13 +392,16 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 							if (battle.getRoundEnd()) {
 								nextBattleState = 1;
 								battle.setRoundEnd(false);
-							} else {
+							} else if (battle.getOtherAttackEffect() == null) {
 								nextBattleState = 4;
 								battle.setRoundEnd(true);
+							} else {
+								nextBattleState = battleState;
 							}
 							battle.setCurrentEffect("Enemy " + battle.getOtherMon().getName().toUpperCase() + " used~"
 									+ battle.getOtherCurrentMove().getName().toUpperCase() + "!");
-							battle.setDisplayedBeforeOtherEffect(false);
+							battle.setDisplayingEffect(true);
+							battle.setOtherAttacked(true);
 						} else {
 							nextBattleState = battleState;
 							if (battle.getOtherMon().getStatus() == 1) {
@@ -419,7 +427,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 							nextBattleState = 4;
 							battle.setRoundEnd(true);
 						} else {
-							nextBattleState = 5;
+							nextBattleState = battleState;
 						}
 						battle.setCurrentEffect("Enemy " + battle.getOtherMon().getName().toUpperCase() + " used~"
 								+ battle.getOtherCurrentMove().getName().toUpperCase() + "!");
@@ -447,9 +455,9 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 					battle.setDisplayedAfterOtherEffect(false);
 				}
 			} else if (battleState == 6) {
-				System.out.println("Attacked: " + battle.isPlayerAttacked() + " " + "PlayerAfterEffect: "
+				System.out.println("----Attacked: " + battle.isPlayerAttacked() + " " + "PlayerAfterEffect: "
 						+ battle.isDisplayedAfterPlayerEffect());
-				System.out.println("Attacked: " + battle.isOtherAttacked() + " " + "OtherAFterEffect: "
+				System.out.println("----Attacked: " + battle.isOtherAttacked() + " " + "OtherAFterEffect: "
 						+ battle.isDisplayedAfterOtherEffect());
 				try {
 //					System.out.println(battle.getCurrentEffect());

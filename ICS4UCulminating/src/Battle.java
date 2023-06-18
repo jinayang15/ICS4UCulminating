@@ -770,7 +770,6 @@ public class Battle {
 			if (attack.getName().equals("Swords Dance")) {
 				System.out.println(attackMon.getName() + " used Swords Dance!");
 				System.out.println(attackMon.getName() + "'s attack rose sharply!");
-				otherAttackEffect = attackMon.getName() + "'s attack rose sharply!";
 				if (attackMon.equals(playerMon)) {
 					if (playerMonAtkCount == 5) {
 						playerMonAtkCount++;
@@ -781,6 +780,7 @@ public class Battle {
 						playerMon.setDeltaAttack(
 								playerMon.getDeltaAttack() + (int) (2 * Math.floor(playerMon.getBaseAttack() / 6)));
 					}
+					playerAttackEffect = attackMon.getName() + "'s attack rose sharply!";
 				} else {
 					if (otherMonAtkCount == 5) {
 						otherMonAtkCount++;
@@ -791,24 +791,26 @@ public class Battle {
 						otherMon.setDeltaAttack(
 								otherMon.getDeltaAttack() + (int) (2 * Math.floor(otherMon.getBaseAttack() / 6)));
 					}
+					otherAttackEffect = attackMon.getName() + "'s attack rose sharply!";
 				}
 
 			} else if (attack.getName().equals("Tail Whip") || attack.getName().equals("Leer")) {
 				applyAttackChecker(attackMon, attack, stab);
 				if (hit) {
-					otherAttackEffect = defendMon.getName() + "'s defense fell!";
 					System.out.println(defendMon.getName() + "'s defense fell!");
 					if (attackMon.equals(playerMon)) {
 						if (otherMonDefCount > -6) {
 							otherMonDefCount--;
 							otherMon.setDeltaDef(otherMon.getDeltaDef() + (int) Math.floor(otherMon.getBaseDef() / 6));
 						}
+						playerAttackEffect = defendMon.getName() + "'s defense fell!";
 					} else {
 						if (playerMonDefCount > -6) {
 							playerMonDefCount--;
 							playerMon.setDeltaDef(
 									playerMon.getDeltaDef() + (int) Math.floor(playerMon.getBaseDef() / 6));
 						}
+						otherAttackEffect = defendMon.getName() + "'s defense fell!";
 					}
 
 				}
@@ -816,7 +818,6 @@ public class Battle {
 			} else if (attack.getName().equals("Growl")) {
 				applyAttackChecker(attackMon, attack, stab);
 				if (hit) {
-					otherAttackEffect = defendMon.getName() + "'s attack fell!";
 					System.out.println(defendMon.getName() + "'s attack fell!");
 					if (attackMon.equals(playerMon)) {
 						if (otherMonAtkCount > -6) {
@@ -824,12 +825,14 @@ public class Battle {
 							otherMon.setDeltaAttack(
 									otherMon.getDeltaAttack() + (int) Math.floor(otherMon.getBaseAttack() / 6));
 						}
+						playerAttackEffect = defendMon.getName() + "'s attack fell!";
 					} else {
 						if (playerMonAtkCount > -6) {
 							playerMonAtkCount--;
 							playerMon.setDeltaAttack(
 									playerMon.getDeltaAttack() + (int) Math.floor(playerMon.getBaseAttack() / 6));
 						}
+						otherAttackEffect = defendMon.getName() + "'s attack fell!";
 					}
 
 				}
