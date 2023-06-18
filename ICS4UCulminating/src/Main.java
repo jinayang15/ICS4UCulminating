@@ -26,24 +26,27 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	// 8 - pokemon menu
 	static int battleState = 0;
 	static int nextBattleState = 0;
-	static Battle battle = null;
+	static Battle battle;
 
-	public static Player player;
-	public static Trainer trainer;
+	static Player player;
+	static Trainer trainer;
 	// self explanatory variables
-	int FPS = 60;
+	static int FPS = 60;
 	Thread thread;
 	static int screenWidth = 960;
 	static int screenHeight = 640;
+	// map sizing
 	static int tileSize = 64;
 	static int tileScreenWidth = screenWidth / tileSize;
 	static int tileScreenHeight = screenHeight / tileSize;
 	static int tileMapWidth = 48;
 	static int tileMapHeight = 40;
+	// background 
 	BufferedImage currentBG;
-	// background top-left corner position, x and y value
+	// top-left corner position, x and y value
 	static int bgX = 0;
 	static int bgY = 0;
+	// default background shift
 	static int defaultShiftPixels = 4;
 	static boolean bgAdjusting = false;
 	// last bg position
@@ -53,7 +56,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	long lastActionTime = 0;
 	char lastKeyPressed = ' ';
 	char lastKeyReleased = ' ';
-
+	
+	// walls on the map and collision detection
 	public static Wall[][] allWalls = new Wall[tileMapHeight][tileMapWidth];
 	public static boolean collisionUp = false;
 	public static boolean collisionDown = false;

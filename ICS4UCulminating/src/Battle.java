@@ -1109,7 +1109,7 @@ public class Battle {
 				} else if (i == other.getPokemonList().length - 1) {
 					System.out.println("You won!");
 					battleContinue = false;
-					endBattle();
+//					endBattle();
 					return false;
 				}
 			}
@@ -1124,7 +1124,7 @@ public class Battle {
 					return true;
 				} else if (i == player.getPokemonList().length - 1) {
 					System.out.println("You are out of usable Pokemon! You give out a badge...");
-					endBattle();
+					//endBattle();
 					battleContinue = false;
 					return false;
 				}
