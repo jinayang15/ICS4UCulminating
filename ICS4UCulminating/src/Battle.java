@@ -28,14 +28,21 @@ public class Battle {
 	private boolean playerAttacking = false;
 	private Move playerCurrentMove = null;
 	private boolean playerSkipTurn = false; // Boolean to determine if the trainers turn is skipped
+	private boolean playerMiss = false;
+	private String playerAttackEffect = null;
 
 	private boolean otherAttacking = false;
 	private Move otherCurrentMove = null;
 	private boolean otherSkipTurn = false; // Same as last one, except its for opponent
+	private boolean otherMiss = false; 
+	private String otherAttackEffect = null;
 	
 	private String currentEffect; // current effect text
 	private boolean displayingEffect = false; // currently displaying effect
-	private boolean displayedEffect = false; // previously displayed effect
+	private boolean displayedBeforePlayerEffect = false; // previously displayed effect
+	private boolean displayedBeforeOtherEffect = false; // previously displayed effect
+	private boolean displayedAfterPlayerEffect = false; // next displayed effect
+	private boolean displayedAfterOtherEffect = false; // next displayed effect
 	// Faint - -1
 	// Poison - 1
 	// Paralyzed - 2
@@ -178,13 +185,12 @@ public class Battle {
 
 		// Ensures that switching Pokemon in means a free turn for the enemy!
 		if (switchPokemon) {
-			switchPokemon = false;
-			Move otherMove = opponentChooseAttack();
-			double stab = calculateStab(otherMon, otherMove);
-			attack(otherMove, otherMon, playerMon);
-			updateStats();
+//			switchPokemon = false;
+//			Move otherMove = opponentChooseAttack();
+//			double stab = calculateStab(otherMon, otherMove);
+//			attack(otherMove, otherMon, playerMon);
+//			updateStats();
 		}
-
 		else {
 			System.out.println("\nYOU\t" + playerMon.getName() + " HP: " + playerMon.getCurrentHp() + "\t Level: "
 					+ playerMon.getLevel());
@@ -437,11 +443,6 @@ public class Battle {
 			}
 		}
 	}
-
-	// The attack method is used to determine the attacks of both the player and
-	// opponent
-	// WAS PREVIOUSLY trainerAttack method (so if this does not work, go back)
-	// attack = playerMon.getMoves()[index]
 	public void attack(Move attack, Pokemon attackMon, Pokemon defendMon) {
 		boolean keepGoing = true;
 		// PP Counter!!
@@ -471,11 +472,13 @@ public class Battle {
 						int afterAttack = otherMon.getDeltaHp();
 						playerMon.setDeltaHp(
 								playerMon.getDeltaHp() + (int) Math.round((afterAttack - beforeAttack) * 0.25));
+						playerAttackEffect = playerMon.getName() + " is damaged by recoil!";
 						System.out.println("\n" + playerMon.getName() + " is damaged by recoil!");
 					} else {
 						int afterAttack = playerMon.getDeltaHp();
 						otherMon.setDeltaHp(
 								otherMon.getDeltaHp() + (int) Math.round((afterAttack - beforeAttack) * 0.25));
+						otherAttackEffect =  otherMon.getName() + " is damaged by recoil!";
 						System.out.println("\n" + otherMon.getName() + " is damaged by recoil!");
 					}
 
@@ -498,6 +501,8 @@ public class Battle {
 						random = (int) (Math.random() * 10) + 1;
 						if (random == 1) {
 							playerMon.setStatus(4);
+							otherAttackEffect = playerMon.getName() + " was burned!";
+							System.out.println(playerMon.getName() + " was burned!");
 						}
 					}
 				}
@@ -514,6 +519,7 @@ public class Battle {
 						if (random == 1) {
 							playerMon.setStatus(2);
 							System.out.println(playerMon.getName() + " was paralyzed!");
+							otherAttackEffect = playerMon.getName() + " was paralyzed!";
 						}
 					}
 				}
@@ -531,6 +537,7 @@ public class Battle {
 						if (random <= 3) {
 							playerMon.setStatus(1);
 							System.out.println(playerMon.getName() + " was poisoned!");
+							otherAttackEffect = playerMon.getName() + " was poisoned!";
 						}
 					}
 				}
@@ -554,13 +561,13 @@ public class Battle {
 					// 30% chance to poison the target
 					if (random <= 3) {
 						playerMon.setStatus(1);
+						otherAttackEffect = playerMon.getName() + " was poisoned!";
 					}
 				}
 			} else {
 				applyAttackChecker(attackMon, attack, stab);
 				hit = false;
 			}
-			updateStats();
 		} else if (attack.getCategory().equals("Special")) {
 			if (attack.getName().equals("Acid")) {
 				applyAttackChecker(attackMon, attack, stab);
@@ -634,6 +641,7 @@ public class Battle {
 							otherMonSpeedCount--;
 							otherMon.setDeltaSpeed(
 									otherMon.getDeltaSpeed() + (int) Math.floor(otherMon.getBaseSpeed() / 6));
+							playerAttackEffect = otherMon.getName() + "'s speed fell!";
 							System.out.println("\n" + otherMon.getName() + "'s speed fell!");
 						}
 					} else {
@@ -642,6 +650,7 @@ public class Battle {
 							playerMonSpeedCount--;
 							playerMon.setDeltaSpeed(
 									playerMon.getDeltaSpeed() + (int) Math.floor(playerMon.getBaseSpeed() / 6));
+							otherAttackEffect = otherMon.getName() + "'s speed fell!";
 							System.out.println("\n" + playerMon.getName() + "'s speed fell!");
 						}
 					}
@@ -1015,7 +1024,8 @@ public class Battle {
 //			updateStats();
 		}
 	}
-
+	
+	
 	// The updateStats method is used to update the stats of the Pokemon
 	// It takes in no parameters
 	// It returns nothing
@@ -1027,7 +1037,7 @@ public class Battle {
 	public void checkFaint(Pokemon mon) {
 		if (mon.getCurrentHp() <= 0) {
 			System.out.println("\n" + mon.getName() + " fainted!");
-			mon.setDeltaHp(0);
+			mon.setDeltaHp(mon.getBaseHp());
 			mon.setStatus(-1);
 			mon.setFaint(true);
 		}
@@ -1046,7 +1056,7 @@ public class Battle {
 				if (other.getPokemonList()[i].getFaint() == false) {
 //					System.out.println("NEXT POKEMON: " + other.getPokemonList()[i].getName());
 //					new Battle(player, other, playerMon, i);
-					battleContinue = false;
+//					battleContinue = false;
 					return true;
 				} else if (i == other.getPokemonList().length - 1) {
 					System.out.println("You won!");
@@ -1060,9 +1070,9 @@ public class Battle {
 			playerSkipTurn = true;
 			for (int i = 0; i < player.getPokemonList().length; i++) {
 				if (player.getPokemonList()[i].getFaint() == false) {
-					battleContinue = true;
+//					battleContinue = true;
 //					chooseNewPokemon();
-					battleContinue = false;
+//					battleContinue = false;
 					return true;
 				} else if (i == player.getPokemonList().length - 1) {
 					System.out.println("You are out of usable Pokemon! You give out a badge...");
@@ -1075,13 +1085,16 @@ public class Battle {
 		return true;
 	}
 
-	public Pokemon otherChooseNewPokemon() {
+	public void otherChooseNewPokemon() {
 		for (int i = 0; i < other.getPokemonList().length; i++) {
 			if (other.getPokemonList()[i].getFaint() == false) {
-				return other.getPokemonList()[i];
+				 this.setOtherMon(other.getPokemonList()[i]);
+				 break;
 			}
 		}
-		return null;
+		this.setOtherAttacking(false);
+		this.setOtherCurrentMove(null);
+		this.setOtherSkipTurn(false);
 	}
 
 	// The endBattle method is used when the battle is over
@@ -1139,6 +1152,7 @@ public class Battle {
 		} // 100% accurate moves have an accuracy STAT of 0.0
 			// Applying accuracy %. If the attack misses, the damage is not applied.
 		else if (accuracy > attack.getAccuracy()) {
+			playerMiss = true;
 			System.out.println("Missed!");
 			return;
 		}
@@ -1217,6 +1231,7 @@ public class Battle {
 		// Applying accuracy %. If the attack misses, the damage is not applied.
 		if (attack.getAccuracy() == 0) {
 		} else if (accuracy > attack.getAccuracy()) {
+			otherMiss = true;
 			System.out.println("Missed!");
 			return;
 		}
@@ -1421,6 +1436,14 @@ public class Battle {
 			otherToxicCounter++;
 		}
 	}
+	public void resetTurn() {
+		this.setPlayerCurrentMove(null);
+		this.setOtherCurrentMove(null);
+		this.setPlayerAttacking(false);
+		this.setOtherAttacking(false);
+		this.setDisplayedBeforePlayerEffect(false);
+		this.setDisplayedBeforeOtherEffect(false);
+	}
 
 	// The calculateStab method is used to calculate STAB (same type attack bonus)
 	// Although this is already found in the attack() method, I created this other
@@ -1546,12 +1569,12 @@ public class Battle {
 		this.displayingEffect = displayingEffect;
 	}
 
-	public boolean isDisplayedEffect() {
-		return displayedEffect;
+	public boolean isDisplayedBeforePlayerEffect() {
+		return displayedBeforePlayerEffect;
 	}
 
-	public void setDisplayedEffect(boolean displayedEffect) {
-		this.displayedEffect = displayedEffect;
+	public void setDisplayedBeforePlayerEffect(boolean displayedEffect) {
+		this.displayedBeforePlayerEffect = displayedEffect;
 	}
 
 	public String getCurrentEffect() {
@@ -1561,6 +1584,63 @@ public class Battle {
 	public void setCurrentEffect(String currentEffect) {
 		this.currentEffect = currentEffect;
 	}
+
+	public boolean isDisplayedBeforeOtherEffect() {
+		return displayedBeforeOtherEffect;
+	}
+
+	public void setDisplayedBeforeOtherEffect(boolean displayedBeforeOtherEffect) {
+		this.displayedBeforeOtherEffect = displayedBeforeOtherEffect;
+	}
+
+	public boolean isDisplayedAfterPlayerEffect() {
+		return displayedAfterPlayerEffect;
+	}
+
+	public void setDisplayedAfterPlayerEffect(boolean displayedAfterPlayerEffect) {
+		this.displayedAfterPlayerEffect = displayedAfterPlayerEffect;
+	}
+
+	public boolean isDisplayedAfterOtherEffect() {
+		return displayedAfterOtherEffect;
+	}
+
+	public void setDisplayedAfterOtherEffect(boolean displayedAfterOtherEffect) {
+		this.displayedAfterOtherEffect = displayedAfterOtherEffect;
+	}
+
+	public boolean isPlayerMiss() {
+		return playerMiss;
+	}
+
+	public void setPlayerMiss(boolean playerMiss) {
+		this.playerMiss = playerMiss;
+	}
+
+	public boolean isOtherMiss() {
+		return otherMiss;
+	}
+
+	public void setOtherMiss(boolean otherMiss) {
+		this.otherMiss = otherMiss;
+	}
+
+	public boolean isPlayerAttackEffect() {
+		return playerAttackEffect;
+	}
+
+	public void setPlayerAttackEffect(boolean playerAttackEffect) {
+		this.playerAttackEffect = playerAttackEffect;
+	}
+
+	public boolean isOtherAttackEffect() {
+		return otherAttackEffect;
+	}
+
+	public void setOtherAttackEffect(boolean otherAttackEffect) {
+		this.otherAttackEffect = otherAttackEffect;
+	}
+	
 	
 
 }
