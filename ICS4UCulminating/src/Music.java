@@ -43,7 +43,7 @@ public class Music {
 	// It takes in no parameters
 	// Returns nothing
 	public static void playMusic() {
-		if (Main.gameState==0 || Main.gameState==1 || Main.gameState==4) {
+		if (Main.gameState==0 || Main.gameState==1 || Main.gameState==9) {
 //			gym.stop();
 //			gym.setFramePosition(0);
 			opening.loop(Clip.LOOP_CONTINUOUSLY);
@@ -51,6 +51,8 @@ public class Music {
 		else if (Main.gameState==2) {
 			lab.stop();
 			lab.setFramePosition(0);
+			gym.stop();
+			gym.setFramePosition(0);
 			pokeCenter.stop();
 			pokeCenter.setFramePosition(0);
 			pewter.loop(Clip.LOOP_CONTINUOUSLY);
@@ -60,12 +62,12 @@ public class Music {
 			pewter.setFramePosition(0);
 			gym.loop(Clip.LOOP_CONTINUOUSLY);
 		}
-		else if (Main.gameState==6 || Main.gameState==7) {
+		else if (Main.gameState==11 || Main.gameState==14) {
 			opening.stop();
 			opening.setFramePosition(0);
 			lab.loop(Clip.LOOP_CONTINUOUSLY);
 		}
-		else if (Main.gameState==8) {
+		else if (Main.gameState==13) {
 			pewter.stop();
 			pewter.setFramePosition(0);
 			pokeCenter.loop(Clip.LOOP_CONTINUOUSLY);

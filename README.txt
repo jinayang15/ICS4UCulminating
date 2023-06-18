@@ -29,27 +29,13 @@ What we accomplished:
 
 - Pokemon statistics 
 	- Base stats of every Pokemon we have is the same as the real deal.
-<<<<<<< HEAD
 	- The type system works, with some Pokemon having multiple types!
-=======
 	- These base stats affect how the Pokemon works in battle. For example, base speed stats are
 	  factored in the calculation of the turn-based system, as the Pokemon with the higher speed 
 	  will go first. Similarily, attack + special attack stats are factored in to determine how
 	  much damage an attack will do, and defense + special defense stats are used to determine
 	  how much damage will be taken. 
->>>>>>> branch 'master' of https://github.com/jinayang15/ICS4UCulminating
 
-<<<<<<< HEAD
-- Got the battle system to work! 
-	- Type advantages work, with attacks doing 0.5x, 1x, 1.5x, 2x, or even 4x! 
-	- Status moves work! 
-
-Stuff we couldn't do:
-- No items 
-- No Pokemon Center to heal (instead, Pokemon is healed after every battle)
-- No Pokemart 
-
-=======
 - Battle System
 	- For the most part, we were able to get the battles to work well. 
 	- Turn based system: To determine who goes first, checks were done to see if priority moves
@@ -73,7 +59,6 @@ Stuff we couldn't do:
 	- Switching Pokemon: This was surprisingly difficult, since in the actual games, switching Pokemon
 	  gives the opponent a free turn, and we were able to achieve this. Whenever the player decides to 
 	  switch Pokemon, the other Pokemon will get a free hit onto the Pokemon that the player switched into. 
->>>>>>> branch 'master' of https://github.com/jinayang15/ICS4UCulminating
 
 
 What we could not do:
@@ -84,17 +69,17 @@ What we could not do:
   screen, you will not be able to interact with the bag option 
 - Evolution. Unfortunately, because of how intensive graphics and battling was, we had no time to implement evolving.
 
-<<<<<<< HEAD
-Bugs:
-- Collision in the town. If you go RIGHT beside a building, you will get stuck. However, if you move slightly
-  away from it, 
-- Sometimes when you go into battle, the images are bugged. The text field part may get super blown up, etc. 
-  - A reload usually fixes this. 
-=======
 BUGS:
 - Collision in the town. If you walk up or down RIGHT beside a wall, it will look like you are running into nothing.
   However, if you move slightly away, walking works like normal. Also, when you enter the Pokemon Center,
   pressing W will not let you move - there seems to be an invisible barrier. Clicking other movement keys will fix this.
   Sometimes (and rarely), when you go to heal your Pokemon, the music will not play. 
-
->>>>>>> branch 'master' of https://github.com/jinayang15/ICS4UCulminating
+- In order to switch Pokemon after you faint, you need to do an attack. 
+- After an enemy faints, you must attack first before it switches out 
+- Screen update does not match with text, and sometimes the attack effect does not display
+- If a status affects the Pokemon right before it dies, the opponent may not switch.
+- If one of your Pokemon faints and you are forced to switch and the Pokemon coming it does not have 4 moves,
+  NullPointerException may be thrown, but THE GAME IS OKAY. 
+- Badly Poisoned does not work
+- Sometimes bugs and battle does not work properly. For example, sometimes when you win, it crashes. 
+- After a battle, that is it LOL. 

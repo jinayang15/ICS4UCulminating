@@ -1,7 +1,7 @@
 import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-
+import java.awt.image.BufferedImage;
 // The Player class is used to store the user's Pokemon, items, and money.
 // It will be also used in battle to determine what the user will do, such as attack, switch pokemon,
 // or use items. 

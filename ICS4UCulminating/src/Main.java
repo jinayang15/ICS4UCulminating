@@ -10,36 +10,61 @@ import javax.swing.*;
 
 @SuppressWarnings("serial") // funky warning, just suppress it. It's not gonna do anything.
 public class Main extends JPanel implements Runnable, KeyListener, MouseListener {
-	/* Kinda not in order BUT THATS OKAY 
-	 * 0: initial menu   1: Instructions   2: Pewter City   3: Battle   4: about us  5: instructions2   6: Intro to types    7: Pick type
-	 * 8 - PokeCenter   9 - Losing screen   10 - Winning screen 
-	 */
-	public static int gameState = 0;
-	public static Player player;
+	// 0 - start menu
+	// 1 - Instructions
+	// 2 - Pewter City
+	// 3 - Battle
+	// 4 - Misc
+	static int gameState = 0;
+	// 0 - not in battle
+	// 1 - options
+	// 2 - moves
+	// 3 - turn check
+	// 4 - player turn
+	// 5 - enemy turn
+	// 6 - displaying attacks and effects
+	// 8 - pokemon menu
+	// 9 - about us
+	//10 - Instructions 2
+	// 11- Intro to types
+	// 12 - pick types
+	// 13 - Poke Center
+	// 14 Lose screen
+	// 15 - Win screen
+	static int battleState = 0;
+	static int nextBattleState = 0;
+	static Battle battle;
+
+	static Player player;
+	static Trainer trainer;
 	// self explanatory variables
-	int FPS = 60;
+	static int FPS = 60;
 	Thread thread;
 	static int screenWidth = 960;
 	static int screenHeight = 640;
+	// map sizing
 	static int tileSize = 64;
 	static int tileScreenWidth = screenWidth / tileSize; // 15
 	static int tileScreenHeight = screenHeight / tileSize; //10
 	static int tileMapWidth = 48;
 	static int tileMapHeight = 40;
+	// background 
 	BufferedImage currentBG;
-	// background top-left corner position, x and y value
+	// top-left corner position, x and y value
 	static int bgX = 0;
 	static int bgY = 0;
+	// default background shift
 	static int defaultShiftPixels = 4;
 	static boolean bgAdjusting = false;
 	// last bg position
-	int saveBGX = -960;
-	int saveBGY = -1920;
+	static int saveBGX = -960;
+	static int saveBGY = -1920;
 
 	long lastActionTime = 0;
 	char lastKeyPressed = ' ';
 	char lastKeyReleased = ' ';
-
+	
+	// walls on the map and collision detection
 	public static Wall[][] allWalls = new Wall[tileMapHeight][tileMapWidth];
 	public static boolean collisionUp = false;
 	public static boolean collisionDown = false;
@@ -49,6 +74,22 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	BufferedImage[] spriteTest = new BufferedImage[2];
 	int spriteIdx = 0;
 
+	// Arrow position
+	static int[][] optionsArrowPositions = { { 512, 496 }, { 736, 496 }, { 512, 560 }, { 736, 560 } };
+	static int optionsArrowX = 512;
+	static int optionsArrowY = 496;
+	static int optionsArrowIdx = 0;
+
+	static int[][] attackArrowPositions = { { 36, 490 }, { 332, 490 }, { 36, 554 }, { 332, 554 } };
+	static int attackArrowX = 36;
+	static int attackArrowY = 490;
+	static int attackArrowIdx = 0;
+
+	// Pokemon Menu Select Position
+	private static int[] pkmnListIdx = new int[3]; // stores the pokeList idx of the pokemon on the pokemon menu
+	private static int pkmnMenuSelectIdx = 0;
+	private static int pkmnMenuIdx = 0;
+	
 	public Player ray;
 	
 	public Main() {
@@ -73,9 +114,14 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			update();
 			this.repaint();
 			try {
+				// pause when displaying an effect
+				if (battle.isDisplayingEffect()) {
+					Thread.sleep(2000);
+					battle.setDisplayingEffect(false);
+				}
 				Thread.sleep(1000 / FPS);
-			} catch (Exception e) {
-				e.printStackTrace();
+			} catch (NullPointerException e) {
+			} catch (InterruptedException e) {
 			}
 		}
 	}
@@ -83,8 +129,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	public static void initialize() throws IOException {
 		// setups before the game starts running
 		try {
-			GameFunctions.importEverything();
 			Images.importAllImages();
+			GameFunctions.importEverything();
 			PokeType.addToChart();
 			Music.initializeMusic();
 		} catch (FileNotFoundException e) {
@@ -112,38 +158,105 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			}
 			Animations.walk();
 			Animations.resetWalk();
-
-			// bgAdjust();
 			bgShift();
-			// System.out.println(collisionUp + " " + collisionDown + " " + collisionLeft +
-			// " " + collisionRight);
-		} else if (gameState == 3) {
+		} 
+		
+		else if (gameState == 3) {
 			currentBG = Images.battleBackground;
 		}
-		else if (gameState==4) {
+		else if (gameState==9) {
 			currentBG = Images.aboutUs;
 		}
-		else if (gameState==5) {
+		else if (gameState==10) {
 			currentBG = Images.instructions2;
 		}
-		else if (gameState==6) {
+		else if (gameState==11) {
 			currentBG = Images.start1;
 		}
-		else if (gameState==7) {
+		else if (gameState==12) {
 			currentBG = Images.start2;
 		}
 		// IM CURRENTLY TRYNA GET POKEMON CENTER TO WORK 
-		else if (gameState==8) {
+		else if (gameState==13) {
 			currentBG = Images.pokemonCenter;
 			Animations.walk();
 			Animations.resetWalk();
 			bgShift();
 		}
-		else if (gameState==9) {
+		else if (gameState==14) {
 			currentBG = Images.loseScreen;
 		}
-		else if (gameState==10) {
+		else if (gameState==15) {
 			currentBG = Images.winScreen;
+		}
+		if (battleState == 3) {
+			// moves intended to happen
+			battle.applyStatus();
+			battle.setPlayerCurrentMove(battle.getPlayerMon().getMoves()[attackArrowIdx]);
+			battle.setOtherCurrentMove(battle.opponentChooseAttack());
+			battle.setRoundEnd(false);
+			if (battle.turnCheck()) {
+				battleState = 4;
+			} else {
+				battleState = 5;
+			}
+		}
+		if (battleState == 4) {
+			battle.setOtherAttacking(false);
+			battle.checkFaint(battle.getPlayerMon());
+			battle.checkFaint(battle.getOtherMon());
+			if (battle.checkBattle()) {
+				if (battle.getPlayerMon().getFaint()) {
+					battleState = 8;
+				} else if (battle.getOtherMon().getFaint()) {
+					battle.otherChooseNewPokemon();
+					battle.resetTurn();
+					battleState = 1;
+				} else if (!battle.getPlayerSkipTurn() && !battle.isPlayerAttacking()) {
+					battle.attack(battle.getPlayerCurrentMove(), battle.getPlayerMon(), battle.getOtherMon());
+					battle.setPlayerAttacking(true);
+				}
+			} else {
+				if (battle.getOtherMon().getFaint()) {
+					if (battle.getPlayerMon().getFaint()) {
+						// tie
+					}
+					// win
+				} else if (battle.getPlayerMon().getFaint()) {
+					// lost
+				}
+			}
+
+		}
+		if (battleState == 5) {
+			battle.setPlayerAttacking(false);
+			battle.checkFaint(battle.getPlayerMon());
+			battle.checkFaint(battle.getOtherMon());
+			if (battle.checkBattle()) {
+				if (battle.getPlayerMon().getFaint()) {
+					battleState = 8;
+				} else if (battle.getOtherMon().getFaint()) {
+					battle.otherChooseNewPokemon();
+					battle.resetTurn();
+					battleState = 1;
+				} else if (!battle.getOtherSkipTurn() && !battle.isOtherAttacking()) {
+					battle.attack(battle.getOtherCurrentMove(), battle.getOtherMon(), battle.getPlayerMon());
+					battle.setOtherAttacking(true);
+				}
+			} else {
+				if (battle.getOtherMon().getFaint()) {
+					if (battle.getPlayerMon().getFaint()) {
+						// tie
+					}
+					// win 					
+					
+				} else if (battle.getPlayerMon().getFaint()) {
+					// lost
+				}
+			}
+		}
+		if (battleState == 8) {
+			currentBG = Images.pkmnMenuBG;
 		}
 	}
 
@@ -151,7 +264,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		super.paintComponent(g);
 		g.drawImage(currentBG, bgX, bgY, null);
 		
-		if (gameState==8) {
+		if (gameState==13) {
 			g.drawImage(Player.getCurrentPlayerImage(), Player.getPlayerX(), Player.getPlayerY(), null);
 			g.drawRect(Player.hitbox.x, Player.hitbox.y, Player.hitbox.width, Player.hitbox.height);
 		}
@@ -159,7 +272,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		if (gameState == 2) {
 			g.drawImage(Player.getCurrentPlayerImage(), Player.getPlayerX(), Player.getPlayerY(), null);
 			g.drawRect(Player.hitbox.x, Player.hitbox.y, Player.hitbox.width, Player.hitbox.height);
-//			System.out.println(Player.getPlayerX() + " " + Player.getPlayerY());
 			for (int i = 0; i < 40; i++) {
 				for (int j = 0; j < 48; j++) {
 					if (allWalls[i][j] != null) {
@@ -170,56 +282,311 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			}
 		}
 		if (gameState == 3) {
-			Trainer ash = new Trainer();
-			Battle battle = new Battle(ray, ash);
-			baseBattleGraphics(g, battle);
-			// Sprites and Pop-ups
-//			g.drawImage(Images.battleSprites[Images.battleSpritesIdx.get(Pokemon.pokeList.get(spriteIdx).getName().toLowerCase())][0], 576, 32, null);
-//			g.drawImage(Images.battleSprites[Images.battleSpritesIdx.get(Pokemon.pokeList.get(spriteIdx).getName().toLowerCase())][1], 128, 196, null);
-//			g.drawImage(Images.battleMenu[4], 0, 640 - Images.battleMenu[5].getHeight(), null);
-// 			g.drawImage(Images.battleMenu[5], 0, 640 - Images.battleMenu[2].getHeight(), null);
-// 			g.drawImage(Images.battleMenu[2], 960 - Images.battleMenu[2].getWidth(), 640 - Images.battleMenu[2].getHeight(), null);
-//			g.drawImage(Images.battleMenu[0], 48, 64, null);
-//			g.drawImage(Images.battleMenu[1], 484, 284, null);
-			
-//			for (int i = 0; i < 26; i++) {
-//				g.drawImage(Images.battleFont[i], 200 + (i)*30, 200, null);
-//				System.out.println(Images.battleFont[i].getWidth());
-//			}
-//			g.drawImage(Images.battleMenu[3], 512, 496, null);
-//			g.drawImage(Images.battleMenu[3], 512, 560, null);
-//			g.drawImage(Images.battleMenu[3], 736, 496, null);
-//			g.drawImage(Images.battleMenu[3], 736, 560, null);
-			
-			// Pokemon Names 
-//			displayText(g, Images.battleFontIdx, Images.battleFont,
-//					Pokemon.pokeList.get(spriteIdx).getName().toUpperCase(), 80, 88);
-//			displayText(g, Images.battleFontIdx, Images.battleFont,
-//					Pokemon.pokeList.get(spriteIdx).getName().toUpperCase(), 556, 313);
-//			displayText(g, Images.battleFontIdx, Images.battleFont, "99", 379, 88);
-//			displayText(g, Images.battleFontIdx, Images.battleFont, "99", 850, 312);
-			
-			// Attack Display
-//			g.drawImage(Images.battleMenu[3], 36, 490, null);
-//			g.drawImage(Images.battleMenu[3], 332, 490, null);
-//			g.drawImage(Images.battleMenu[3], 36, 554, null);
-//			g.drawImage(Images.battleMenu[3], 332, 554, null);
-//			if (Pokemon.pokeList.get(spriteIdx).getMoves()[0] != null) {
-//				displayText(g, Images.attackFontIdx, Images.attackFont,
-//						Pokemon.pokeList.get(spriteIdx).getMoves()[0].getName(), 64, 490);
-//			}
-//			if (Pokemon.pokeList.get(spriteIdx).getMoves()[1] != null) {
-//				displayText(g, Images.attackFontIdx, Images.attackFont,
-//						Pokemon.pokeList.get(spriteIdx).getMoves()[1].getName(), 360, 490);
-//			}
-//			if (Pokemon.pokeList.get(spriteIdx).getMoves()[2] != null) {
-//				displayText(g, Images.attackFontIdx, Images.attackFont,
-//						Pokemon.pokeList.get(spriteIdx).getMoves()[2].getName(), 64, 554);
-//			}
-//			if (Pokemon.pokeList.get(spriteIdx).getMoves()[3] != null) {
-//				displayText(g, Images.attackFontIdx, Images.attackFont,
-//						Pokemon.pokeList.get(spriteIdx).getMoves()[3].getName(), 360, 554);
-//			}
+			if (battleState < 8) {
+				baseBattleGraphics(g);
+				displayBattleSprites(g);
+				displayPokemonStats(g);
+				displayStatus(g);
+				displayHealth(g);
+			}
+			if (battleState == 1) {
+				// reset moves after attack round and pause to show attacks
+				battle.resetTurn();
+				displayOptionsMenuAndArrow(g);
+				displayText(g, Images.whiteFontIdx, Images.whiteFont,
+						"What will~" + battle.getPlayerMon().getName().toUpperCase() + " do?", 40,
+						640 - Images.battleMenu[4].getHeight() + 40);
+			} else if (battleState == 2) {
+				displayAttackMenuAndArrow(g);
+				displayAttacks(g);
+			} else if (battleState == 4) {
+				System.out.println("!!!!!Attacked: " + battle.isPlayerAttacked() + " " + "PlayerAfterEffect: "
+						+ battle.isDisplayedAfterPlayerEffect());
+				battle.setDisplayedBeforeOtherEffect(false);
+				if (battle.getPlayerSkipTurn()) {
+					if (!battle.isDisplayedBeforePlayerEffect()) {
+						if (battle.isSwitchPokemon()) {
+							battle.setCurrentEffect("Go " + battle.getPlayerMon().getName().toUpperCase() + "!");
+							battle.setSwitchPokemon(false);
+							battle.setPlayerSkipTurn(false);
+						} else if (battle.getPlayerMon().getStatus() == 2) {
+							battle.setCurrentEffect(battle.getPlayerMon().getName().toUpperCase()
+									+ " is paralyzed.~It is unable to move!");
+						} else if (battle.getPlayerMon().getStatus() == 3) {
+							battle.setCurrentEffect(battle.getPlayerMon().getName().toUpperCase() + " is fast asleep.");
+						}
+						if (battle.getRoundEnd()) {
+							nextBattleState = 1;
+							battle.setRoundEnd(false);
+						} else {
+							nextBattleState = 5;
+							battle.setRoundEnd(true);
+						}
+						battleState = 6;
+						battle.setDisplayingEffect(true);
+					} else {
+						if (battle.getRoundEnd()) {
+							battleState = 1;
+							battle.setRoundEnd(false);
+						} else {
+							battleState = 5;
+							battle.setRoundEnd(true);
+						}
+						battle.setPlayerSkipTurn(false);
+					}
+				} else if (!battle.getPlayerSkipTurn() && !battle.isPlayerAttacked()) {
+					if (battle.getPlayerMon().getStatus() >= 1) {
+						if (battle.isDisplayedBeforePlayerEffect()) {
+							if (battle.getRoundEnd() && battle.getPlayerAttackEffect() == null) {
+								nextBattleState = 1;
+								battle.setRoundEnd(false);
+							} else if (battle.getPlayerAttackEffect() == null) {
+								nextBattleState = 5;
+								battle.setRoundEnd(true);
+							} else {
+								nextBattleState = 4;
+							}
+							battle.setCurrentEffect(battle.getPlayerMon().getName().toUpperCase() + " used~"
+									+ battle.getPlayerCurrentMove().getName().toUpperCase() + "!");
+							battle.setDisplayedBeforePlayerEffect(false);
+							battle.setPlayerAttacked(true);
+						} else {
+							nextBattleState = battleState;
+							if (battle.getPlayerMon().getStatus() == 1) {
+								battle.setCurrentEffect(
+										battle.getPlayerMon().getName().toUpperCase() + " is poisoned.");
+							} else if (battle.getPlayerMon().getStatus() == 2) {
+								battle.setCurrentEffect(
+										battle.getPlayerMon().getName().toUpperCase() + " is paralyzed.");
+							} else if (battle.getPlayerMon().getStatus() == 4) {
+								battle.setCurrentEffect(battle.getPlayerMon().getName().toUpperCase() + " was burned.");
+							} else if (battle.getPlayerMon().getStatus() == 5) {
+								battle.setCurrentEffect(
+										battle.getPlayerMon().getName().toUpperCase() + " was badly poisoned");
+							}
+						}
+						battleState = 6;
+						battle.setDisplayingEffect(true);
+					} else {
+						System.out.println("Player: " + battle.getPlayerAttackEffect());
+						System.out.println("P: " + (battle.getPlayerAttackEffect() == null));
+						if (battle.getRoundEnd() && battle.getPlayerAttackEffect() == null) {
+							nextBattleState = 1;
+							battle.setRoundEnd(false);
+						} else if (battle.getPlayerAttackEffect() == null) {
+							nextBattleState = 5;
+							battle.setRoundEnd(true);
+						} else {
+							nextBattleState = battleState;
+						}
+						battle.setCurrentEffect(battle.getPlayerMon().getName().toUpperCase() + " used~"
+								+ battle.getPlayerCurrentMove().getName().toUpperCase() + "!");
+						battleState = 6;
+						battle.setDisplayingEffect(true);
+						battle.setPlayerAttacked(true);
+					}
+				} else if (battle.isPlayerAttacked() && !battle.isDisplayedAfterPlayerEffect()) {
+					System.out.println("Displaying player attack effect");
+					nextBattleState = battleState;
+					battle.setCurrentEffect(battle.getPlayerAttackEffect());
+					battleState = 6;
+					battle.setDisplayingEffect(true);
+					battle.setDisplayedAfterPlayerEffect(true);
+				} else if (battle.isDisplayedAfterPlayerEffect()) {
+					System.out.println("Switching battleState1");
+					if (battle.getRoundEnd()) {
+						battleState = 1;
+						battle.setRoundEnd(false);
+					} else {
+						battleState = 5;
+						battle.setRoundEnd(true);
+					}
+					battle.setDisplayedAfterPlayerEffect(false);
+					battle.setPlayerAttacked(false);
+				}
+			} else if (battleState == 5) {
+				System.out.println("!!!!!!Attacked: " + battle.isOtherAttacked() + " " + "OtherAFterEffect: "
+						+ battle.isDisplayedAfterOtherEffect());
+				battle.setDisplayedBeforePlayerEffect(false);
+				if (battle.getOtherSkipTurn()) {
+					if (!battle.isDisplayedBeforeOtherEffect()) {
+						if (battle.getOtherMon().getStatus() == 2) {
+							battle.setCurrentEffect("Enemy " + battle.getOtherMon().getName().toUpperCase()
+									+ " is paralyzed.~It is unable to move!");
+						} else if (battle.getOtherMon().getStatus() == 3) {
+							battle.setCurrentEffect(
+									"Enemy " + battle.getOtherMon().getName().toUpperCase() + " is fast asleep.");
+						}
+						if (battle.getRoundEnd()) {
+							nextBattleState = 1;
+							battle.setRoundEnd(false);
+						} else {
+							nextBattleState = 4;
+							battle.setRoundEnd(true);
+						}
+						battleState = 6;
+						battle.setDisplayingEffect(true);
+					} else {
+						if (battle.getRoundEnd()) {
+							battleState = 1;
+							battle.setRoundEnd(false);
+						} else {
+							battleState = 4;
+							battle.setRoundEnd(true);
+						}
+						battle.setOtherSkipTurn(false);
+					}
+				} else if (!battle.getOtherSkipTurn() && !battle.isOtherAttacked()) {
+					if (battle.getOtherMon().getStatus() >= 1) {
+						if (battle.isDisplayedBeforeOtherEffect()) {
+							if (battle.getRoundEnd() && battle.getOtherAttackEffect() == null) {
+								nextBattleState = 1;
+								battle.setRoundEnd(false);
+							} else if (battle.getOtherAttackEffect() == null) {
+								nextBattleState = 4;
+								battle.setRoundEnd(true);
+							} else {
+								nextBattleState = battleState;
+							}
+							battle.setCurrentEffect("Enemy " + battle.getOtherMon().getName().toUpperCase() + " used~"
+									+ battle.getOtherCurrentMove().getName().toUpperCase() + "!");
+							battle.setDisplayingEffect(true);
+							battle.setOtherAttacked(true);
+						} else {
+							nextBattleState = battleState;
+							if (battle.getOtherMon().getStatus() == 1) {
+								battle.setCurrentEffect(
+										"Enemy " + battle.getOtherMon().getName().toUpperCase() + " is poisoned.");
+							} else if (battle.getOtherMon().getStatus() == 2) {
+								battle.setCurrentEffect(
+										"Enemy " + battle.getOtherMon().getName().toUpperCase() + " is paralyzed.");
+							} else if (battle.getOtherMon().getStatus() == 4) {
+								battle.setCurrentEffect(
+										"Enemy " + battle.getOtherMon().getName().toUpperCase() + " was burned.");
+							}
+						}
+						battleState = 6;
+						battle.setDisplayingEffect(true);
+					} else {
+						System.out.println("Other: " + battle.getOtherAttackEffect());
+						System.out.println("O: " + (battle.getOtherAttackEffect() == null));
+						if ((battle.getRoundEnd() && battle.getOtherAttackEffect() == null)) {
+							nextBattleState = 1;
+							battle.setRoundEnd(false);
+						} else if (battle.getOtherAttackEffect() == null) {
+							nextBattleState = 4;
+							battle.setRoundEnd(true);
+						} else {
+							nextBattleState = battleState;
+						}
+						battle.setCurrentEffect("Enemy " + battle.getOtherMon().getName().toUpperCase() + " used~"
+								+ battle.getOtherCurrentMove().getName().toUpperCase() + "!");
+						battleState = 6;
+						battle.setDisplayingEffect(true);
+						battle.setOtherAttacked(true);
+					}
+				} else if (battle.isOtherAttacked() && !battle.isDisplayedAfterOtherEffect()) {
+					System.out.println("Displaying other attack effect: " + battle.getOtherAttackEffect());
+					battle.setCurrentEffect(battle.getOtherAttackEffect());
+					nextBattleState = battleState;
+					battleState = 6;
+					battle.setDisplayingEffect(true);
+					battle.setDisplayedAfterOtherEffect(true);
+				} else if (battle.isDisplayedAfterOtherEffect()) {
+					System.out.println("Switching battle states2");
+					if (battle.getRoundEnd()) {
+						battleState = 1;
+						battle.setRoundEnd(false);
+					} else {
+						battleState = 4;
+						battle.setRoundEnd(true);
+					}
+					battle.setOtherAttacked(false);
+					battle.setDisplayedAfterOtherEffect(false);
+				}
+			} else if (battleState == 6) {
+				System.out.println("----Attacked: " + battle.isPlayerAttacked() + " " + "PlayerAfterEffect: "
+						+ battle.isDisplayedAfterPlayerEffect());
+				System.out.println("----Attacked: " + battle.isOtherAttacked() + " " + "OtherAFterEffect: "
+						+ battle.isDisplayedAfterOtherEffect());
+				try {
+//					System.out.println(battle.getCurrentEffect());
+					displayText(g, Images.whiteFontIdx, Images.whiteFont, battle.getCurrentEffect(), 40, 488);
+				} catch (NullPointerException e) {
+					e.printStackTrace();
+				}
+				if (battle.getPlayerSkipTurn() && nextBattleState != 4) {
+					battle.setDisplayedBeforePlayerEffect(true);
+				} else if (battle.getOtherSkipTurn() && nextBattleState != 5) {
+					battle.setDisplayedBeforeOtherEffect(true);
+				}
+				if (battle.isPlayerAttacking()) {
+					if (nextBattleState == 4) {
+						battle.setDisplayedBeforePlayerEffect(true);
+					}
+				} else if (battle.isOtherAttacking()) {
+					if (nextBattleState == 5) {
+						battle.setDisplayedBeforeOtherEffect(true);
+					}
+				}
+				battleState = nextBattleState;
+				// pokemon menu
+			} else if (battleState == 8) {
+				// first pokemon
+				if (pkmnMenuSelectIdx == 0) {
+					g.drawImage(Images.pkmnMenuIcons[1], 8, 72, null);
+				} else {
+					g.drawImage(Images.pkmnMenuIcons[0], 8, 72, null);
+				}
+				displayText(g, Images.whiteFontIdx, Images.whiteFont, battle.getPlayerMon().getName().toUpperCase(), 72,
+						148); // first name
+				displayText(g, Images.whiteFontIdx, Images.whiteFont, battle.getPlayerMon().getLevel() + "", 192, 184); // first
+																														// lvl
+				displayText(g, Images.whiteFontIdx, Images.whiteFont, battle.getPlayerMon().getCurrentHp() + "", 196,
+						248); // first health
+				displayText(g, Images.whiteFontIdx, Images.whiteFont, battle.getPlayerMon().getBaseHp() + "", 280, 248);
+
+				// other pokemon
+				for (int i = 0; i < 3; i++) {
+					if (battle.getPlayer().getPokemonList()[i] != battle.getPlayerMon()) {
+						if (pkmnMenuSelectIdx == pkmnMenuIdx + 1) {
+							g.drawImage(Images.pkmnMenuIcons[3], 352, 36 + 96 * pkmnMenuIdx, null);
+						} else {
+							g.drawImage(Images.pkmnMenuIcons[2], 352, 36 + 96 * pkmnMenuIdx, null);
+						}
+						displayText(g, Images.whiteFontIdx, Images.whiteFont,
+								battle.getPlayer().getPokemonList()[i].getName().toUpperCase(), 432,
+								52 + 96 * pkmnMenuIdx); // other name
+						displayText(g, Images.whiteFontIdx, Images.whiteFont,
+								battle.getPlayer().getPokemonList()[i].getLevel() + "", 544, 88 + 96 * pkmnMenuIdx); // other
+																														// level
+						displayText(g, Images.whiteFontIdx, Images.whiteFont,
+								battle.getPlayer().getPokemonList()[i].getCurrentHp() + "", 800, 88 + 96 * pkmnMenuIdx); // other
+																															// current
+																															// hp
+						displayText(g, Images.whiteFontIdx, Images.whiteFont,
+								battle.getPlayer().getPokemonList()[i].getBaseHp() + "", 884, 88 + 96 * pkmnMenuIdx); // other
+																														// base
+																														// hp
+						pkmnMenuIdx++;
+						pkmnListIdx[pkmnMenuIdx] = i;
+					} else {
+						pkmnListIdx[0] = i;
+					}
+				}
+				// cancel button
+				if (!battle.getPlayerMon().getFaint()) {
+					if (pkmnMenuSelectIdx == 3) {
+						g.drawImage(Images.pkmnMenuIcons[5], 736, 528, null);
+					} else {
+						g.drawImage(Images.pkmnMenuIcons[4], 736, 528, null);
+					}
+				}
+				pkmnMenuIdx = 0;
+				displayHealth(g); // all health
+				displayText(g, Images.moveFontIdx, Images.moveFont, "Select a pokemon to switch to.", 40, 536);
+
+			}
 			
 		}
 	}
@@ -247,13 +614,13 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			if (Player.getLosses()==8) {
 				bgX = 0;
 				bgY = 0;
-				gameState = 9;
+				gameState = 14;
 			}
 		}
 		if (x=='o') {
 			bgX = 0;
 			bgY = 0;
-			gameState = 10;
+			gameState = 15;
 		}
 		
 		// Shuffling through the intro and menu screens
@@ -264,25 +631,25 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			bgY = 0;
 		}
 		else if (gameState==1 && x=='i') {
-			gameState = 5;
+			gameState = 10;
 		}
-		else if (gameState==5 && x=='i') {
+		else if (gameState==10 && x=='i') {
 			gameState = 0;
 		}
 		else if (gameState==0 && x=='a') {
-			gameState=4;
+			gameState=9;
 		}
-		else if (gameState==4 && x=='a') {
+		else if (gameState==9 && x=='a') {
 			gameState=0;
 		}
 		else if (gameState==0 && x=='e') {
-			gameState = 6;
+			gameState = 11;
 		}
-		else if (gameState==6 && x=='e') {
-			gameState = 7;
+		else if (gameState==11 && x=='e') {
+			gameState = 12;
 		}
 		
-		else if (gameState == 7) {
+		else if (gameState == 12) {
 			if (x=='1') {
 				ray = new Player ("Grass");
 				bgX = saveBGX;
@@ -310,6 +677,9 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 				saveBGY = bgY;
 				bgX = 0;
 				bgY = 0;
+				battleState = 1;
+				trainer = new Trainer();
+				battle = new Battle(ray, trainer);
 			}
 			// Entering the Poke Center
 			else if (bgY==-1348 && bgX>=-676 && bgX<=-632) {
@@ -319,11 +689,11 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 				bgY = -290;
 				tileMapWidth = 22;
 				tileMapHeight = 15;
-				gameState = 8;
+				gameState = 13;
 			}
 		}
 		
-		else if (gameState==8 && x=='e') {
+		else if (gameState==13 && x=='e') {
 			if (bgY>=-320 && bgY<=-284 && bgX>=-310 && bgX<=-200) {
 				bgX = saveBGX;
 				bgY = saveBGY;
@@ -336,7 +706,11 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 					gameState = -1; // Temporary gamestate
 					Music.healMusic();
 					Thread.sleep(3000);
-					gameState = 8;
+					gameState = 13;
+					for (int i = 0; i < player.getPokemonList().length; i++) {
+						player.getPokemonList()[i].setDeltaHp(0);
+						player.getPokemonList()[i].setStatus(0);
+					}
 				}
 				catch (InterruptedException E) {
 					
@@ -351,44 +725,183 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 //			} 
 //			if (checkTile()) {
 //				x = (char) movesQ.remove();
-			if (x == 'w') {
-				Player.setDirection(1);
-				Player.setMoving(true);
-				if (bgX == -448 && bgY == -768) {
+				if (x == 'w') {
+					Player.setDirection(1);
+					Player.setMoving(true);
+					if (bgX == -448 && bgY == -768) {
 //						Battle b = new Battle(player, new Trainer());
+					}
+				} else if (x == 's') {
+					Player.setDirection(2);
+					Player.setMoving(true);
+				} else if (x == 'a') {
+					Player.setDirection(3);
+					Player.setMoving(true);
+				} else if (x == 'd') {
+					Player.setDirection(4);
+					Player.setMoving(true);
 				}
-			} else if (x == 's') {
-				Player.setDirection(2);
-				Player.setMoving(true);
-			} else if (x == 'a') {
-				Player.setDirection(3);
-				Player.setMoving(true);
-			} else if (x == 'd') {
-				Player.setDirection(4);
-				Player.setMoving(true);
-			}
-			lastKeyPressed = e.getKeyChar();
+				lastKeyPressed = e.getKeyChar();
 //			}
 //			System.out.println(checkTile());
-		}
-		else if (gameState==8) {
+			}
+		 else if (gameState == 3 && battleState == 1) {
 			if (x == 'w') {
-				Player.setDirection(1);
-				Player.setMoving(true);
-				if (bgX == -448 && bgY == -768) {
-//						Battle b = new Battle(player, new Trainer());
+				if (optionsArrowIdx == 2 || optionsArrowIdx == 3) {
+					optionsArrowIdx -= 2;
 				}
 			} else if (x == 's') {
-				Player.setDirection(2);
-				Player.setMoving(true);
+				if (optionsArrowIdx == 0 || optionsArrowIdx == 1) {
+					optionsArrowIdx += 2;
+
+				}
 			} else if (x == 'a') {
-				Player.setDirection(3);
-				Player.setMoving(true);
+				if (optionsArrowIdx == 1 || optionsArrowIdx == 3) {
+					optionsArrowIdx--;
+				}
 			} else if (x == 'd') {
-				Player.setDirection(4);
-				Player.setMoving(true);
+				if (optionsArrowIdx == 0 || optionsArrowIdx == 2) {
+					optionsArrowIdx++;
+				}
+
+			} else if (x == 'e')
+				if (optionsArrowIdx == 0) {
+					battleState = 2;
+				} else if (optionsArrowIdx == 1) {
+
+				} else if (optionsArrowIdx == 2) {
+					battleState = 8;
+					pkmnMenuIdx = 0;
+					pkmnMenuSelectIdx = 0;
+				} else if (optionsArrowIdx == 3) {
+
+				}
+			optionsArrowX = optionsArrowPositions[optionsArrowIdx][0];
+			optionsArrowY = optionsArrowPositions[optionsArrowIdx][1];
+		} else if (gameState == 3 && battleState == 2) {
+			if (x == 'w') {
+				if (attackArrowIdx == 2 || attackArrowIdx == 3) {
+					if (battle.getPlayerMon().getMoves()[attackArrowIdx - 2] != null) {
+						attackArrowIdx -= 2;
+					}
+				}
+			} else if (x == 's') {
+				if (attackArrowIdx == 0 || attackArrowIdx == 1) {
+					if (battle.getPlayerMon().getMoves()[attackArrowIdx + 2] != null) {
+						attackArrowIdx += 2;
+					}
+				}
+			} else if (x == 'a') {
+				if (attackArrowIdx == 1 || attackArrowIdx == 3) {
+					if (battle.getPlayerMon().getMoves()[attackArrowIdx - 1] != null) {
+						attackArrowIdx--;
+					}
+				}
+			} else if (x == 'd') {
+				if (attackArrowIdx == 0 || attackArrowIdx == 2) {
+					if (battle.getPlayerMon().getMoves()[attackArrowIdx + 1] != null) {
+						attackArrowIdx++;
+					}
+				}
+
+			} else if (x == 'e') {
+				battleState = 3;
+			} else if (x == 'q') {
+				battleState = 1;
 			}
-			lastKeyPressed = e.getKeyChar();
+			attackArrowX = attackArrowPositions[attackArrowIdx][0];
+			attackArrowY = attackArrowPositions[attackArrowIdx][1];
+		} else if (battleState == 8) {
+			if (x == 'w') {
+				if (pkmnMenuSelectIdx == 2 || pkmnMenuSelectIdx == 3) {
+					pkmnMenuSelectIdx--;
+				}
+			} else if (x == 's') {
+				if (pkmnMenuSelectIdx == 1 || pkmnMenuSelectIdx == 2) {
+					pkmnMenuSelectIdx++;
+				}
+			} else if (x == 'a') {
+				if (pkmnMenuSelectIdx >= 1 && pkmnMenuSelectIdx <= 2) {
+					pkmnMenuSelectIdx = 0;
+				}
+			} else if (x == 'd') {
+				if (pkmnMenuSelectIdx == 0) {
+					pkmnMenuSelectIdx = 2;
+				}
+
+			} else if (x == 'e') {
+				if (battle.getPlayerMon().getFaint()) {
+					if (!battle.getPlayer().getPokemonList()[pkmnListIdx[pkmnMenuSelectIdx]].getFaint()) {
+						if (pkmnMenuSelectIdx != 0) {
+							battle.setPlayerMon(battle.getPlayer().getPokemonList()[pkmnListIdx[pkmnMenuSelectIdx]]);
+							battle.resetTurn();
+							battle.setSwitchPokemon(true);
+							battle.setPlayerSkipTurn(true);
+							battleState = 1;
+						}
+					}
+				} else {
+					if (pkmnMenuSelectIdx == 3) {
+						battleState = 1;
+					} else if (pkmnMenuSelectIdx != 0) {
+						battle.setPlayerMon(battle.getPlayer().getPokemonList()[pkmnListIdx[pkmnMenuSelectIdx]]);
+						battle.resetTurn();
+						battle.setSwitchPokemon(true);
+						battle.setPlayerSkipTurn(true);
+						battleState = 1;
+					}
+				}
+			} else if (x == 'q') {
+				if (!battle.getPlayerMon().getFaint()) {
+					battleState = 1;
+				}
+			}
+		}
+		else if (battleState == 8) {
+			if (x == 'w') {
+				if (pkmnMenuSelectIdx == 2 || pkmnMenuSelectIdx == 3) {
+					pkmnMenuSelectIdx--;
+				}
+			} else if (x == 's') {
+				if (pkmnMenuSelectIdx == 1 || pkmnMenuSelectIdx == 2) {
+					pkmnMenuSelectIdx++;
+				}
+			} else if (x == 'a') {
+				if (pkmnMenuSelectIdx >= 1 && pkmnMenuSelectIdx <= 2) {
+					pkmnMenuSelectIdx = 0;
+				}
+			} else if (x == 'd') {
+				if (pkmnMenuSelectIdx == 0) {
+					pkmnMenuSelectIdx = 2;
+				}
+
+			} else if (x == 'e') {
+				if (battle.getPlayerMon().getFaint()) {
+					if (!battle.getPlayer().getPokemonList()[pkmnListIdx[pkmnMenuSelectIdx]].getFaint()) {
+						if (pkmnMenuSelectIdx != 0) {
+							battle.setPlayerMon(battle.getPlayer().getPokemonList()[pkmnListIdx[pkmnMenuSelectIdx]]);
+							battle.resetTurn();
+							battle.setSwitchPokemon(true);
+							battle.setPlayerSkipTurn(true);
+							battleState = 1;
+						}
+					}
+				} else {
+					if (pkmnMenuSelectIdx == 3) {
+						battleState = 1;
+					} else if (pkmnMenuSelectIdx != 0) {
+						battle.setPlayerMon(battle.getPlayer().getPokemonList()[pkmnListIdx[pkmnMenuSelectIdx]]);
+						battle.resetTurn();
+						battle.setSwitchPokemon(true);
+						battle.setPlayerSkipTurn(true);
+						battleState = 1;
+					}
+				}
+			} else if (x == 'q') {
+				if (!battle.getPlayerMon().getFaint()) {
+					battleState = 1;
+				}
+			}
 		}
 	}
 
@@ -421,17 +934,11 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			saveBGY = bgY;
 			bgX = 0;
 			bgY = 0;
+			battleState = 1;
+			trainer = new Trainer();
+			battle = new Battle(ray, trainer);
 		} else if (gameState == 3) {
-//			spriteIdx++;
-//			System.out.println(Pokemon.pokeList.get(spriteIdx).getName().toLowerCase() + " "
-//					+ Images.battleSpritesIdx.get(Pokemon.pokeList.get(spriteIdx).getName().toLowerCase()));
-//			spriteTest = Images.battleSprites[Images.battleSpritesIdx
-//					.get(Pokemon.pokeList.get(spriteIdx).getName().toLowerCase())];
-//			System.out.println(spriteTest);
 
-			gameState = 0;
-			bgX = 0;
-			bgY = 0;
 		}
 	}
 
@@ -485,9 +992,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		// self explanatory. You don't want to resize your window because
 		// it might mess up your graphics and collisions
 		frame.setResizable(false);
-		Player player = new Player("Fire");
-		System.out.println();
-		System.out.println(new Trainer());
 	}
 
 	// background shifts with the player
@@ -685,13 +1189,23 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	public static void displayText(Graphics g, HashMap<String, Integer> map, BufferedImage[] images, String text, int x,
 			int y) {
 		int xPos = x;
+		int yPos = y;
 		for (int i = 0; i < text.length(); i++) {
 			if (text.charAt(i) == ' ') {
 				xPos += 14;
+			} else if (text.charAt(i) == '~') { // newline
+				xPos = x;
+				yPos += 64;
+
 			} else {
-				int idx = map.get("" + text.charAt(i));
-				g.drawImage(images[idx], xPos, y, null);
-				xPos += images[idx].getWidth() - images[idx].getWidth()/4-1;
+				int idx;
+				if (text.charAt(i) == '\'') {
+					idx = 75;
+				} else {
+					idx = map.get("" + text.charAt(i));
+				}
+				g.drawImage(images[idx], xPos, yPos, null);
+				xPos += images[idx].getWidth() - images[idx].getWidth() / 4 - 1;
 			}
 
 		}
@@ -703,12 +1217,139 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		int idx = map.get(sym);
 		g.drawImage(images[idx], x, y, null);
 
-	} 
-	public void baseBattleGraphics(Graphics g, Battle battle) {
-		g.drawImage(Images.battleSprites[Images.battleSpritesIdx.get(battle.playerMon.getName().toLowerCase())][0], 576, 32, null);
-		g.drawImage(Images.battleSprites[Images.battleSpritesIdx.get(battle.otherMon.getName().toLowerCase())][1], 128, 196, null);
-		g.drawImage(Images.battleMenu[5], 0, 640 - Images.battleMenu[2].getHeight(), null);
+	}
+
+	public static void baseBattleGraphics(Graphics g) {
+		g.drawImage(Images.battleMenu[5], 0, 640 - Images.battleMenu[5].getHeight(), null);
 		g.drawImage(Images.battleMenu[0], 48, 64, null);
 		g.drawImage(Images.battleMenu[1], 484, 284, null);
+	}
+
+	public static void displayPokemonStats(Graphics g) {
+		g.drawImage(Images.battleMenu[0], 48, 64, null);
+		g.drawImage(Images.battleMenu[1], 484, 284, null);
+		displayText(g, Images.battleFontIdx, Images.battleFont, battle.getOtherMon().getName().toUpperCase(), 80, 88);
+		displayText(g, Images.battleFontIdx, Images.battleFont, battle.getPlayerMon().getName().toUpperCase(), 556,
+				313);
+		displayText(g, Images.battleFontIdx, Images.battleFont, battle.getOtherMon().getLevel() + "", 379, 88);
+		displayText(g, Images.battleFontIdx, Images.battleFont, battle.getPlayerMon().getLevel() + "", 850, 312);
+	}
+
+	public static void displayBattleSprites(Graphics g) {
+		g.drawImage(battle.getOtherMon().getOtherSprite(), 576, 32, null);
+		g.drawImage(battle.getPlayerMon().getPlayerSprite(), 128, 196, null);
+	}
+
+	public static void displayOptionsMenuAndArrow(Graphics g) {
+		g.drawImage(Images.battleMenu[2], 960 - Images.battleMenu[2].getWidth(), 640 - Images.battleMenu[2].getHeight(),
+				null);
+		g.drawImage(Images.battleMenu[3], optionsArrowX, optionsArrowY, null);
+	}
+
+	public static void displayAttackMenuAndArrow(Graphics g) {
+		g.drawImage(Images.battleMenu[4], 960 - Images.battleMenu[4].getWidth(), 640 - Images.battleMenu[4].getHeight(),
+				null);
+		g.drawImage(Images.battleMenu[3], attackArrowX, attackArrowY, null);
+	}
+
+	public static void displayAttacks(Graphics g) {
+		if (battle.getPlayerMon().getMoves()[0] != null) {
+			displayText(g, Images.moveFontIdx, Images.moveFont,
+					battle.getPlayerMon().getMoves()[0].getName().toUpperCase(), 64, 490);
+		}
+		if (battle.getPlayerMon().getMoves()[1] != null) {
+			displayText(g, Images.moveFontIdx, Images.moveFont,
+					battle.getPlayerMon().getMoves()[1].getName().toUpperCase(), 360, 490);
+		}
+		if (battle.getPlayerMon().getMoves()[2] != null) {
+			displayText(g, Images.moveFontIdx, Images.moveFont,
+					battle.getPlayerMon().getMoves()[2].getName().toUpperCase(), 64, 554);
+		}
+		if (battle.getPlayerMon().getMoves()[3] != null) {
+			displayText(g, Images.moveFontIdx, Images.moveFont,
+					battle.getPlayerMon().getMoves()[3].getName().toUpperCase(), 360, 554);
+		}
+		displayText(g, Images.moveFontIdx, Images.moveFont,
+				battle.getPlayerMon().getMoves()[attackArrowIdx].getCurrentPP() + "", 790, 496);
+		displayText(g, Images.moveFontIdx, Images.moveFont,
+				battle.getPlayerMon().getMoves()[attackArrowIdx].getMaxPP() + "", 880, 496);
+		displayText(g, Images.moveFontIdx, Images.moveFont,
+				battle.getPlayerMon().getMoves()[attackArrowIdx].getType() + "", 764, 560);
+	}
+
+	public static void displayStatus(Graphics g) {
+		if (battle.getPlayerMon().getStatus() > 0) {
+			if (battle.getPlayerMon().getStatus() == 5) {
+				g.drawImage(Images.statusIcons[0], 544, 356, null);
+			} else {
+				g.drawImage(Images.statusIcons[battle.getPlayerMon().getStatus() - 1], 544, 356, null);
+			}
+		}
+		if (battle.getOtherMon().getStatus() > 0) {
+			g.drawImage(Images.statusIcons[battle.getOtherMon().getStatus() - 1], 72, 128, null);
+		}
+
+	}
+
+	public static void displayHealth(Graphics g) {
+		if (battleState < 8) {
+			double percentHp = battle.getOtherMon().getCurrentHp() / (battle.getOtherMon().getBaseHp() * 1.0);
+			int pixelsHealth = (int) Math.round(48 * percentHp);
+			BufferedImage barColor;
+			if (pixelsHealth >= 48 * 0.75) {
+				barColor = Images.healthBars[0];
+			} else if (pixelsHealth > 48 * 0.25) {
+				barColor = Images.healthBars[1];
+			} else {
+				barColor = Images.healthBars[2];
+			}
+			for (int i = 0; i < pixelsHealth; i++) {
+				g.drawImage(barColor, 216 + i * 4, 140, null);
+			}
+
+			percentHp = battle.getPlayerMon().getCurrentHp() / (battle.getPlayerMon().getBaseHp() * 1.0);
+			pixelsHealth = (int) Math.round(48 * percentHp);
+			if (pixelsHealth >= 48 * 0.75) {
+				barColor = Images.healthBars[0];
+			} else if (pixelsHealth > 48 * 0.25) {
+				barColor = Images.healthBars[1];
+			} else {
+				barColor = Images.healthBars[2];
+			}
+			for (int i = 0; i < pixelsHealth; i++) {
+				g.drawImage(barColor, 688 + i * 4, 364, null);
+			}
+		} else if (battleState == 8) {
+			double percentHp = battle.getPlayerMon().getCurrentHp() / (battle.getPlayerMon().getBaseHp() * 1.0);
+			int pixelsHealth = (int) Math.round(48 * percentHp);
+			BufferedImage barColor;
+			if (pixelsHealth >= 48 * 0.75) {
+				barColor = Images.healthBars[0];
+			} else if (pixelsHealth > 48 * 0.25) {
+				barColor = Images.healthBars[1];
+			} else {
+				barColor = Images.healthBars[2];
+			}
+			for (int i = 0; i < pixelsHealth; i++) {
+				g.drawImage(barColor, 128 + i * 4, 236, null);
+			}
+			for (int i = 1; i < 3; i++) {
+				percentHp = battle.getPlayer().getPokemonList()[pkmnListIdx[i]].getCurrentHp()
+						/ (battle.getPlayer().getPokemonList()[pkmnListIdx[i]].getBaseHp() * 1.0);
+				pixelsHealth = (int) Math.round(48 * percentHp);
+				if (pixelsHealth >= 48 * 0.75) {
+					barColor = Images.healthBars[0];
+				} else if (pixelsHealth > 48 * 0.25) {
+					barColor = Images.healthBars[1];
+				} else {
+					barColor = Images.healthBars[2];
+				}
+				for (int j = 0; j < pixelsHealth; j++) {
+					g.drawImage(barColor, 736 + j * 4, 72 + 96 * (i - 1), null);
+				}
+			}
+
+		}
+
 	}
 }
