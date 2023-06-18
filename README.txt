@@ -69,5 +69,7 @@ What we could not do:
 
 BUGS:
 - Collision in the town. If you walk up or down RIGHT beside a wall, it will look like you are running into nothing.
-  However, if you move slightly away, walking works like normal. 
+  However, if you move slightly away, walking works like normal. Also, when you enter the Pokemon Center,
+  pressing W will not let you move - there seems to be an invisible barrier. Clicking other movement keys will fix this.
+  Sometimes (and rarely), when you go to heal your Pokemon, the music will not play. 
 
