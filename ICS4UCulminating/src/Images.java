@@ -31,6 +31,8 @@ public class Images {
 	public static BufferedImage start1;
 	public static BufferedImage start2;
 	public static BufferedImage pokemonCenter;
+	public static BufferedImage winScreen;
+	public static BufferedImage loseScreen;
 
 	public static void importAllImages() throws IOException {
 		importMisc();
@@ -51,6 +53,8 @@ public class Images {
 		instructions2=ImageIO.read(new File ("instructions2.png"));
 		start1 = ImageIO.read(new File ("start1.png"));
 		start2 = ImageIO.read(new File ("start2.png"));
+		winScreen = ImageIO.read(new File ("winScreen.png"));
+		loseScreen = ImageIO.read(new File ("loseScreen.png"));
 	}
 
 	public static void importPewterCity() throws IOException {

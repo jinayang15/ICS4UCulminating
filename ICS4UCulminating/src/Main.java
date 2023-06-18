@@ -12,7 +12,7 @@ import javax.swing.*;
 public class Main extends JPanel implements Runnable, KeyListener, MouseListener {
 	/* Kinda not in order BUT THATS OKAY 
 	 * 0: initial menu   1: Instructions   2: Pewter City   3: Battle   4: about us  5: instructions2   6: Intro to types    7: Pick type
-	 * 8 - PokeCenter
+	 * 8 - PokeCenter   9 - Losing screen
 	 */
 	public static int gameState = 0;
 	public static Player player;
@@ -95,6 +95,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	public void update() {
 		// update stuff
 		Music.playMusic();
+		
 		if (gameState == 0) {
 			currentBG = Images.fireRedPressStart;
 		} else if (gameState == 1) {
@@ -137,6 +138,9 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			Animations.walk();
 			Animations.resetWalk();
 			bgShift();
+		}
+		else if (gameState==9) {
+			currentBG = Images.loseScreen;
 		}
 	}
 
@@ -228,7 +232,22 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	public void keyPressed(KeyEvent e) {
 		char x = e.getKeyChar();
 		
+		if (x=='p') {
+			Player.updateLosses();
+			Player.updateLosses();
+			Player.updateLosses();
+			Player.updateLosses();
+			Player.updateLosses();
+			Player.updateLosses();
+			Player.updateLosses();
+			Player.updateLosses();
+			if (Player.getLosses()==8) {
+				gameState = 9;
+			}
+		}
+		
 		// Shuffling through the intro and menu screens
+		
 		if (gameState==0 && x=='i') {
 			gameState = 1;
 			bgX = 0;

@@ -22,8 +22,8 @@ public class Player {
 	static boolean moving;
 //  something for items
 	private Pokemon[] pokemonList = new Pokemon[3];
-	private int wins = 0;
-	private int losses = 0;
+	private static int wins = 0;
+	private static int losses = 0;
 	
 	public Player (String type) {
 		playerX = 512 - playerWidth;
@@ -108,19 +108,19 @@ public class Player {
 		return pokemonList;
 	}
 	
-	public int getWins() {
+	public static int getWins() {
 		return wins;
 	}
 	
-	public int getLosses() {
+	public static int getLosses() {
 		return losses;
 	}
 	
-	public void updateWins() {
+	public static void updateWins() {
 		wins++;
 	}
 	
-	public void updateLosses() {
+	public static void updateLosses() {
 		losses++;
 	}
 	
