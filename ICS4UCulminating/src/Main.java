@@ -22,10 +22,10 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	// 3 - turn check
 	// 4 - player turn
 	// 5 - enemy turn
-	// 6 - player effect
-	// 7 - enemy effect
+	// 6 - displaying attacks and effects
 	// 8 - pokemon menu
 	static int battleState = 0;
+	static int nextBattleState = 0;
 	static Battle battle = null;
 
 	public static Player player;
@@ -101,9 +101,14 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			update();
 			this.repaint();
 			try {
+				// pause when displaying an effect
+				if (battle.isDisplayingEffect()) {
+					Thread.sleep(2000);
+					battle.setDisplayingEffect(false);
+				}
 				Thread.sleep(1000 / FPS);
-			} catch (Exception e) {
-				e.printStackTrace();
+			} catch (NullPointerException e) {
+			} catch (InterruptedException e) {
 			}
 		}
 	}
@@ -115,6 +120,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			GameFunctions.importEverything();
 			PokeType.addToChart();
 			player = new Player("Fire");
+			player.getPokemonList()[0].setStatus(3);
 		} catch (FileNotFoundException e) {
 		}
 
@@ -138,11 +144,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			}
 			Animations.walk();
 			Animations.resetWalk();
-
-			// bgAdjust();
 			bgShift();
-			// System.out.println(collisionUp + " " + collisionDown + " " + collisionLeft +
-			// " " + collisionRight);
 		} else if (gameState == 3) {
 			currentBG = Images.battleBackground;
 		}
@@ -159,23 +161,23 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			battle.checkFaint(battle.getPlayerMon());
 			battle.checkFaint(battle.getOtherMon());
 			if (battle.checkBattle()) {
-				if (!battle.getPlayerSkipTurn() && !battle.isPlayerAttacking()) {
+				if (!battle.getPlayerMon().getFaint() && !battle.isPlayerAttacking()) {
+					System.out.println("one");
 					battle.attack(battle.getPlayerCurrentMove(), battle.getPlayerMon(), battle.getOtherMon());
 					battle.setPlayerAttacking(true);
-				} else if (battle.getPlayerMon().getFaint()) {
-
+				} else {
 				}
 			}
-
 		} else if (battleState == 5) {
 			battle.checkFaint(battle.getPlayerMon());
 			battle.checkFaint(battle.getOtherMon());
 			if (battle.checkBattle()) {
-				if (!battle.getPlayerSkipTurn() && !battle.isOtherAttacking()) {
+				if (!battle.getOtherMon().getFaint() && !battle.isOtherAttacking()) {
+					System.out.println("two");
 					battle.attack(battle.getOtherCurrentMove(), battle.getOtherMon(), battle.getPlayerMon());
 					battle.setOtherAttacking(true);
-				} else if (battle.getOtherMon().getFaint()) {
-					battle.setOtherMon(battle.otherChooseNewPokemon());
+				} else {
+					//battle.setOtherMon(battle.otherChooseNewPokemon());
 				}
 			}
 		} else if (battleState == 8) {
@@ -189,7 +191,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		if (gameState == 2) {
 			g.drawImage(Player.getCurrentPlayerImage(), Player.getPlayerX(), Player.getPlayerY(), null);
 			g.drawRect(Player.hitbox.x, Player.hitbox.y, Player.hitbox.width, Player.hitbox.height);
-//			System.out.println(Player.getPlayerX() + " " + Player.getPlayerY());
 			for (int i = 0; i < 40; i++) {
 				for (int j = 0; j < 48; j++) {
 					if (allWalls[i][j] != null) {
@@ -214,11 +215,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 					battle.setOtherCurrentMove(null);
 					battle.setPlayerAttacking(false);
 					battle.setOtherAttacking(false);
-					try {
-						Thread.sleep(2000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
 				}
 				displayOptionsMenuAndArrow(g);
 				displayText(g, Images.whiteFontIdx, Images.whiteFont,
@@ -228,67 +224,136 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 				displayAttackMenuAndArrow(g);
 				displayAttacks(g);
 			} else if (battleState == 4) {
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 				if (battle.getPlayerSkipTurn()) {
 					if (battle.getPlayerMon().getStatus() == 2) {
-						displayText(g, Images.whiteFontIdx, Images.whiteFont,
-								battle.getPlayerMon().getName().toUpperCase() + " is paralyzed.~It is unable to move!",
-								40, 488);
+						battle.setCurrentEffect(
+								battle.getPlayerMon().getName().toUpperCase() + " is paralyzed.~It is unable to move!");
 					} else if (battle.getPlayerMon().getStatus() == 3) {
-						displayText(g, Images.whiteFontIdx, Images.whiteFont,
-								battle.getPlayerMon().getName().toUpperCase() + " is fast asleep.", 40, 488);
+						battle.setCurrentEffect(battle.getPlayerMon().getName().toUpperCase() + " is fast asleep.");
 					}
-				} else {
-					if (battle.getPlayerMon().getStatus() == 2) {
-						displayText(g, Images.whiteFontIdx, Images.whiteFont,
-								battle.getPlayerMon().getName().toUpperCase() + " is paralyzed.", 40, 488);
+					if (battle.getRoundEnd()) {
+						nextBattleState = 1;
+					} else {
+						nextBattleState = 5;
 					}
-					displayText(g, Images.whiteFontIdx, Images.whiteFont, battle.getPlayerMon().getName().toUpperCase()
-							+ " used~" + battle.getPlayerCurrentMove().getName().toUpperCase() + "!", 40, 488);
-				}
-				if (!battle.getRoundEnd()) {
-					battleState = 5;
-					battle.setRoundEnd(true);
+					battleState = 6;
+					battle.setDisplayingEffect(true);
 				} else {
-					battleState = 1;
+					if (battle.getPlayerMon().getStatus() >= 1) {
+						if (battle.isDisplayedEffect()) {
+							if (battle.getRoundEnd()) {
+								nextBattleState = 1;
+								battle.setRoundEnd(false);
+							} else {
+								nextBattleState = 5;
+								battle.setRoundEnd(true);
+							}
+							System.out.println("here");
+							battle.setCurrentEffect(battle.getPlayerMon().getName().toUpperCase() + " used~"
+									+ battle.getPlayerCurrentMove().getName().toUpperCase() + "!");
+							battle.setDisplayedEffect(false);
+						} else {
+							if (battle.getPlayerMon().getStatus() == 1) {
+								nextBattleState = battleState;
+								battle.setCurrentEffect(
+										battle.getPlayerMon().getName().toUpperCase() + " is poisoned.");
+							} else if (battle.getPlayerMon().getStatus() == 2) {
+								nextBattleState = battleState;
+								battle.setCurrentEffect(
+										battle.getPlayerMon().getName().toUpperCase() + " is paralyzed.");
+							} else if (battle.getPlayerMon().getStatus() == 4) {
+								nextBattleState = battleState;
+								battle.setCurrentEffect(battle.getPlayerMon().getName().toUpperCase() + " is burned.");
+							}
+						}
+						battleState = 6;
+						battle.setDisplayingEffect(true);
+					} else {
+						if (battle.getRoundEnd()) {
+							nextBattleState = 1;
+							battle.setRoundEnd(false);
+						} else {
+							nextBattleState = 5;
+							battle.setRoundEnd(true);
+						}
+						System.out.println("here1");
+						battle.setCurrentEffect(battle.getPlayerMon().getName().toUpperCase() + " used~"
+								+ battle.getPlayerCurrentMove().getName().toUpperCase() + "!");
+						battleState = 6;
+						battle.setDisplayingEffect(true);
+					}
 				}
+
 			} else if (battleState == 5) {
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 				if (battle.getOtherSkipTurn()) {
 					if (battle.getOtherMon().getStatus() == 2) {
-						displayText(g, Images.whiteFontIdx, Images.whiteFont,
-								battle.getOtherMon().getName().toUpperCase() + " is paralyzed.~It is unable to move!",
-								40, 488);
+						battle.setCurrentEffect(
+								battle.getOtherMon().getName().toUpperCase() + " is paralyzed.~It is unable to move!");
 					} else if (battle.getOtherMon().getStatus() == 3) {
-						displayText(g, Images.whiteFontIdx, Images.whiteFont,
-								battle.getOtherMon().getName().toUpperCase() + " is fast asleep.", 40, 488);
+						battle.setCurrentEffect(battle.getOtherMon().getName().toUpperCase() + " is fast asleep.");
+					}
+					if (battle.getRoundEnd()) {
+						nextBattleState = 1;
+					} else {
+						nextBattleState = 4;
 					}
 				} else {
-					if (battle.getOtherMon().getStatus() == 2) {
-						displayText(g, Images.whiteFontIdx, Images.whiteFont,
-								battle.getOtherMon().getName().toUpperCase() + " is paralyzed.", 40, 488);
+					if (battle.getOtherMon().getStatus() >= 1) {
+						if (battle.isDisplayedEffect()) {
+							if (battle.getRoundEnd()) {
+								nextBattleState = 1;
+								battle.setRoundEnd(false);
+							} else {
+								nextBattleState = 4;
+								battle.setRoundEnd(true);
+							}
+							battle.setCurrentEffect("Enemy " + battle.getOtherMon().getName().toUpperCase() + " used~"
+									+ battle.getOtherCurrentMove().getName().toUpperCase() + "!");
+							battle.setDisplayedEffect(false);
+						} else {
+							nextBattleState = battleState;
+							if (battle.getOtherMon().getStatus() == 1) {
+								battle.setCurrentEffect(
+										"Enemy " + battle.getOtherMon().getName().toUpperCase() + " is poisoned.");
+							} else if (battle.getOtherMon().getStatus() == 2) {
+								battle.setCurrentEffect(
+										"Enemy " + battle.getOtherMon().getName().toUpperCase() + " is paralyzed.");
+							} else if (battle.getOtherMon().getStatus() == 4) {
+								battle.setCurrentEffect(
+										"Enemy " + battle.getOtherMon().getName().toUpperCase() + " is burned.");
+							}
+						}
+						battleState = 6;
+						battle.setDisplayingEffect(true);
+					} else {
+						if (battle.getRoundEnd()) {
+							nextBattleState = 1;
+							battle.setRoundEnd(false);
+						} else {
+							nextBattleState = 4;
+							battle.setRoundEnd(true);
+						}
+						battle.setCurrentEffect("Enemy " + battle.getOtherMon().getName().toUpperCase() + " used~"
+								+ battle.getOtherCurrentMove().getName().toUpperCase() + "!");
+						battleState = 6;
+						battle.setDisplayingEffect(true);
 					}
-					displayText(g, Images.whiteFontIdx, Images.whiteFont,
-							"Enemy " + battle.getOtherMon().getName().toUpperCase() + " used~"
-									+ battle.getOtherCurrentMove().getName().toUpperCase() + "!",
-							40, 488);
+					
 				}
-				if (!battle.getRoundEnd()) {
-					battleState = 4;
-					battle.setRoundEnd(true);
-				} else {
-					battleState = 1;
+			} else if (battleState == 6) {
+				displayText(g, Images.whiteFontIdx, Images.whiteFont, battle.getCurrentEffect(), 40, 488);
+				if (battle.isPlayerAttacking()) {
+					if (nextBattleState == 4) {
+						battle.setDisplayedEffect(true);
+					}
 				}
+				else if (battle.isOtherAttacking()) {
+					if(nextBattleState == 5) {
+						battle.setDisplayedEffect(true);
+					}
+				}
+				battleState = nextBattleState;
+				// pokemon menu
 			} else if (battleState == 8) {
 				// first pokemon
 				if (pkmnMenuSelectIdx == 0) {
@@ -300,8 +365,9 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 						148); // first name
 				displayText(g, Images.whiteFontIdx, Images.whiteFont, battle.getPlayerMon().getLevel() + "", 192, 184); // first
 																														// lvl
-				displayText(g, Images.whiteFontIdx, Images.whiteFont, battle.getPlayerMon().getCurrentHp() + "", 196, 248); // first
-																															// health
+				displayText(g, Images.whiteFontIdx, Images.whiteFont, battle.getPlayerMon().getCurrentHp() + "", 196,
+						248); // first
+								// health
 				displayText(g, Images.whiteFontIdx, Images.whiteFont, battle.getPlayerMon().getBaseHp() + "", 280, 248);
 
 				// other pokemon
@@ -312,10 +378,9 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 						} else {
 							g.drawImage(Images.pkmnMenuIcons[2], 352, 36 + 96 * pkmnMenuIdx, null);
 						}
-
 						displayText(g, Images.whiteFontIdx, Images.whiteFont,
-								battle.getPlayer().getPokemonList()[i].getName().toUpperCase(), 432, 52 + 96 * pkmnMenuIdx); // other
-																																// name
+								battle.getPlayer().getPokemonList()[i].getName().toUpperCase(), 432,
+								52 + 96 * pkmnMenuIdx); // other name
 						displayText(g, Images.whiteFontIdx, Images.whiteFont,
 								battle.getPlayer().getPokemonList()[i].getLevel() + "", 544, 88 + 96 * pkmnMenuIdx); // other
 																														// level
@@ -339,17 +404,12 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 				} else {
 					g.drawImage(Images.pkmnMenuIcons[4], 736, 528, null);
 				}
-
-				for (int i = 0; i < pkmnListIdx.length; i++) {
-					System.out.print(pkmnListIdx[i] + " ");
-				}
-				System.out.println();
 				pkmnMenuIdx = 0;
 				displayHealth(g); // all health
 				displayText(g, Images.moveFontIdx, Images.moveFont, "Select a pokemon to switch to.", 40, 536);
 
 			}
-		}  
+		}
 	}
 
 	@Override
@@ -451,7 +511,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			} else if (x == 'e') {
 				battleState = 3;
 			} else if (x == 'q') {
-			battleState = 1;
+				battleState = 1;
 			}
 			attackArrowX = attackArrowPositions[attackArrowIdx][0];
 			attackArrowY = attackArrowPositions[attackArrowIdx][1];
@@ -926,10 +986,5 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 
 		}
 
-	}
-
-	public static void displayEffects(Graphics g) {
-		displayText(g, Images.whiteFontIdx, Images.whiteFont,
-				battle.getPlayerMon().getName().toUpperCase() + " is fast asleep.", 40, 488);
 	}
 }

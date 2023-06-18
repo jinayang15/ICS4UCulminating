@@ -32,6 +32,10 @@ public class Battle {
 	private boolean otherAttacking = false;
 	private Move otherCurrentMove = null;
 	private boolean otherSkipTurn = false; // Same as last one, except its for opponent
+	
+	private String currentEffect; // current effect text
+	private boolean displayingEffect = false; // currently displaying effect
+	private boolean displayedEffect = false; // previously displayed effect
 	// Faint - -1
 	// Poison - 1
 	// Paralyzed - 2
@@ -1532,6 +1536,30 @@ public class Battle {
 
 	public void setSwitchPokemon(boolean switchPokemon) {
 		this.switchPokemon = switchPokemon;
+	}
+
+	public boolean isDisplayingEffect() {
+		return displayingEffect;
+	}
+
+	public void setDisplayingEffect(boolean displayingEffect) {
+		this.displayingEffect = displayingEffect;
+	}
+
+	public boolean isDisplayedEffect() {
+		return displayedEffect;
+	}
+
+	public void setDisplayedEffect(boolean displayedEffect) {
+		this.displayedEffect = displayedEffect;
+	}
+
+	public String getCurrentEffect() {
+		return currentEffect;
+	}
+
+	public void setCurrentEffect(String currentEffect) {
+		this.currentEffect = currentEffect;
 	}
 	
 
