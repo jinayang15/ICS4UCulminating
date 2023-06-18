@@ -1,5 +1,9 @@
 NOTES BEFORE YOU PLAY:
-- IF YOUR TEAM HAS FAINTED, DO NOT START A NEW BATTLE - GO TO THE POKEMON CENTER FIRST!!
+- IF YOUR TEAM HAS FAINTED, DO NOT START A NEW BATTLE - GO TO THE POKEMON CENTER TO HEAL FIRST!!
+- IF YOU SEE THE CONSOLE KEEPS GETTING ERRORS (PROBABLY DURING BATTLE) TRY TO STILL PLAY (HIT WASD). IF IT WORKS, YOU WILL
+  SEE NORMAL TEXT SHOW UP IN THE CONSOLE - THE GAME IS STILL GOOD. HOWEVER, IF NOTHING IS WORKING, THEN YOU MUST RESTART
+- Sometimes, it may look like your attack did not register (such as Growlithe's take down). However, the attack
+  most likely missed (you can check the console text to see, it will say "Missed!") 
 
 
 For this assignment, Jina and Ray were partners. Tasks were divided so that Jina was responsible
@@ -26,6 +30,9 @@ What we accomplished:
 	- We also got the walking and background scrolling to work! Whenever the player moves around the city, 
 	  they can see the animation of their character walking around! 
 	- In short, EVERYTHING YOU SEE was done beautifully by Jina!!!
+	- Let's take a moment and appreciate the battle. From the text showing up, the health bar reduction,
+	  the status, the FREAKING SWITCHING POKEMON (which is actually crazy), the graphics were INSANE.
+	  Jina is actually a GOD oh my goodness. 
 
 - Collision Detection
 	- We were able to add the collision detection, so players cannot walk through buildings, walls, trees,
@@ -73,10 +80,10 @@ BUGS:
 - In order to switch Pokemon after you faint, you need to do an attack. 
 - After an enemy faints, you must attack first before it switches out 
 - Screen update does not match with text, and sometimes the attack effect does not display
-- If a status affects the Pokemon right before it dies, the opponent may not switch.
+- If a status affects the Pokemon right before it dies, the opponent may not switch, causing the battle to not work.
 - If one of your Pokemon faints and you are forced to switch and the Pokemon coming it does not have 4 moves,
   NullPointerException may be thrown, but THE GAME IS OKAY. 
 - Badly Poisoned does not work
 - Sometimes bugs and battle does not work properly. For example, sometimes when you win, it crashes. 
-- Sometimes, when you switch into a Pokemon, attack may not work, crashing the game.
-- Moves like absorb and mega drain do not work for some reason.
+- Sometimes, when you switch into a Pokemon, attacks may not work, crashing the game.
+- Moves like absorb and mega drain do not work as intended (health regeneration) 

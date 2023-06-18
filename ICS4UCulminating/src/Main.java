@@ -644,23 +644,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	public void keyPressed(KeyEvent e) {
 		char x = e.getKeyChar();
 		
-		// Was testing the final ending and winning screens. 
-		if (x=='p') {
-			Player.updateLosses();
-			Player.updateLosses();
-			Player.updateLosses();
-			Player.updateLosses();
-			Player.updateLosses();
-			Player.updateLosses();
-			Player.updateLosses();
-			Player.updateLosses();
-			if (Player.getLosses()==8) {
-				bgX = 0;
-				bgY = 0;
-				gameState = 14;
-			}
-		}
-		
 		// Shuffling through the intro and menu screens
 		
 		if (gameState==0 && x=='i') {
@@ -988,22 +971,22 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		if (gameState == 0) {
-			gameState = 2;
-			bgX = saveBGX;
-			bgY = saveBGY;
-		} else if (gameState == 2) {
-			gameState++;
-			saveBGX = bgX;
-			saveBGY = bgY;
-			bgX = 0;
-			bgY = 0;
-			battleState = 1;
-			trainer = new Trainer();
-			battle = new Battle(ray, trainer);
-		} else if (gameState == 3) {
-
-		}
+//		if (gameState == 0) {
+//			gameState = 2;
+//			bgX = saveBGX;
+//			bgY = saveBGY;
+//		} else if (gameState == 2) {
+//			gameState++;
+//			saveBGX = bgX;
+//			saveBGY = bgY;
+//			bgX = 0;
+//			bgY = 0;
+//			battleState = 1;
+//			trainer = new Trainer();
+//			battle = new Battle(ray, trainer);
+//		} else if (gameState == 3) {
+//
+//		}
 	}
 
 	@Override
