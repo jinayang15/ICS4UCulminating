@@ -25,10 +25,19 @@ public class Images {
 	public static BufferedImage[] attackFont = new BufferedImage[78];
 	public static BufferedImage fireRedPressStart;
 	public static BufferedImage battleBackground;
+	public static BufferedImage aboutUs;
+	public static BufferedImage instructions;
+	public static BufferedImage instructions2;
+	public static BufferedImage start1;
+	public static BufferedImage start2;
+	public static BufferedImage pokemonCenter;
+	public static BufferedImage winScreen;
+	public static BufferedImage loseScreen;
 
 	public static void importAllImages() throws IOException {
 		importMisc();
 		importPewterCity();
+		importPokemonCenter();
 		importTrainer();
 		importBattleBackground();
 		importBattleMenu();
@@ -37,8 +46,15 @@ public class Images {
 	}
 
 	public static void importMisc() throws IOException {
-		fireRedPressStart = ImageIO.read(new File("FireRedPressStart.png"));
+		fireRedPressStart = ImageIO.read(new File("FireRedPressStart2.png"));
 		fireRedPressStart = resizeImage(fireRedPressStart, 960, 640);
+		aboutUs = ImageIO.read(new File ("aboutUs.png"));
+		instructions = ImageIO.read(new File ("instructions.png"));
+		instructions2=ImageIO.read(new File ("instructions2.png"));
+		start1 = ImageIO.read(new File ("start1.png"));
+		start2 = ImageIO.read(new File ("start2.png"));
+		winScreen = ImageIO.read(new File ("winScreen.png"));
+		loseScreen = ImageIO.read(new File ("loseScreen.png"));
 	}
 
 	public static void importPewterCity() throws IOException {
@@ -46,6 +62,11 @@ public class Images {
 		pewterCity[0] = pewterCitySheet.getSubimage(0, 0, 768, 640);
 		pewterCity[0] = resizeImage(pewterCity[0], Main.tileSize * Main.tileMapWidth,
 				Main.tileSize * Main.tileMapHeight);
+	}
+	
+	public static void importPokemonCenter() throws IOException {
+		pokemonCenter = ImageIO.read(new File ("test.png"));
+		pokemonCenter = resizeImage(pokemonCenter, 1440, 960);
 	}
 
 	public static void importTrainer() throws IOException {

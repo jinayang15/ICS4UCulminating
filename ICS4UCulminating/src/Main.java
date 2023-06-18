@@ -10,9 +10,9 @@ import javax.swing.*;
 
 @SuppressWarnings("serial") // funky warning, just suppress it. It's not gonna do anything.
 public class Main extends JPanel implements Runnable, KeyListener, MouseListener {
-	/*
-	 * 0 - initial menu 1 - Options Menu 2 - Pewter City 3 - Battle 4 - PokeCenter 5
-	 * - PokeMart
+	/* Kinda not in order BUT THATS OKAY 
+	 * 0: initial menu   1: Instructions   2: Pewter City   3: Battle   4: about us  5: instructions2   6: Intro to types    7: Pick type
+	 * 8 - PokeCenter   9 - Losing screen   10 - Winning screen 
 	 */
 	public static int gameState = 0;
 	public static Player player;
@@ -22,8 +22,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	static int screenWidth = 960;
 	static int screenHeight = 640;
 	static int tileSize = 64;
-	static int tileScreenWidth = screenWidth / tileSize;
-	static int tileScreenHeight = screenHeight / tileSize;
+	static int tileScreenWidth = screenWidth / tileSize; // 15
+	static int tileScreenHeight = screenHeight / tileSize; //10
 	static int tileMapWidth = 48;
 	static int tileMapHeight = 40;
 	BufferedImage currentBG;
@@ -49,6 +49,8 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	BufferedImage[] spriteTest = new BufferedImage[2];
 	int spriteIdx = 0;
 
+	public Player ray;
+	
 	public Main() {
 		// sets up JPanel
 		setPreferredSize(new Dimension(screenWidth, screenHeight));
@@ -93,10 +95,11 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	public void update() {
 		// update stuff
 		Music.playMusic();
+		
 		if (gameState == 0) {
 			currentBG = Images.fireRedPressStart;
 		} else if (gameState == 1) {
-
+			currentBG = Images.instructions;
 		} else if (gameState == 2) {
 			currentBG = Images.pewterCity[0];
 			adjustWalls();
@@ -117,13 +120,43 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		} else if (gameState == 3) {
 			currentBG = Images.battleBackground;
 		}
+		else if (gameState==4) {
+			currentBG = Images.aboutUs;
+		}
+		else if (gameState==5) {
+			currentBG = Images.instructions2;
+		}
+		else if (gameState==6) {
+			currentBG = Images.start1;
+		}
+		else if (gameState==7) {
+			currentBG = Images.start2;
+		}
+		// IM CURRENTLY TRYNA GET POKEMON CENTER TO WORK 
+		else if (gameState==8) {
+			currentBG = Images.pokemonCenter;
+			Animations.walk();
+			Animations.resetWalk();
+			bgShift();
+		}
+		else if (gameState==9) {
+			currentBG = Images.loseScreen;
+		}
+		else if (gameState==10) {
+			currentBG = Images.winScreen;
+		}
 	}
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.drawImage(currentBG, bgX, bgY, null);
+		
+		if (gameState==8) {
+			g.drawImage(Player.getCurrentPlayerImage(), Player.getPlayerX(), Player.getPlayerY(), null);
+			g.drawRect(Player.hitbox.x, Player.hitbox.y, Player.hitbox.width, Player.hitbox.height);
+		}
+		
 		if (gameState == 2) {
-
 			g.drawImage(Player.getCurrentPlayerImage(), Player.getPlayerX(), Player.getPlayerY(), null);
 			g.drawRect(Player.hitbox.x, Player.hitbox.y, Player.hitbox.width, Player.hitbox.height);
 //			System.out.println(Player.getPlayerX() + " " + Player.getPlayerY());
@@ -137,7 +170,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			}
 		}
 		if (gameState == 3) {
-			Player ray = new Player ("Fire");
 			Trainer ash = new Trainer();
 			Battle battle = new Battle(ray, ash);
 			baseBattleGraphics(g, battle);
@@ -188,6 +220,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 //				displayText(g, Images.attackFontIdx, Images.attackFont,
 //						Pokemon.pokeList.get(spriteIdx).getMoves()[3].getName(), 360, 554);
 //			}
+			
 		}
 	}
 
@@ -201,7 +234,118 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 	// changes direction depending on key pressed and sets moving to true !
 	public void keyPressed(KeyEvent e) {
 		char x = e.getKeyChar();
-		if (!Player.getMoving() || x != lastKeyPressed) {
+		
+		if (x=='p') {
+			Player.updateLosses();
+			Player.updateLosses();
+			Player.updateLosses();
+			Player.updateLosses();
+			Player.updateLosses();
+			Player.updateLosses();
+			Player.updateLosses();
+			Player.updateLosses();
+			if (Player.getLosses()==8) {
+				bgX = 0;
+				bgY = 0;
+				gameState = 9;
+			}
+		}
+		if (x=='o') {
+			bgX = 0;
+			bgY = 0;
+			gameState = 10;
+		}
+		
+		// Shuffling through the intro and menu screens
+		
+		if (gameState==0 && x=='i') {
+			gameState = 1;
+			bgX = 0;
+			bgY = 0;
+		}
+		else if (gameState==1 && x=='i') {
+			gameState = 5;
+		}
+		else if (gameState==5 && x=='i') {
+			gameState = 0;
+		}
+		else if (gameState==0 && x=='a') {
+			gameState=4;
+		}
+		else if (gameState==4 && x=='a') {
+			gameState=0;
+		}
+		else if (gameState==0 && x=='e') {
+			gameState = 6;
+		}
+		else if (gameState==6 && x=='e') {
+			gameState = 7;
+		}
+		
+		else if (gameState == 7) {
+			if (x=='1') {
+				ray = new Player ("Grass");
+				bgX = saveBGX;
+				bgY = saveBGY;
+				gameState = 2;
+			}
+			else if (x=='2') {
+				ray = new Player ("Fire");
+				bgX = saveBGX;
+				bgY = saveBGY;
+				gameState = 2;
+			}
+			else if (x=='3') {
+				ray = new Player ("Water");
+				bgX = saveBGX;
+				bgY = saveBGY;
+				gameState = 2;
+			}
+			
+		}
+		else if (gameState==2 && x=='e') {
+			if (bgY==-772 && bgX>=-544 && bgX<=-500) {
+				gameState++;
+				saveBGX = bgX;
+				saveBGY = bgY;
+				bgX = 0;
+				bgY = 0;
+			}
+			// Entering the Poke Center
+			else if (bgY==-1348 && bgX>=-676 && bgX<=-632) {
+				saveBGX = bgX;
+				saveBGY = bgY;
+				bgX = -244;
+				bgY = -290;
+				tileMapWidth = 22;
+				tileMapHeight = 15;
+				gameState = 8;
+			}
+		}
+		
+		else if (gameState==8 && x=='e') {
+			if (bgY>=-320 && bgY<=-284 && bgX>=-310 && bgX<=-200) {
+				bgX = saveBGX;
+				bgY = saveBGY;
+				tileMapWidth = 48;
+				tileMapHeight = 40;
+				gameState=2;
+			}
+			if (bgY==0 && bgX>=-280 && bgX<=-224) {
+				try {
+					gameState = -1; // Temporary gamestate
+					Music.healMusic();
+					Thread.sleep(3000);
+					gameState = 8;
+				}
+				catch (InterruptedException E) {
+					
+				}
+			}
+			
+		}
+		
+		else if (gameState==2 && (!Player.getMoving() || x != lastKeyPressed)) {
 //			if (x != lastKeyPressed) {
 //				movesQ.add(e.getKeyChar());
 //			} 
@@ -226,6 +370,25 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 			lastKeyPressed = e.getKeyChar();
 //			}
 //			System.out.println(checkTile());
+		}
+		else if (gameState==8) {
+			if (x == 'w') {
+				Player.setDirection(1);
+				Player.setMoving(true);
+				if (bgX == -448 && bgY == -768) {
+//						Battle b = new Battle(player, new Trainer());
+				}
+			} else if (x == 's') {
+				Player.setDirection(2);
+				Player.setMoving(true);
+			} else if (x == 'a') {
+				Player.setDirection(3);
+				Player.setMoving(true);
+			} else if (x == 'd') {
+				Player.setDirection(4);
+				Player.setMoving(true);
+			}
+			lastKeyPressed = e.getKeyChar();
 		}
 	}
 
@@ -322,7 +485,6 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 		// self explanatory. You don't want to resize your window because
 		// it might mess up your graphics and collisions
 		frame.setResizable(false);
-		initialize();
 		Player player = new Player("Fire");
 		System.out.println();
 		System.out.println(new Trainer());
