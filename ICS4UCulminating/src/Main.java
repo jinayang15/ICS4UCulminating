@@ -732,6 +732,7 @@ public class Main extends JPanel implements Runnable, KeyListener, MouseListener
 					for (int i = 0; i < ray.getPokemonList().length; i++) {
 						ray.getPokemonList()[i].setDeltaHp(0);
 						ray.getPokemonList()[i].setStatus(0);
+						ray.getPokemonList()[i].setFaint(false);
 					}
 				}
 				catch (InterruptedException E) {
